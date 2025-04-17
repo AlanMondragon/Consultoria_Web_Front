@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import Home from "./components/Home/Home";
+import Home from "./components/Home/Home.jsx";
 import AdministradorHome from "./components/Administrador/AdministradorHome"
 import AdministradorServicios from "./components/Administrador/AdministradorServicios";
 import AdministradorCliente from "./components/Administrador/AdministradorClientes";
