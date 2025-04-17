@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../img/logo.jpg';
-import { Login } from './../../api/api.js';
+import { Login, FindByID } from './../../api/api.js';
 import './../../styles/Home.css';
-
-
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 export default function Home() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.body.classList.add('home-page');
     return () => {
@@ -19,50 +21,75 @@ export default function Home() {
     e.preventDefault();
     try {
       const response = await Login(email, password); 
-      console.log('Login successful:', response);
+      const data = response.response; 
+
+      if(!data.token){
+        alert(response.message);
+        return;
+      }
+
+      // Guardar token en localStorage
+      localStorage.setItem("token", data.token);
+
+      // Decodificar el token
+      const decoded = jwtDecode(data.token);
+
+  
+      // Redirigir según rol
+      if (decoded.role === "ADMIN") {
+        navigate('/HomeAdmin');
+      } else if (decoded.role === "USER") {
+        navigate('/HomeUser');
+      } else {
+        console.warn("Rol no reconocido:", decoded.role);
+      }
+
     } catch (error) {
       console.error('Error during login:', error);
     }
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  }
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  }
-
   return (
     <div className='body-login'>
-    <div className="card-login">
-      <div className="card-left">
-        <img
-          src={logo}
-          alt="Logo Consultoría JAS"
-          className="logo-img"
-        />
-      </div>
+      <div className="card-login">
+        <div className="card-left">
+          <img
+            src={logo}
+            alt="Logo Consultoría JAS"
+            className="logo-img"
+          />
+        </div>
 
-      <div className="vertical-line"></div>
+        <div className="vertical-line"></div>
 
-      <div className="card-right">
-        <h2 className='h2'>Bienvenido</h2>
-        <form action="#" onSubmit={handleLogin}>
-          <input type="email" onChange={handleEmailChange} className="form-control" placeholder="Ingresa tu correo" required/>
-          <input type="password" onChange={handlePasswordChange} className="form-control" placeholder="Ingresa tu contraseña" required/>
-          
-          <div className="mb-3">
-            <a href="#" className="forgot-password">
-              ¿Olvidaste tu contraseña?
-            </a>
-          </div>
-          <button type="submit" className="btn btn-login w-100">
-            Ingresar
-          </button>
-        </form>
+        <div className="card-right">
+          <h2 className='h2'>Bienvenido</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control"
+              placeholder="Ingresa tu correo"
+              required
+            />
+            <input
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              placeholder="Ingresa tu contraseña"
+              required
+            />
+            <div className="mb-3">
+              <a href="#" className="forgot-password">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
+            <button type="submit" className="btn btn-login w-100">
+              Ingresar
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 }
