@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../../img/logo.jpg';
 import { Login } from './../../api/api.js';
 import './../../styles/Home.css';
 
 
 export default function Home() {
+  useEffect(() => {
+    document.body.classList.add('home-page');
+    return () => {
+      document.body.classList.remove('home-page');
+    };
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

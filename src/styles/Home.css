@@ -1,9 +1,5 @@
-body {
-    background-color: #132E3C !important; /* Ensure the background color is applied */
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body.home-page {
+    background-color: #132E3C !important;
 }
 
 /* Added specificity to avoid conflicts */
