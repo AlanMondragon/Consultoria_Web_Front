@@ -8,7 +8,9 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     document.body.classList.add('home-page');
+    localStorage.removeItem("token");
     return () => {
       document.body.classList.remove('home-page');
     };
@@ -39,7 +41,7 @@ export default function Home() {
       if (decoded.role === "ADMIN") {
         navigate('/HomeAdmin');
       } else if (decoded.role === "USER") {
-        navigate('/HomeUser');
+        navigate('/ClienteHome');
       } else {
         console.warn("Rol no reconocido:", decoded.role);
       }
