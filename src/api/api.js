@@ -27,3 +27,7 @@ export const FindByID = async (id) => {
     }
 }
 
+export const forgetPassword = async (email) => {
+    return email;
+}
+
