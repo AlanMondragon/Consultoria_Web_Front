@@ -112,7 +112,7 @@ export default function Home() {
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
-            <button type="submit" className="btn btn-login w-100">
+            <button type="submit" className="btn-login w-100">
               Ingresar
             </button>
           </form>

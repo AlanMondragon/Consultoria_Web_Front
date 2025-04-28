@@ -3,8 +3,7 @@ import './../../styles/OlvidarContra.css';
 import Swal from 'sweetalert2';
 import { forgetPassword } from './../../api/api.js';
 import { Icon } from '@iconify/react';
-import logo from '../../img/logo.jpg';
-
+import logo from '../../img/logo.jpg'; // o el logo adecuado
 
 export default function OlvidarContra() {
   useEffect(() => {
@@ -19,39 +18,38 @@ export default function OlvidarContra() {
     e.preventDefault();
     const email = e.target.email.value;
     forgetPassword(email)
-      .then((response) => {
-        console.log(response);
+      .then(() => {
         Swal.fire({
           icon: 'success',
-          title: '¡Éxito!',
-          text: 'Se ha enviado un correo para restablecer tu contraseña.',
+          title: '¡Correo enviado!',
+          text: 'Revisa tu bandeja de entrada para restablecer tu contraseña.',
         });
       })
       .catch((error) => {
         console.error('Error:', error);
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'Algo salió mal, intenta nuevamente.',
+          title: 'Error',
+          text: 'No pudimos enviar el correo. Inténtalo nuevamente.',
         });
       });
   };
 
   const handleBack = () => {
-    window.history.back(); // Regresar a la página anterior
-  }
+    window.history.back();
+  };
 
   return (
-    <div className='body-login'>
+    <div className="body-login">
       <div className="card-recovery">
         <div className="top-bar">
-          <Icon icon="mdi:arrow-left" width="30" height="30" className="back-icon" onClick={handleBack} />
+          <Icon icon="mdi:arrow-left" width="28" height="28" className="back-icon" onClick={handleBack} />
         </div>
-        <h2 className="title-recovery">¡Recuperación de contraseña!</h2>
-        <img src={logo} alt="Logo Consultoría JAS" className="logo-img-olvar-contra" />
+        <h2 className="title-recovery">Recuperación de contraseña</h2>
+        <img src={logo} alt="Logo Consultoría de Visado" className="logo-img-olvidar-contra" />
         <form onSubmit={handleSubmit} className="form-recovery">
-          <p className="h4">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
-          <input type="email" name="email" placeholder="Ingresa tu correo" required className="input-recovery" />
+          <p className="description">Por favor, ingresa tu correo electrónico. Te enviaremos un enlace para restablecer tu contraseña.</p>
+          <input type="email" name="email" placeholder="Correo electrónico" required className="input-recovery" />
           <button type="submit" className="btn-recovery">Enviar</button>
         </form>
       </div>

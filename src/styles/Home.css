@@ -57,11 +57,11 @@ body .form-control {
 
 body .form-control:focus {
     box-shadow: none;
-    border-color: #00aaff;
+    border-color: #08307a;
 }
 
 body .btn-login {
-    background-color: #00aaff;
+    background-color: #08307a;
     color: #fff;
     font-weight: bold;
     font-size: 20px;
@@ -71,8 +71,8 @@ body .btn-login {
     cursor: pointer;
 }
 
-body .btn-login:hover {
-    background-color: #008ecc;
+body .btn-login {
+    background-color: #08307a;
 }
 
 body .forgot-password {
@@ -118,5 +118,5 @@ body .fw-bold {
 }
 
 .body-login .btn-login:hover {
-  background-color: #008ecc;
+  background-color: #08307a;
 }
