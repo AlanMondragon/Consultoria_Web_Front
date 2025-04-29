@@ -2,6 +2,8 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../NavbarAdmin.jsx';
+
 
 export default function AdministradorHome() {
   const navigate = useNavigate();
@@ -24,8 +26,12 @@ export default function AdministradorHome() {
     }
   }, []);
 
+   
   return (
-    <div>Home del administrador </div>
+    <div>
+    <Navbar></Navbar>
+    </div> 
+    
   );
 }
 
