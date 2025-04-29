@@ -39,7 +39,7 @@ export default function ClienteHome() {
   const fetchServices = async () => {
     try {
       const response = await getAllProcess();
-      if (response.success && Array.isArray(response.response.Transacts)) {
+        if (response.success && Array.isArray(response.response.Transacts)) {
         setServices(response.response.Transacts);
       } else {
         console.error("Unexpected API response format:", response);
@@ -51,9 +51,6 @@ export default function ClienteHome() {
     }
   };
 
-  console.log("Servicios antes de filtrar:", services);
-
-  console.log("Servicios después de filtrar:", services);
 
   return (
     <div>
