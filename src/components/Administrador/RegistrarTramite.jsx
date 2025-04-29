@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../NavbarAdmin.jsx';
 
 export default function RegistrarTramite() {
   const navigate = useNavigate();
@@ -25,7 +26,9 @@ export default function RegistrarTramite() {
   }, []);
 
   return (
-  <div>Aquí se mostrará el formulario para registrar "Asignar", un tramite a un cliente</div>
+  <div>
+    <Navbar></Navbar>
+    Aquí se mostrará el formulario para registrar "Asignar", un tramite a un cliente</div>
   );
 }
 

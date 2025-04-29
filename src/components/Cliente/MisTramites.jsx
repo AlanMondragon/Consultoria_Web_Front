@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-
+import Navbar from '../NavbarUser.jsx'
 export default function MisTramites() {
   const navigate = useNavigate();
 
@@ -25,7 +25,9 @@ export default function MisTramites() {
   }, []);
 
   return (
-  <div>Aquí se mostraran los tramites del cliente quien haya iniciado sesion</div>
+  <div>
+    <Navbar></Navbar>
+    Aquí se mostraran los tramites del cliente quien haya iniciado sesion</div>
   );
 }
 

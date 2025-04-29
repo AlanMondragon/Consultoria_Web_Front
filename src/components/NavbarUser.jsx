@@ -9,27 +9,24 @@ import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
 
 
-export default function NavbarAdmin({title}) {
+export default function NavbarAdmin() {
   const [id1, setId1] = useState("");
   const [id2, setId2] = useState("");
-  const [id3, setId3] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-    const [iconKey, setIconKey] = useState(0);
-  
-    const recargarIcono = () => {
-      setIconKey(prev => prev + 1); // Fuerza nuevo render al cambiar la key
-    };
+  const [iconKey, setIconKey] = useState(0);
+
+  const recargarIcono = () => {
+    setIconKey(prev => prev + 1); // Fuerza nuevo render al cambiar la key
+  };
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
-        setId1("/ServiciosAdmin-sm");
-        setId2("/TramitesAdmin-sm");
-        setId3("/ClientesAdmin-sm");
+        setId1("/ClienteServicios-sm");
+        setId2("/MisTramites-sm");
       } else {
-        setId1("/ServiciosAdmin");
-        setId2("/TramitesAdmin");
-        setId3("/ClientesAdmin");
+        setId1("/ClienteServicios");
+        setId2("/MisTramites");
       }
     };
 
@@ -49,8 +46,6 @@ export default function NavbarAdmin({title}) {
       showCancelButton: true,
       confirmButtonText: 'Cancelar',
       cancelButtonText: 'Aceptar',
-      
-      
     }).then((result) => {
       if (result.isConfirmed) {
         console.log('Cancelado');
@@ -71,12 +66,12 @@ export default function NavbarAdmin({title}) {
     </Button>
 
     {/* Título */}
-    <h1 className="titulo-navbar">Consultoria Jas {title}</h1>
+    <h1 className="titulo-navbar">Consultoria Jas</h1>
 
     {/* Logo + Botón cerrar sesión */}
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img src={Logo} alt="Logo" className="logo-navbar" />
-        <Icon key={iconKey} icon="line-md:logout" width="50" height="50" color="black" onClick={cerrarSesion} onMouseMove={recargarIcono} style={{ cursor: 'pointer' }}/>      
+      <Icon key={iconKey} icon="line-md:logout" width="50" height="50" color="black" onClick={cerrarSesion} onMouseMove={recargarIcono} style={{ cursor: 'pointer' }}/>  
     </div>
 
   </Container>
@@ -86,8 +81,7 @@ export default function NavbarAdmin({title}) {
     <div className="menu-lateral">
       <Nav className="flex-column">
         <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
-        <Nav.Link href={id2} className="link-menu">Trámites</Nav.Link>
-        <Nav.Link href={id3} className="link-menu">Clientes</Nav.Link>
+        <Nav.Link href={id2} className="link-menu">Mis trámites</Nav.Link>
       </Nav>
     </div>
   )}

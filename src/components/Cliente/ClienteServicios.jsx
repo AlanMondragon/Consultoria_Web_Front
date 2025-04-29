@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-
+import Navbar from '../NavbarUser.jsx'
 export default function ClienteServicios() {
   const navigate = useNavigate();
 
@@ -25,7 +25,9 @@ export default function ClienteServicios() {
   }, []);
 
   return (
-     <div>En esta pantalla se mostraran los servicios disponibles para el cliente, aunque creo que no es necesario</div>
+     <div>
+      <Navbar></Navbar>
+      En esta pantalla se mostraran los servicios disponibles para el cliente</div>
   );
 }
 

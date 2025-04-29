@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { getAllProcess } from './../../api/api.js'; 
+import Navbar from '../NavbarUser.jsx'
 
 export default function ClienteHome() {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ export default function ClienteHome() {
 
   return (
     <div>
+      <Navbar></Navbar>
       <h1>Servicios Disponibles</h1>
       <div className="services-container">
         {services.map((service, index) => (
