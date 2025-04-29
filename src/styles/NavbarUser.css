@@ -2,10 +2,9 @@
 .encabezado-navbar {
   width: 100%;
   background-color: #2c5b91;
-
+  padding: 5px px; 
   margin: 0;
-  padding: 5px 10px; /* top/bottom 20px, left/right 10px */
-
+  border-radius: 10px 10px 0 0;
 }
 
 /* Contenedor interno */
@@ -13,7 +12,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px; /* Ajusta espacio lateral */
+  padding: 0 10px; /* Ajusta espacio lateral */
   width: 100%;
 }
 
@@ -113,7 +112,8 @@
   transition: transform 0.4s cubic-bezier(1, 0, 0, 1);
 }
 
-.link-menu:hover::before {
-  transform-origin: left top;
-  transform: scale(1, 1);
+
+
+.icono-logout:hover {
+  
 }

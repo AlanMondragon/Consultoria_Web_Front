@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { Button } from 'react-bootstrap'; 
 import ModalActualizarServicio from './ModalActualizarServicio'; 
+import Navbar from '../NavbarAdmin.jsx';
 
 export default function ActualizarServicio() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function ActualizarServicio() {
 
   return (
     <div>
+      <Navbar></Navbar>
       <h2>Aquí se mostrará la página para actualizar un servicio para la página de administrador</h2>
 
       <Button variant="primary" onClick={() => setShowModal(true)}>

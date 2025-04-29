@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../NavbarAdmin.jsx';
 
 export default function RegistrarServicio() {
   const navigate = useNavigate();
@@ -25,7 +26,9 @@ export default function RegistrarServicio() {
   }, []);
 
   return (
-        <div>Aquí se mostrará la pagina para regsitrar un servicio para el administrador</div>
+        <div>
+          <Navbar title={"Registro Tramite"}></Navbar>
+          Aquí se mostrará la pagina para regsitrar un servicio para el administrador</div>
   );
 }
 
