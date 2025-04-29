@@ -44,18 +44,29 @@
     object-fit: cover;
   }
   
-  /* Menú lateral desplegable */
   .menu-lateral {
     position: absolute;
-    top: 110px; /* Ajusta según altura navbar */
+    top: 110px; 
     left: 0;
     width: 200px;
-    height: calc(95vh - 50px); /* Ocupa toda la altura disponible */
+    height: calc(95vh - 50px);
     background-color: #2c5b91;
     padding: 20px;
-    box-shadow: 2px 0px 5px rgba(0,0,0,0.5);
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
+  
+    
+    transform: translateX(-100%);
+    opacity: 0;
+    animation: slidein 0.8s ease-out forwards;
+  }
+  
+  @keyframes slidein {
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
   
   /* Contenedor de links */
