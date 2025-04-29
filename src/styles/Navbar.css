@@ -17,11 +17,12 @@
   /* Botón Hamburguesa */
   .boton-menu {
     color: white;
-    font-size: 24px;
+    font-size: 30px;
     background: none;
     border: none;
     align-self: flex-start;
-    margin-left: 0%;
+    padding-top: 25px;
+    padding-left: 0px;
   }
   
   /* Título centrado */
@@ -31,7 +32,8 @@
     color: white;
     font-size: 40px;
     margin: 0;
-    font-style:italic;
+    font-family: 'Montserrat';
+
   }
   
   /* Logo Redondo */

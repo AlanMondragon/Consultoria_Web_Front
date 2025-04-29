@@ -78,7 +78,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Ruta de acceso denegado */}
         <Route path="/no-encontrado" element={<NoAutorizado />} />
       </Routes>
     </Router>
