@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 
 export default function Home() {
   const navigate = useNavigate();
-
+  
   useEffect(() => {
 
     document.body.classList.add('home-page');
@@ -62,7 +62,7 @@ export default function Home() {
           text: 'Bienvenido ',
           showConfirmButton: true,
         })
-        navigate('/ClienteHome');
+        navigate('/ClienteServicios');
       } else {
         console.warn("Rol no reconocido:", decoded.role);
       }
