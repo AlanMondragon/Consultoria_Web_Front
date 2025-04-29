@@ -3,7 +3,7 @@ import './../../styles/OlvidarContra.css';
 import Swal from 'sweetalert2';
 import { forgetPassword } from './../../api/api.js';
 import { Icon } from '@iconify/react';
-import logo from '../../img/logo.jpg'; // o el logo adecuado
+import logo from '../../img/logo.jpg'; 
 
 export default function OlvidarContra() {
   useEffect(() => {
