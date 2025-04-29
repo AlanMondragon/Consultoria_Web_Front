@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../img/logo.jpg';
-import { Login, FindByID } from './../../api/api.js';
+import { Login } from './../../api/api.js';
 import './../../styles/Home.css';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'
+import Swal from 'sweetalert2';
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -26,7 +28,14 @@ export default function Home() {
       const data = response.response; 
 
       if(!data.token){
-        alert(response.message);
+        const message = response.message || 'Error desconocido';
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        });
         return;
       }
 
@@ -39,8 +48,20 @@ export default function Home() {
   
       // Redirigir según rol
       if (decoded.role === "ADMIN") {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Bienvenido ',
+          showConfirmButton: true,
+        })
         navigate('/HomeAdmin');
       } else if (decoded.role === "USER") {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Bienvenido ',
+          showConfirmButton: true,
+        })
         navigate('/ClienteHome');
       } else {
         console.warn("Rol no reconocido:", decoded.role);
@@ -50,6 +71,11 @@ export default function Home() {
       console.error('Error during login:', error);
     }
   };
+
+  //Olvide contraseña
+  const handleForgotPassword = () => {
+    navigate('/olvidar-contra')
+  }
 
   return (
     <div className='body-login'>
@@ -82,11 +108,11 @@ export default function Home() {
               required
             />
             <div className="mb-3">
-              <a href="#" className="forgot-password">
+              <a onClick={handleForgotPassword} className="forgot-password" style={{background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline'}}>
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
-            <button type="submit" className="btn btn-login w-100">
+            <button type="submit" className="btn-login w-100">
               Ingresar
             </button>
           </form>

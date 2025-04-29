@@ -17,13 +17,42 @@ export const Login = async (email, password) => {
     }
 };
 
-export const FindByID = async (id) => {
+export const FindByID = async (id, token) => {
     try {
-        const response = await axios.get(`${API_URL}/users/${id}`);
+        const response = await axios.get(`${API_URL}/users/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
-    }catch (error) {
+    } catch (error) {
         console.error('Error fetching user by ID:', error);
         throw error;
     }
-}
+};
 
+export const forgetPassword = async (email, token) => {
+    try {
+        const response = await axios.post(`${API_URL}/forget-password`, { email }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error during password recovery:', error);
+        throw error;
+    }
+};
+
+
+//Procesos (los procesos disponibles para el cliente)
+export const getAllProcess = async () => { 
+    try {
+        const response = await axios.get(`${API_URL}/transaction`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching processes:', error);
+        throw error;
+    }
+};

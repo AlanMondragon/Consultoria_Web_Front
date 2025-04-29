@@ -17,12 +17,18 @@ import MisTramites from "./components/Cliente/MisTramites";
 
 import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
+import OlvidarContra from "./components/Home/OlvidarContra.jsx";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+
+        {/*Contraseña olvidada*/}
+        <Route path="/olvidar-contra" element={<OlvidarContra />} />
+
+        {/* Rutas públicas */}
 
         {/* Rutas solo para ADMIN */}
         <Route path="/HomeAdmin" element={
