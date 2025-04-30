@@ -1,28 +1,31 @@
 .ContenedorG {
-    background-color: #d3f0fd; /* fondo azul claro */
+    background-color: #d3f0fd;
     border-radius: 20px;
     padding: 20px;
     width: 1000px;
     height: 500px;
-    max-width: 2000px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border: 1px solid black;
-}
-.tarjeta {
-    background-color: #b0e6ff; /* más intenso que el fondo */
+  }
+  
+  .tarjeta {
+    background-color: #b0e6ff;
     border: 2px solid black;
     border-radius: 15px;
     padding: 20px;
     text-align: center;
     width: 200px;
-    margin: 10px;
     transition: transform 0.3s;
-}
-.tarjeta:hover {
+    cursor: pointer;
+    height:  250px;
+  }
+  
+  .tarjeta:hover {
     transform: scale(1.05);
-}
+  }
+  
