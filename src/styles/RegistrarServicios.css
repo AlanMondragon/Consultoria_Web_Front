@@ -1,0 +1,209 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #e7e7e7;
+    margin: 0;
+  }
+  
+  .container-registrar-tramite {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: auto;
+    box-sizing: border-box;
+  }
+  
+  .card-registrar-tramite {
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    border: 2px solid #000;
+    padding: 30px 40px;
+    width: 1000px;
+    max-width: 1200px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .card-registrar-tramite h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #000;
+  }
+  
+  .form-registrar-tramite {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid #888;
+    background-color: transparent;
+    font-size: 16px;
+    color: #555;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: #bbb;
+  }
+  
+  .form-group textarea {
+    border: 1px solid #000;
+    border-radius: 12px;
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  button[type="submit"] {
+    align-self: flex-end;
+    background-color: #00aaff;
+    color: black;
+    padding: 12px 24px;
+    border: 2px solid #000;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  button[type="submit"]:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Estilos para los inputs de tipo archivo */
+input[type="file"] {
+  color: #000; /* Cambiar el color del texto a negro */
+  appearance: none; /* Asegura que el estilo predeterminado del navegador no interfiera */
+}
+
+input[type="file"]:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+input[type="file"]:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+}
+
+/* Switch styles for CAS and CON */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgb(0, 0, 0);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #007bff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+
+.btn-img:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.btn-img:active {
+  background-color: #003f7f;
+  transform: scale(0.95);
+}
+
+.custom-file-button {
+    display: inline-block;
+    background-color: #00aaff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid #000;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    text-align: center;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-file-button:hover {
+    background-color: #0077cc;
+    transform: scale(1.05);
+  }
+  
+  .custom-file-button:active {
+    background-color: #005f99;
+    transform: scale(0.95);
+  }
+
+  .file-name {
+    display: block;
+    margin-top: 8px;
+    color: #333;
+    font-size: 14px;
+    font-style: italic;
+  }
+  
+  .preview-img {
+    margin-top: 10px;
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    object-fit: cover;
+  }
+      

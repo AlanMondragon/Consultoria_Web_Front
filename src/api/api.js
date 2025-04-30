@@ -56,3 +56,30 @@ export const getAllProcess = async () => {
         throw error;
     }
 };
+
+export const createService = async (serviceData) => {
+    try {
+        const payload = {
+            name: serviceData.name,
+            description: serviceData.description,
+            image: serviceData.image, // Base64 string
+            imageDetail: serviceData.imageDetail, // Base64 string
+            simulation: serviceData.simulation,
+            cas: serviceData.cas,
+            con: serviceData.con,
+            cashAdvance: serviceData.cashAdvance
+        };
+
+        const response = await axios.post(`${API_URL}/transaction`, payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error creating service:', error);
+        throw error;
+    }
+};
+

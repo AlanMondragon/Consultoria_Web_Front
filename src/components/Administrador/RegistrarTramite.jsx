@@ -9,7 +9,6 @@ export default function RegistrarTramite() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/");
       return;
@@ -18,18 +17,17 @@ export default function RegistrarTramite() {
     try {
       const decoded = jwtDecode(token);
       if (decoded.role !== "ADMIN") {
-        navigate("/"); 
+        navigate("/");
       }
     } catch (error) {
-      navigate("/"); 
+      console.error("Error decoding token:", error);
+      navigate("/");
     }
   }, []);
 
   return (
-  <div>
-    <Navbar title={"-Registro Tramite"}></Navbar>
-    Aquí se mostrará el formulario para registrar "Asignar", un tramite a un cliente</div>
-  );
+      <div></div>
+      );
 }
 
 

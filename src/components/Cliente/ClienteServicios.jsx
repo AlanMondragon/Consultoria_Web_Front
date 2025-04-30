@@ -98,8 +98,8 @@ export default function ClienteServicios() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <img src={service.image} alt={service.name} />
-              <h2>{service.name}</h2>
-              <p>{service.description}</p>
+              <h2>{service.description}</h2>
+              <p>{service.name}</p>
               <p className="price">MX${service.cashAdvance}.00</p>
               <button>Agregar</button>
             </div>

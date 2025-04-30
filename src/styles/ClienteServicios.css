@@ -13,7 +13,7 @@ body {
     padding: 20px;
     text-align: center;
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
-    margin: 10px;
+    margin: 5px;
     height: 100%;
     transition: transform 0.3s ease;
     max-width: 90%;
@@ -31,20 +31,20 @@ body {
     width: 100%;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
   }
   
   .service-card h2 {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #000;
   }
   
   .service-card p {
     color: #333;
     font-size: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
   
   .service-card .price {
@@ -80,4 +80,19 @@ body {
   .slick-prev:before, .slick-next:before {
     /* Eliminar contenido predeterminado de las flechas */
     content: none !important;
+  }
+
+
+  /*Apartado de admin*/
+
+  .botton-aggregate{
+    background-color: #0c9728;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
   }
