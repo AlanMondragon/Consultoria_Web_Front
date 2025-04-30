@@ -1,0 +1,36 @@
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    min-width: 60px;
+    justify-content: space-between;
+  }
+  
+  .estado-badge.on {
+    background-color: #e0ffe0;
+    color: green;
+  }
+  
+  .estado-badge.on::after {
+    content: '●';
+    color: green;
+    margin-left: 8px;
+    font-size: 0.7rem;
+  }
+  
+  .estado-badge.off {
+    background-color: #ffe0e0;
+    color: red;
+  }
+  
+  .estado-badge.off::before {
+    content: '●';
+    color: red;
+    margin-right: 8px;
+    font-size: 0.7rem;
+  }
+  

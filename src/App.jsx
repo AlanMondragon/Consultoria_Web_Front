@@ -10,6 +10,8 @@ import AdministradorTramites from "./components/Administrador/AdministradorTrami
 import RegistrarServicio from "./components/Administrador/RegistraServicio";
 import ActualizarServicio from "./components/Administrador/ActualizarServicio";
 import RegistrarTramite from "./components/Administrador/RegistrarTramite";
+import RegistrarCliente from './components/Administrador/RegistrarCliente'
+
 
 import ClienteHome from "./components/Cliente/ClienteHome";
 import ClienteServicios from "./components/Cliente/ClienteServicios";
@@ -64,6 +66,11 @@ function App() {
         <Route path="/RegistrarTramite" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <RegistrarTramite />
+          </ProtectedRoute>
+        } />
+        <Route path="/RegistrarCliente" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <RegistrarCliente />
           </ProtectedRoute>
         } />
 

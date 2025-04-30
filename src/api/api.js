@@ -56,3 +56,23 @@ export const getAllProcess = async () => {
         throw error;
     }
 };
+
+export const clientes = async ()=>{
+    try{
+        const response = await axios.get(`${API_URL}/users`);
+        return response.data;
+    }catch(error){
+     console.error('Error durante la peticion', error);
+     throw error;
+    }
+};
+
+export const RegistrarCliente = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/users`, data); 
+    return response.data;
+  } catch (error) {
+    console.error('Error al hacer el post', error);
+    throw error;
+  }
+};
