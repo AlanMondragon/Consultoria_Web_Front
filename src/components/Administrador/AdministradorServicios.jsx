@@ -100,8 +100,9 @@ export default function AdministradorServicios() {
               <img src={service.image} alt={service.name} />
               <h2>{service.description}</h2>
               <p>{service.name}</p>
+              <p style={{ color : "#000", fontWeight : "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
-              <button>Agregar</button>
+              <button>Editar</button>
             </div>
           ))}
         </Slider>
