@@ -67,14 +67,14 @@ body {
   }
   
   .form-group textarea {
-    border: 1px solid #000;
+    border: 1px solid #4b4242;
     border-radius: 12px;
     resize: vertical;
     min-height: 100px;
   }
   
   /* Cambiar la regla general de button[type="submit"] a una clase específica */
-  .btn-submit {
+  .button-submit-service {
     align-self: flex-end;
     background-color: #00aaff;
     color: black;
@@ -88,9 +88,10 @@ body {
     transition: transform 0.2s ease;
   }
 
-  .btn-submit:hover {
-    transform: scale(1.05);
+  .button-submit-service:hover {
+    background-color: #003f7f; /* Color más oscuro */
   }
+
   
   /* Estilos para los inputs de tipo archivo */
 input[type="file"] {
