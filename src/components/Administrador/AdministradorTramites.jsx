@@ -27,7 +27,7 @@ export default function AdministradorTramites() {
 
   return (
     <div>
-      <Navbar title={"Tramites"}></Navbar>
+      <Navbar title={"-Tramites"}></Navbar>
       Aquí se mostrarán los todos los tramites que existen de todos los clientes para la vista del administrador</div>
   );
 }

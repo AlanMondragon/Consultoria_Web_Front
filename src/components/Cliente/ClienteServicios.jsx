@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { getAllProcess } from './../../api/api.js';
-import NavbarAdmin from '../NavbarAdmin.jsx';
+import Navbar from '../NavbarUser.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react'; // Iconos con Iconify
 
@@ -90,7 +90,7 @@ export default function ClienteServicios() {
   return (
     <div style={{ marginTop: '100px' }}>
       <div className='fixed-top'>
-        <NavbarAdmin title={"Servicios"} />
+        <Navbar title={"-Servicios"} />
       </div>
       <div className="services-slider">
         <h1 className="title">Servicios disponibles</h1>

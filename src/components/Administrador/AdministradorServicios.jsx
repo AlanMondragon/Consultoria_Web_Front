@@ -28,7 +28,7 @@ export default function AdministradorServicios() {
   return (
     
   <div>
-    <Navbar title={"Servicios"}></Navbar>
+    <Navbar title={"-Servicios"}></Navbar>
     Aquí se mostrarán los servicios disponibles que tiene el administrador</div>
 
   );

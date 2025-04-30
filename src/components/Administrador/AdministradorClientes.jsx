@@ -27,7 +27,7 @@ export default function AdministradorClientes() {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar title={"-Clientes"}></Navbar>
       Aquí se mostrarán los clientes que tiene el administrador </div>
   );
 }

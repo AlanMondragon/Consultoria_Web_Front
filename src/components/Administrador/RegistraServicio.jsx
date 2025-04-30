@@ -27,7 +27,7 @@ export default function RegistrarServicio() {
 
   return (
         <div>
-          <Navbar title={"Registro Tramite"}></Navbar>
+          <Navbar title={"-Registro Servicio"}></Navbar>
           Aquí se mostrará la pagina para regsitrar un servicio para el administrador</div>
   );
 }

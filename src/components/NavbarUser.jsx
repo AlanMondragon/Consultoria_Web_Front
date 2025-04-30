@@ -9,9 +9,10 @@ import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
 
 
-export default function NavbarAdmin() {
+export default function NavbarAdmin({title}) {
   const [id1, setId1] = useState("");
   const [id2, setId2] = useState("");
+  const [id3, setId3] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [iconKey, setIconKey] = useState(0);
 
@@ -24,9 +25,11 @@ export default function NavbarAdmin() {
       if (window.innerWidth <= 768) {
         setId1("/ClienteServicios-sm");
         setId2("/MisTramites-sm");
+        setId3("/ClienteHome-sm");
       } else {
         setId1("/ClienteServicios");
         setId2("/MisTramites");
+        setId3("/ClienteHome");
       }
     };
 
@@ -57,7 +60,7 @@ export default function NavbarAdmin() {
   }
 
   return (
-    <Navbar fixed="top" expand="lg" className="encabezado-navbar">
+    <Navbar  fixed="top" expand="lg" className="encabezado-navbar">
   <Container fluid className="contenedor-navbar">
     
     {/* Botón Hamburguesa */}
@@ -66,7 +69,7 @@ export default function NavbarAdmin() {
     </Button>
 
     {/* Título */}
-    <h1 className="titulo-navbar">Consultoria Jas</h1>
+    <h1 className="titulo-navbar">Consultoria Jas{title}</h1>
 
     {/* Logo + Botón cerrar sesión */}
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -80,6 +83,7 @@ export default function NavbarAdmin() {
   {menuOpen && (
     <div className="menu-lateral">
       <Nav className="flex-column">
+        <Nav.Link href={id3} className="link-menu">Home</Nav.Link>
         <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
         <Nav.Link href={id2} className="link-menu">Mis trámites</Nav.Link>
       </Nav>

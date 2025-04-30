@@ -62,7 +62,7 @@ export default function Home() {
           text: 'Bienvenido ',
           showConfirmButton: true,
         })
-        navigate('/ClienteServicios');
+        navigate('/ClienteHome');
       } else {
         console.warn("Rol no reconocido:", decoded.role);
       }

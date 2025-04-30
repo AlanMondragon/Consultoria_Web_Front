@@ -62,7 +62,7 @@
   left: 0;
   width: 200px;
   height: calc(95vh - 50px);
-  background-color: #2c5b91;
+  background-color: #376094;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -114,6 +114,4 @@
 
 
 
-.icono-logout:hover {
-  
-}
+

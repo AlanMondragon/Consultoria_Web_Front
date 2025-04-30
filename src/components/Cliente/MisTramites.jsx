@@ -26,7 +26,7 @@ export default function MisTramites() {
 
   return (
   <div>
-    <Navbar></Navbar>
+    <Navbar title={"-Mis tramites"}></Navbar>
     Aquí se mostraran los tramites del cliente quien haya iniciado sesion</div>
   );
 }

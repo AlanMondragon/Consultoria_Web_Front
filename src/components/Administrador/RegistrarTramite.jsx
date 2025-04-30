@@ -27,7 +27,7 @@ export default function RegistrarTramite() {
 
   return (
   <div>
-    <Navbar title={"Registro Tramite"}></Navbar>
+    <Navbar title={"-Registro Tramite"}></Navbar>
     Aquí se mostrará el formulario para registrar "Asignar", un tramite a un cliente</div>
   );
 }
