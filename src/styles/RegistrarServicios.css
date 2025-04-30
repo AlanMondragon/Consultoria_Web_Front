@@ -73,7 +73,8 @@ body {
     min-height: 100px;
   }
   
-  button[type="submit"] {
+  /* Cambiar la regla general de button[type="submit"] a una clase específica */
+  .btn-submit {
     align-self: flex-end;
     background-color: #00aaff;
     color: black;
@@ -86,8 +87,8 @@ body {
     cursor: pointer;
     transition: transform 0.2s ease;
   }
-  
-  button[type="submit"]:hover {
+
+  .btn-submit:hover {
     transform: scale(1.05);
   }
   
@@ -206,4 +207,3 @@ input:checked + .slider:before {
     border: 1px solid #ccc;
     object-fit: cover;
   }
-      

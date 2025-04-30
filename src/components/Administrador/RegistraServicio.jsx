@@ -167,7 +167,7 @@ export default function RegistrarServicio() {
                 <span className='slider round'></span>
               </label>
             </div>
-            <button type='submit' style={{ display: 'block', margin: '0 auto' }}>Registrar</button>
+            <button type='submit' className='button-submit-service'>Registrar</button>
           </form>
         </div>
       </div>
