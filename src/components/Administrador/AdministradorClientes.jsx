@@ -4,12 +4,10 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
-import { FaPlus } from 'react-icons/fa';
-import { clientes } from './../../api/api.js';
+import { FaLess, FaPlus } from 'react-icons/fa';
+import { clientes, actualizarStatusCliente } from './../../api/api.js'; 
 import '../../styles/Clientes.css'
 import ModalRegistrarCliente from './RegistrarCliente.jsx'; 
-
-
 
 export default function AdministradorClientes() {
   const navigate = useNavigate();
@@ -67,7 +65,20 @@ export default function AdministradorClientes() {
       setCargando(false);
     }
   };
-//
+
+  const handleSwitchChange = async (idUser, nuevoEstado) => {
+    try {
+      console.log("Cambiando el estado del cliente con id:", idUser, "a:", nuevoEstado);
+      const result = await actualizarStatusCliente(idUser, nuevoEstado);  
+      console.log("Resultado del cambio de estado:", result);
+      mensaje(nuevoEstado);
+      fetchServices();  // Vuelve a cargar los datos después de cambiar el estado
+    } catch (error) {
+      console.error("Error al actualizar el estado del cliente", error);
+    }
+  };
+  
+
   const filtrados = datos.filter(d =>
     `${d.name ?? ''} ${d.apellidos ?? ''}`.toLowerCase().includes(busqueda.toLowerCase()) ||
     d.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -85,7 +96,16 @@ export default function AdministradorClientes() {
       setPaginaActual(numero);
     }
   };
-
+  function mensaje(nuevoEstado) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Éxito',
+      text: `Estado actualizado: ${nuevoEstado ? 'Activado' : 'Desactivado'}`,
+    });
+  }
+  
+  
+  
   return (
     <div style={{ marginTop: '100px' }}>
       <Navbar title={"-Clientes"} />
@@ -110,7 +130,7 @@ export default function AdministradorClientes() {
         <ModalRegistrarCliente
           show={showModal}
           onHide={() => setShowModal(false)}
-          onClienteRegistrado={fetchServices} // Pasa la función para actualizar la lista
+          onClienteRegistrado={fetchServices} 
         />
       </div>
 
@@ -130,19 +150,28 @@ export default function AdministradorClientes() {
             </tr>
           </thead>
           <tbody>
-            {datosPaginados.map((cliente, index) => (
-              <tr key={cliente.id || index}>
-                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-                <td>{cliente.name}</td>
-                <td><a href={`mailto:${cliente.email}`}>{cliente.email}</a></td>
-                <td>{cliente.phone}</td>
-                <td>
-                  <span className={`estado-badge ${cliente.estado ? 'on' : 'off'}`}>
-                    {cliente.estado ? 'ON' : 'OFF'}
-                  </span>
-                </td>
-              </tr>
-            ))}
+          {datosPaginados.map((cliente, index) => (
+  <tr key={cliente.idUser || index}>
+    <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
+    <td>{cliente.name}</td>
+    <td><a href={`mailto:${cliente.email}`}>{cliente.email}</a></td>
+    <td>{cliente.phone}</td>
+    <td>
+      <span className={`estado-badge ${cliente.status ? 'on' : 'off'}`}>
+      <Form.Check 
+  type="switch"
+  id={`custom-switch-${cliente.idUser}`}  
+  checked={cliente.status}  
+  onChange={(e) => {
+    const nuevoEstado = e.target.checked;
+    console.log("ID al cambiar el estado: ", cliente.idUser);  
+    handleSwitchChange(cliente.idUser, nuevoEstado);  
+  }} 
+/>
+      </span>
+    </td>
+  </tr>
+))}
           </tbody>
         </Table>
       )}

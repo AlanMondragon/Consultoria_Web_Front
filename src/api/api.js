@@ -76,3 +76,14 @@ export const RegistrarCliente = async (data) => {
     throw error;
   }
 };
+export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
+    try {
+      const response = await axios.put(`${API_URL}/users/${id_user}/status`, { status: nuevoEstado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar el estado del cliente", error);
+      throw error;
+    }
+  };
+  
+  
