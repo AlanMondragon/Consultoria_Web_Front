@@ -18,21 +18,20 @@ export default function AdministradorServicios() {
     try {
       const decoded = jwtDecode(token);
       if (decoded.role !== "ADMIN") {
-        navigate("/"); 
+        navigate("/");
       }
     } catch (error) {
-      navigate("/"); 
+      navigate("/");
     }
   }, []);
 
   return (
-    
-  <div>
-    <Navbar title={"-Servicios"}></Navbar>
-    Aquí se mostrarán los servicios disponibles que tiene el administrador</div>
+
+    <div>
+      <Navbar title={"-Servicios"}></Navbar>
+      Aquí se mostrarán los servicios disponibles que tiene el administrador</div>
 
   );
 }
 
 
- 

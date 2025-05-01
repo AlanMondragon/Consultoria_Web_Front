@@ -85,5 +85,22 @@ export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
       throw error;
     }
   };
+
+  export const actualizar = async (idUser, datosActualizados) => {
+    try {
+      const response = await axios.put(`${API_URL}/users/${idUser}`, {
+        idUser,
+        name: datosActualizados.name,
+        email: datosActualizados.email,
+        phone: datosActualizados.phone,
+        status: datosActualizados.status
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar el cliente", error);
+      throw error;
+    }
+  };
+  
   
   

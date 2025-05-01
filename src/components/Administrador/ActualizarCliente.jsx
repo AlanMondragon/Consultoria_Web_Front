@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { RegistrarCliente as registrarClienteAPI } from './../../api/api.js';
 import Swal from 'sweetalert2';
 import '../../styles/RegistrarCliente.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { Icon } from '@iconify/react';
+import { actualizar } from './../../api/api.js';
 
 const schema = yup.object().shape({
   email: yup.string().email('Correo no válido').required('Campo obligatorio'),
@@ -16,7 +15,6 @@ const schema = yup.object().shape({
     .string()
     .required('Campo obligatorio')
     .matches(/^[aA-zZ\s]+$/, 'Solo letras'),
-  password: yup.string().required('Campo obligatorio'),
   phone: yup
     .string()
     .required('Campo obligatorio')
@@ -24,9 +22,7 @@ const schema = yup.object().shape({
     .max(10, 'Tienen que ser 10 números'),
 });
 
-export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) {
-
-  const [showPassword, setShowPassword] = useState(false);
+export default function RegistrarCliente({ show, onHide, onClienteRegistrado, cliente }) {
 
   const {
     register,
@@ -37,14 +33,25 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+  useEffect(() => {
+    if (cliente) {
+      reset({
+        name: cliente.name,
+        email: cliente.email,
+        phone: cliente.phone,
+      });
+    }
+  }, [cliente, reset]);
+ 
 
   const onSubmit = async (data) => {
     try {
-      data.status = 1;
-      await registrarClienteAPI(data);
+      data.status = 1;//Esto es solamente para usuarios, nos aseguramos que siempre sean USER
+      data.idUser = cliente.idUser;
+      await actualizar(cliente.idUser, data);
       Swal.fire({
         icon: 'success',
-        title: "Registro exitoso",
+        title: "Actualización exitosa",
         confirmButtonText: 'Aceptar',
       });
       reset();
@@ -55,8 +62,8 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Error al registrar',
-        text: 'Error al registrar'
+        title: 'Error al actualizar',
+        text: 'Error al actualizar'
       });
       console.error(error);
     }
@@ -65,7 +72,7 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title className="Titulo">Registrar Cliente</Modal.Title>
+        <Modal.Title className="Titulo">Actualizar Cliente</Modal.Title>
       </Modal.Header>
 
       <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -89,27 +96,6 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
             />
             <span className="error">{errors.name?.message}</span>
           </div>
-
-          <div className="form-group password-group">
-            <label>Contraseña:</label>
-            <div className="password-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="********"
-                {...register('password')}
-                className={errors.password ? 'input-error' : ''}
-              />
-              <span
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{ cursor: 'pointer' }}
-              >
-                <Icon icon={showPassword ? 'mdi:eye' : 'mdi:eye-off'} width="20" />
-              </span>
-            </div>
-            <span className="error">{errors.password?.message}</span>
-          </div>
-
           <div className="form-group">
             <label>Teléfono:</label>
             <input

@@ -5,9 +5,10 @@ import Swal from 'sweetalert2';
 import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
 import { FaLess, FaPlus } from 'react-icons/fa';
-import { clientes, actualizarStatusCliente } from './../../api/api.js'; 
+import { clientes, actualizarStatusCliente } from './../../api/api.js';
 import '../../styles/Clientes.css'
-import ModalRegistrarCliente from './RegistrarCliente.jsx'; 
+import ModalRegistrarCliente from './RegistrarCliente.jsx';
+import ModalActualizarCliente from './ActualizarCliente.jsx'
 
 export default function AdministradorClientes() {
   const navigate = useNavigate();
@@ -15,7 +16,10 @@ export default function AdministradorClientes() {
   const [datos, setDatos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showModalA, setShowModalA] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+
   const itemsPorPagina = 7;
 
   useEffect(() => {
@@ -46,7 +50,7 @@ export default function AdministradorClientes() {
   }, [navigate]);
 
   useEffect(() => {
-    setPaginaActual(1); // Resetea la paginación cuando cambia la búsqueda
+    setPaginaActual(1);
   }, [busqueda]);
 
   const fetchServices = async () => {
@@ -69,15 +73,15 @@ export default function AdministradorClientes() {
   const handleSwitchChange = async (idUser, nuevoEstado) => {
     try {
       console.log("Cambiando el estado del cliente con id:", idUser, "a:", nuevoEstado);
-      const result = await actualizarStatusCliente(idUser, nuevoEstado);  
+      const result = await actualizarStatusCliente(idUser, nuevoEstado);
       console.log("Resultado del cambio de estado:", result);
       mensaje(nuevoEstado);
-      fetchServices();  // Vuelve a cargar los datos después de cambiar el estado
+      fetchServices();
     } catch (error) {
       console.error("Error al actualizar el estado del cliente", error);
     }
   };
-  
+
 
   const filtrados = datos.filter(d =>
     `${d.name ?? ''} ${d.apellidos ?? ''}`.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -103,9 +107,9 @@ export default function AdministradorClientes() {
       text: `Estado actualizado: ${nuevoEstado ? 'Activado' : 'Desactivado'}`,
     });
   }
-  
-  
-  
+
+
+
   return (
     <div style={{ marginTop: '100px' }}>
       <Navbar title={"-Clientes"} />
@@ -130,7 +134,13 @@ export default function AdministradorClientes() {
         <ModalRegistrarCliente
           show={showModal}
           onHide={() => setShowModal(false)}
-          onClienteRegistrado={fetchServices} 
+          onClienteRegistrado={fetchServices}
+        />
+        <ModalActualizarCliente
+          show={showModalA}
+          onHide={() => setShowModalA(false)}
+          onClienteRegistrado={fetchServices}
+          cliente={clienteSeleccionado}
         />
       </div>
 
@@ -150,28 +160,48 @@ export default function AdministradorClientes() {
             </tr>
           </thead>
           <tbody>
-          {datosPaginados.map((cliente, index) => (
-  <tr key={cliente.idUser || index}>
-    <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-    <td>{cliente.name}</td>
-    <td><a href={`mailto:${cliente.email}`}>{cliente.email}</a></td>
-    <td>{cliente.phone}</td>
-    <td>
-      <span className={`estado-badge ${cliente.status ? 'on' : 'off'}`}>
-      <Form.Check 
-  type="switch"
-  id={`custom-switch-${cliente.idUser}`}  
-  checked={cliente.status}  
-  onChange={(e) => {
-    const nuevoEstado = e.target.checked;
-    console.log("ID al cambiar el estado: ", cliente.idUser);  
-    handleSwitchChange(cliente.idUser, nuevoEstado);  
-  }} 
-/>
-      </span>
-    </td>
-  </tr>
-))}
+            {datosPaginados.map((cliente, index) => (
+              <tr key={cliente.idUser || index}>
+                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
+                <td>{cliente.name}</td>
+                <td><a href={`mailto:${cliente.email}`}>{cliente.email}</a></td>
+                <td>{cliente.phone}</td>
+                <td>
+                  <div className={`estado-badge ${cliente.status ? 'on' : 'off'}`}>
+                    <Form.Check
+                      type="switch"
+                      id={`custom-switch-${cliente.idUser}`}
+                      checked={cliente.status}
+                      onChange={(e) => {
+                        const nuevoEstado = e.target.checked;
+                        handleSwitchChange(cliente.idUser, nuevoEstado);
+                      }}
+                    />
+                  </div>
+
+                  {/* Aseguramos que el botón esté alineado a la derecha */}
+                  <Button
+                    variant="success"
+                    className="d-flex align-items-center gap-2"
+                    style={{
+                      display: 'block',   // Cambiar a block para que ocupe una línea completa
+                      marginLeft: 'auto', // Alineamos el botón a la derecha de la celda
+                      boxShadow: '2px 2px 6px #00000050',
+                      borderRadius: '12px',
+                      marginTop: '10px'   // Añadir un pequeño margen superior para separarlo de la "badge"
+                    }}
+                    onClick={() => {
+                      setClienteSeleccionado(cliente);
+                      setShowModalA(true);
+                    }}
+                  >
+                    EDITAR
+                  </Button>
+                </td>
+
+
+              </tr>
+            ))}
           </tbody>
         </Table>
       )}

@@ -18,17 +18,17 @@ export default function RegistrarServicio() {
     try {
       const decoded = jwtDecode(token);
       if (decoded.role !== "ADMIN") {
-        navigate("/"); 
+        navigate("/");
       }
     } catch (error) {
-      navigate("/"); 
+      navigate("/");
     }
   }, []);
 
   return (
-        <div>
-          <Navbar title={"-Registro Servicio"}></Navbar>
-          Aquí se mostrará la pagina para regsitrar un servicio para el administrador</div>
+    <div>
+      <Navbar title={"-Registro Servicio"}></Navbar>
+      Aquí se mostrará la pagina para regsitrar un servicio para el administrador</div>
   );
 }
 
