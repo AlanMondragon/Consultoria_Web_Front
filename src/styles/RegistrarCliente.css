@@ -1,0 +1,71 @@
+.form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    font-family: 'Montserrat';
+    margin-bottom: 0.3rem;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: transparent;
+    font-family: 'Montserrat';
+    color: black; /* 👈 Esto pone el texto en negro */
+
+  }
+  
+  .form-group input::placeholder {
+    color: #aaa;
+    
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.85rem;
+  }
+.Guardar{
+    background-color:#00A8FF;
+}  
+.Titulo{
+    margin-left: 255px;
+    font-size: 30px;
+    font-family: 'Montserrat';
+}
+.password-wrapper {
+    position: relative;
+  }
+  
+  .password-wrapper input {
+    width: 100%;
+    padding-right: 30px; /* espacio para el icono */
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .input-error {
+    border: 1px solid red;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.85em;
+    margin-top: 4px;
+  }
+  
+  .password-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  

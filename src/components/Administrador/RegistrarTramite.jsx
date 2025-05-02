@@ -18,6 +18,7 @@ export default function RegistrarTramite() {
       const decoded = jwtDecode(token);
       if (decoded.role !== "ADMIN") {
         navigate("/");
+        navigate("/");
       }
     } catch (error) {
       console.error("Error decoding token:", error);

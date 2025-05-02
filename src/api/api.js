@@ -83,3 +83,51 @@ export const createService = async (serviceData) => {
     }
 };
 
+
+export const clientes = async ()=>{
+    try{
+        const response = await axios.get(`${API_URL}/users`);
+        return response.data;
+    }catch(error){
+     console.error('Error durante la peticion', error);
+     throw error;
+    }
+};
+
+export const RegistrarCliente = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/users`, data); 
+    return response.data;
+  } catch (error) {
+    console.error('Error al hacer el post', error);
+    throw error;
+  }
+};
+export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
+    try {
+      const response = await axios.put(`${API_URL}/users/${id_user}/status`, { status: nuevoEstado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar el estado del cliente", error);
+      throw error;
+    }
+  };
+
+  export const actualizar = async (idUser, datosActualizados) => {
+    try {
+      const response = await axios.put(`${API_URL}/users/${idUser}`, {
+        idUser,
+        name: datosActualizados.name,
+        email: datosActualizados.email,
+        phone: datosActualizados.phone,
+        status: datosActualizados.status
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar el cliente", error);
+      throw error;
+    }
+  };
+  
+  
+  

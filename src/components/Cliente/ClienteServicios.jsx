@@ -46,9 +46,11 @@ export default function ClienteServicios() {
     try {
       const response = await getAllProcess();
       if (response.success && Array.isArray(response.response.Transacts)) {
+        console.log('Datos recibidos');
         setServices(response.response.Transacts);
       } else {
         console.error("Unexpected API response format:", response);
+        console.log('Datos NO RECIBIDOS');
         setServices([]);
       }
     } catch (error) {

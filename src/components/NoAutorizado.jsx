@@ -1,6 +1,15 @@
+import React from 'react';
+import '../styles/404.css'
+import { Icon } from '@iconify/react';
 const NoAutorizado = () => (
-    <div className="container text-center mt-5">
-      <h1> 404 Recurso no encontrado</h1>
+    <div className='Cuatro'>
+      <Icon icon="tabler:error-404" width="500" height="500" className="back-icon"  />
+      <div className='texto'>
+      <h2>Pagina no encontrada</h2>
+      </div>
+      
+      
+
     </div>
   );
   

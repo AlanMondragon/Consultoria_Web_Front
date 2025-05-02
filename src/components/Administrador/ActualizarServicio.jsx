@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { Button } from 'react-bootstrap'; 
-import ModalActualizarServicio from './ModalActualizarServicio'; 
+import { Button } from 'react-bootstrap';
+import ModalActualizarServicio from './ModalActualizarServicio';
 import Navbar from '../NavbarAdmin.jsx';
 
 export default function ActualizarServicio() {
@@ -25,7 +25,7 @@ export default function ActualizarServicio() {
     } catch (error) {
       navigate("/");
     }
-  }, [navigate]); // Buenas prácticas: agregar navigate como dependencia
+  }, [navigate]); 
 
   return (
     <div>

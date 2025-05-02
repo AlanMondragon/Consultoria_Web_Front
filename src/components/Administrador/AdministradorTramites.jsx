@@ -18,10 +18,10 @@ export default function AdministradorTramites() {
     try {
       const decoded = jwtDecode(token);
       if (decoded.role !== "ADMIN") {
-        navigate("/"); 
+        navigate("/");
       }
     } catch (error) {
-      navigate("/"); 
+      navigate("/");
     }
   }, []);
 

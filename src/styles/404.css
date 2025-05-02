@@ -1,0 +1,16 @@
+.Cuatro {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px; /* Elige un tamaño base */
+    animation: zoomInOut 4s infinite ease-in-out;
+    display: inline-block; /* Para que el transform funcione correctamente */
+}
+
+@keyframes zoomInOut {
+    0%   { transform: scale(0.5); }
+    50%  { transform: scale(1); }
+    100% { transform: scale(0.5); }
+}
+.texto{
+    font-family: 'Monserrat';
+    font-size: 1000px;
+}
