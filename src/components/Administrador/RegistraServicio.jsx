@@ -145,7 +145,7 @@ export default function RegistrarServicio() {
             </div>
             <div className='form-group'>
               <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo</label>
-              <input type='text' id='anticipoEfectivo' name='cashAdvance' required />
+              <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' required />
             </div>
             <div className='form-group'>
               <label htmlFor='simulacion'>Simulación</label>
