@@ -11,11 +11,11 @@ import { MdClose } from 'react-icons/md';
 import { Icon } from '@iconify/react';
 
 const schema = yup.object().shape({
-  email: yup.string().email('Correo no válido').required('Campo obligatorio'),
+  email: yup.string().required('Campo obligatorio').matches(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/, 'El correo debe estar en minúsculas').email('Correo no válido'),
   name: yup
     .string()
     .required('Campo obligatorio')
-    .matches(/^[aA-zZ\s]+$/, 'Solo letras'),
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, 'Solo letras'),
   password: yup.string().required('Campo obligatorio'),
   phone: yup
     .string()
