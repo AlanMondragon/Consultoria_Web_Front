@@ -87,6 +87,10 @@ export default function AdministradorServicios() {
     ]
   };
 
+  const handleEditClick = (service) => {
+    navigate(`/ActualizarServicio`, { state: { service } });
+  };
+
   return (
     <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
@@ -102,7 +106,7 @@ export default function AdministradorServicios() {
               <p>{service.name}</p>
               <p style={{ color : "#000", fontWeight : "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
-              <button>Editar</button>
+              <button onClick={() => handleEditClick(service)}>Editar</button>
             </div>
           ))}
         </Slider>

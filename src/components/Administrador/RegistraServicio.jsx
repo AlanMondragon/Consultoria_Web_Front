@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import Navbar from '../NavbarAdmin.jsx';
 import './../../styles/RegistrarServicios.css';
 import { createService } from '../../api/api';
+import Swal from 'sweetalert2';
 
 export default function RegistrarServicio() {
   const navigate = useNavigate();
@@ -63,10 +64,25 @@ export default function RegistrarServicio() {
 
     try {
       const response = await createService(serviceData);
-      alert('Servicio registrado exitosamente');
-      console.log('Response:', response);
+      if (response.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Servicio registrado exitosamente',
+          text: 'El servicio ha sido registrado correctamente.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar el servicio',
+          text: 'Hubo un problema al registrar el servicio. Por favor, inténtelo de nuevo.',
+        });
+      }
     } catch (error) {
-      alert('Error al registrar el servicio');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al registrar el servicio',
+        text: 'Hubo un problema al registrar el servicio. Por favor, inténtelo de nuevo.',
+      });
       console.error('Error:', error);
     }
   };
