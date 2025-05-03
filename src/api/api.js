@@ -58,6 +58,15 @@ export const getAllProcess = async () => {
         throw error;
     }
 };
+export const servicios = async () => { 
+  try {
+      const response = await axios.get(`${API_URL}/transaction`);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching processes:', error);
+      throw error;
+  }
+};
 
 export const createService = async (serviceData) => {
     try {
@@ -183,3 +192,13 @@ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
     throw error;
   }
 };
+export const RegistrarTransaccion = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/progress`, data); 
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear el tramite', error);
+    throw error;
+  }
+};
+

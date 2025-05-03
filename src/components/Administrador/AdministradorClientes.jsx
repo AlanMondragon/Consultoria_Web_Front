@@ -9,6 +9,8 @@ import { clientes, actualizarStatusCliente } from './../../api/api.js';
 import '../../styles/Clientes.css'
 import ModalRegistrarCliente from './RegistrarCliente.jsx';
 import ModalActualizarCliente from './ActualizarCliente.jsx'
+import ModalRegistrarTramite from './RegistrarTramite.jsx';
+
 
 export default function AdministradorClientes() {
   const navigate = useNavigate();
@@ -58,6 +60,9 @@ export default function AdministradorClientes() {
       const response = await clientes();
       if (response.success && Array.isArray(response.response.users)) {
         setDatos(response.response.users);
+        <ModalRegistrarTramite
+          clientes={datos}
+  />
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -107,6 +112,9 @@ export default function AdministradorClientes() {
       text: `Estado actualizado: ${nuevoEstado ? 'Activado' : 'Desactivado'}`,
     });
   }
+  <ModalRegistrarTramite
+          clientes={datos}
+  />
 
 
 
@@ -187,11 +195,11 @@ export default function AdministradorClientes() {
                     variant="success"
                     className="d-flex align-items-center gap-2"
                     style={{
-                      display: 'block',   // Cambiar a block para que ocupe una línea completa
-                      marginLeft: 'auto', // Alineamos el botón a la derecha de la celda
+                      display: 'block',  
+                      marginLeft: 'auto', 
                       boxShadow: '2px 2px 6px #00000050',
                       borderRadius: '12px',
-                      marginTop: '10px'   // Añadir un pequeño margen superior para separarlo de la "badge"
+                      marginTop: '10px'   
                     }}
                     onClick={() => {
                       setClienteSeleccionado(cliente);

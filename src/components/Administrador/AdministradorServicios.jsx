@@ -6,6 +6,8 @@ import { getAllProcess } from './../../api/api.js';
 import Navbar from '../NavbarAdmin.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react'; // Iconos con Iconify
+import ModalRegistrarTramite from './RegistrarTramite.jsx';
+
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -47,6 +49,7 @@ export default function AdministradorServicios() {
       const response = await getAllProcess();
       if (response.success && Array.isArray(response.response.Transacts)) {
         setServices(response.response.Transacts);
+        
       } else {
         console.error("Unexpected API response format:", response);
         setServices([]);
@@ -56,6 +59,9 @@ export default function AdministradorServicios() {
       setServices([]);
     }
   };
+  <ModalRegistrarTramite
+         tramite={services}
+       />
 
   // Flechas personalizadas con Iconify
   const PrevArrow = ({ onClick }) => (
@@ -102,7 +108,7 @@ export default function AdministradorServicios() {
               <p>{service.name}</p>
               <p style={{ color : "#000", fontWeight : "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
-              <button>Editar</button>
+              <button onClick={()=>{console.log('Servicios', services);}}>Editar</button>
             </div>
           ))}
         </Slider>

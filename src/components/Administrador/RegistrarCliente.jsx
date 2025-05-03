@@ -39,13 +39,14 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
   });
 
   const onSubmit = async (data) => {
-    if(data.success){
-      try {
-        data.status = 1;
-        await registrarClienteAPI(data);
+    try {
+      data.status = 1;
+      const response = await registrarClienteAPI(data);
+  
+      if (response.success) {
         Swal.fire({
           icon: 'success',
-          title: "Registro exitoso",
+          title: 'Registro exitoso',
           confirmButtonText: 'Aceptar',
         });
         reset();
@@ -53,23 +54,23 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
         if (typeof onClienteRegistrado === 'function') {
           onClienteRegistrado();
         }
-      } catch (error) {
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Error al registrar',
-          text: 'Error al registrar'
+          text: 'El usuario ya existe',
         });
-        console.error(error);
       }
-    }else{
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error al registrar',
-        text: 'El usuario ya existe'
+        text: 'Ocurrió un error durante el registro.',
       });
+      console.error(error);
     }
-    
   };
+  
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>

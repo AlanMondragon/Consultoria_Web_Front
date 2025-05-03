@@ -5,22 +5,20 @@ import Swal from 'sweetalert2';
 import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
 import { FaInfo, FaPlus } from 'react-icons/fa';
-import { trasacciones, actualizarT,clientes  } from './../../api/api.js';
+import { trasacciones, actualizarT } from './../../api/api.js';
 import '../../styles/Clientes.css';
-import ModalRegistrarTramite from './RegistrarTramite.jsx';
-import ModalActualizarTramite from './ActualizarTramite.jsx';
+import ModalRegistrarCliente from './RegistrarCliente.jsx';
+import ModalActualizarCliente from './ActualizarTramite.jsx';
 
-export default function AdministradorTramites() {
+export default function TramiteMasInfo() {
   const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState("");
   const [datos, setDatos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showModalA, setShowModalA] = useState(false);
-  const [showModalI, setShowModalI] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  const [Datitos, setDatitos] = useState(null);//Lleva los datos al modal resgistrar transaccion
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
   let [numero, setNumero] = useState(0);
 
@@ -57,8 +55,6 @@ export default function AdministradorTramites() {
     setPaginaActual(1);
   }, [busqueda]);
 
-
-
   const fetchServices = async () => {
     try {
       const response = await trasacciones();
@@ -78,6 +74,7 @@ export default function AdministradorTramites() {
 
   const handleStatusChange = async (idTransactProgress, nuevoEstado) => {
     try {
+      console.log("Cambiando el estado del tramite con id:", idTransactProgress, "a:", nuevoEstado);
       const result = await actualizarT(idTransactProgress, nuevoEstado);
       setNumero(nuevoEstado);
       mensaje(nuevoEstado);
@@ -87,18 +84,21 @@ export default function AdministradorTramites() {
     }
   };
 
+
+
   const filtrados = datos.filter(d => {
     const busquedaStr = busqueda.toLowerCase();
-    const coincideBusqueda =
+    const coincideBusqueda = 
       d.user?.name?.toLowerCase().includes(busquedaStr) ||
       d.user?.phone?.toLowerCase().includes(busquedaStr) ||
       d.emailAcces?.toLowerCase().includes(busquedaStr) ||
       d.transact?.name?.toLowerCase().includes(busquedaStr);
-
+  
     const coincideEstado = estadoSeleccionado === "" || d.stepProgress.toString() === estadoSeleccionado;
-
+  
     return coincideBusqueda && coincideEstado;
   });
+  
 
   const totalPaginas = Math.ceil(filtrados.length / itemsPorPagina);
   const datosPaginados = filtrados.slice(
@@ -115,13 +115,26 @@ export default function AdministradorTramites() {
   function mensaje(numero) {
     let valor = "";
     switch (numero) {
-      case 1: valor = "En proceso"; break;
-      case 2: valor = "En espera"; break;
-      case 3: valor = "Falta de pago"; break;
-      case 4: valor = "Terminado"; break;
-      case 5: valor = "Cancelado"; break;
-      case 6: valor = "Revisar"; break;
-      default: valor = "Desconocido";
+      case 1:
+        valor = "En proceso";
+        break;
+      case 2:
+        valor = "En espera";
+        break;
+      case 3:
+        valor = "Falta de pago";
+        break;
+      case 4:
+        valor = "Terminado";
+        break;
+      case 5:
+        valor = "Cancelado";
+        break;
+      case 6:
+        valor = "Revisar";
+        break;
+      default:
+        valor = "Desconocido";
     }
 
     Swal.fire({
@@ -131,55 +144,9 @@ export default function AdministradorTramites() {
     });
   }
 
+
   return (
     <div style={{ marginTop: '100px' }}>
-      <Navbar title={"-Clientes"} />
-
-      <div className="d-flex justify-content-between align-items-center p-3">
-        <Form.Control
-          type="text"
-          placeholder="Buscar..."
-          className="w-75"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{ borderRadius: '12px', borderWidth: '2px' }}
-        />
-        <Form.Select
-          value={estadoSeleccionado}
-          onChange={(e) => setEstadoSeleccionado(e.target.value)}
-        >
-          <option value="">Todos</option>
-          <option value="1">En proceso</option>
-          <option value="2">En espera</option>
-          <option value="3">Falta de pago</option>
-          <option value="4">Terminado</option>
-          <option value="5">Cancelado</option>
-          <option value="6">Revisar</option>
-        </Form.Select>
-        <Button
-          variant="success"
-          className="d-flex align-items-center gap-2"
-          style={{ boxShadow: '2px 2px 6px #00000050', borderRadius: '12px' }}
-          onClick={() => {
-            setDatitos(datos);
-            setShowModal(true);
-          }}
-        >
-          Agregar <FaPlus />
-        </Button>
-      </div>
-
-      <ModalRegistrarTramite
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        onClienteRegistrado={fetchServices}
-      />
-      <ModalActualizarTramite
-        show={showModalA}
-        onHide={() => setShowModalA(false)}
-        onClienteRegistrado={fetchServices}
-        cliente={clienteSeleccionado}
-      />
       {cargando ? (
         <div className="text-center p-3">
           <Spinner animation="border" />
@@ -195,6 +162,7 @@ export default function AdministradorTramites() {
               <th>Email</th>
               <th>Paso del tramite</th>
               <th>Acción</th>
+              <th>Más Información</th>
             </tr>
           </thead>
           <tbody>
@@ -223,25 +191,7 @@ export default function AdministradorTramites() {
                     <option value={5}>Cancelado</option>
                     <option value={6}>Revisar</option>
                   </Form.Select>
-                </td>
-                <td>
-                  <Button
-                    variant="success"
-                    className="d-flex align-items-center gap-2"
-                    style={{
-                      display: 'block',
-                      marginLeft: 'auto',
-                      boxShadow: '2px 2px 6px #00000050',
-                      borderRadius: '12px'
-                    }}
-                    onClick={() => {
-                      setClienteSeleccionado(cliente);
-                      console.log('Los datos', cliente)
-                      setShowModalA(true);
-                    }}
-                  >
-                    EDITAR
-                  </Button>
+
                 </td>
               </tr>
             ))}

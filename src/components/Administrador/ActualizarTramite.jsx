@@ -40,7 +40,6 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
         mode: 'onChange',
     });
 
-    // Obtener el valor actual de advance
     const advanceValue = watch('advance');
 
     useEffect(() => {
@@ -50,7 +49,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 : '';
 
             reset({
-                advance: cliente.advance, // Convertir 1/0 a true/false
+                advance: cliente.advance,
                 dateCas: cliente.dateCas,
                 dateCon: cliente.dateCon,
                 dateSimulation: formattedDateSimulation,
@@ -67,12 +66,11 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
 
     const onSubmit = async (data) => {
         try {
-            // Preparar los datos para enviar
             const payload = {
                 ...data,
                 dateSimulation: data.dateSimulation ? data.dateSimulation.replace('T', ' ') : '',
-                advance: data.advance ? 1 : 0, // asegurarse de enviar como 1 o 0
-                paid: data.advance ? data.paid : null // si no hay adelanto, no hay pago
+                advance: data.advance ? 1 : 0, 
+                paid: data.advance ? data.paid : null 
             };
 
             await actualizarTC(cliente.idTransactProgress, payload);
@@ -87,7 +85,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 onClienteRegistrado();
             }
 
-            onHide(); // Cerrar el modal después de guardar
+            onHide();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
