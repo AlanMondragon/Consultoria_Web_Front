@@ -1,4 +1,6 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -83,7 +85,9 @@ export const createService = async (serviceData) => {
     }
 };
 
+//CLIENTES ADMINISTRADOR
 
+//OBTENER TODOS LOS CLIENTES
 export const clientes = async ()=>{
     try{
         const response = await axios.get(`${API_URL}/users`);
@@ -128,6 +132,54 @@ export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
       throw error;
     }
   };
+
+  //TRANSACCIONES ADMINISTRADOR
+  export const trasacciones = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/progress/transactWithDataUser`) 
+        return response.data;
+    } catch (error) {
+      console.error("Error obtener las trasacciones", error);
+      throw error;
+    }
+  };
+  export const actualizarT = async (idTransactProgress, nuevoEstado) => {
+    try {
+      const response = await axios.patch(
+        `${API_URL}/progress/${idTransactProgress}/stepProgress`,
+        { stepProgress: nuevoEstado }
+      );
+      return response.data;
+    } catch (error) {
+      console.log('El nuevo estado es:', nuevoEstado);
+      console.error("Error al actualizar el estadO DEL TRAMITE", error);
+      throw error;
+    }
+  };
   
-  
-  
+
+export const actualizarTC = async (idTransactProgress, datosActualizados) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/progress/${idTransactProgress}`,
+      {
+        idTransactProgress,
+        advance: datosActualizados.advance ? 1 : 0,
+        dateCas: datosActualizados.dateCas ? dayjs(datosActualizados.dateCas).format('YYYY-MM-DD HH:mm:ss') : null,
+        dateCon: datosActualizados.dateCon ? dayjs(datosActualizados.dateCon).format('YYYY-MM-DD HH:mm:ss') : null,
+        dateSimulation: datosActualizados.dateSimulation ? dayjs(datosActualizados.dateSimulation).format('YYYY-MM-DD HH:mm:ss') : null,
+        dateStart: datosActualizados.dateStart ? dayjs(datosActualizados.dateStart).format('YYYY-MM-DD') : null,
+        emailAcces: datosActualizados.emailAcces,
+        haveSimulation: datosActualizados.haveSimulation ? 1 : 0,
+        paid: datosActualizados.paid,
+        paidAll: datosActualizados.paidAll,
+        status: datosActualizados.status,
+        stepProgress: datosActualizados.stepProgress
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el trámite", error.response?.data || error.message);
+    throw error;
+  }
+};

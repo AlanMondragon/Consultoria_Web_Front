@@ -157,6 +157,7 @@ export default function AdministradorClientes() {
               <th>Email</th>
               <th>Teléfono</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -179,8 +180,10 @@ export default function AdministradorClientes() {
                     />
                   </div>
 
-                  {/* Aseguramos que el botón esté alineado a la derecha */}
-                  <Button
+                  
+                </td>
+                <td>
+                <Button
                     variant="success"
                     className="d-flex align-items-center gap-2"
                     style={{
@@ -198,7 +201,6 @@ export default function AdministradorClientes() {
                     EDITAR
                   </Button>
                 </td>
-
 
               </tr>
             ))}

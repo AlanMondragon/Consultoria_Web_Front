@@ -39,27 +39,36 @@ export default function RegistrarCliente({ show, onHide, onClienteRegistrado }) 
   });
 
   const onSubmit = async (data) => {
-    try {
-      data.status = 1;
-      await registrarClienteAPI(data);
-      Swal.fire({
-        icon: 'success',
-        title: "Registro exitoso",
-        confirmButtonText: 'Aceptar',
-      });
-      reset();
-      onHide();
-      if (typeof onClienteRegistrado === 'function') {
-        onClienteRegistrado();
+    if(data.success){
+      try {
+        data.status = 1;
+        await registrarClienteAPI(data);
+        Swal.fire({
+          icon: 'success',
+          title: "Registro exitoso",
+          confirmButtonText: 'Aceptar',
+        });
+        reset();
+        onHide();
+        if (typeof onClienteRegistrado === 'function') {
+          onClienteRegistrado();
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar',
+          text: 'Error al registrar'
+        });
+        console.error(error);
       }
-    } catch (error) {
+    }else{
       Swal.fire({
         icon: 'error',
         title: 'Error al registrar',
-        text: 'Error al registrar'
+        text: 'El usuario ya existe'
       });
-      console.error(error);
     }
+    
   };
 
   return (
