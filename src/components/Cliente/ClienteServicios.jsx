@@ -7,6 +7,8 @@ import Navbar from '../NavbarUser.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react'; // Iconos con Iconify
 import { Modal, Button } from 'react-bootstrap';
+import { getStepById } from './../../api/api'; // Importar función para obtener pasos
+
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -18,6 +20,8 @@ export default function ClienteServicios() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [steps, setSteps] = useState([]);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -63,6 +67,22 @@ export default function ClienteServicios() {
     }
   };
 
+  // Función para obtener los pasos del trámite
+  const fetchStepsById = async (stepId) => {
+    try {
+      const response = await getStepById(stepId);
+      if (response.success && Array.isArray(response.response.StepsTransacts)) {
+        setSteps(response.response.StepsTransacts);
+      } else {
+        setSteps([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener pasos:", error);
+      setSteps([]);
+    }
+  };
+
+
   // Flechas personalizadas con Iconify
   const PrevArrow = ({ onClick }) => (
     <div className="slick-arrow slick-prev" onClick={onClick}>
@@ -105,14 +125,16 @@ export default function ClienteServicios() {
     ]
   };
 
-  const openModal = (service) => {
+  const openModal = async (service) => {
     setSelectedService(service);
     setModalIsOpen(true);
+    await fetchStepsById(service.idTransact);
   };
-
+  // 👇 Al cerrar, limpiamos pasos
   const closeModal = () => {
     setSelectedService(null);
     setModalIsOpen(false);
+    setSteps([]);
   };
 
   return (
@@ -149,6 +171,33 @@ export default function ClienteServicios() {
                   <p>{selectedService.name}</p>
                   <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
                   <p className="price" style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
+                  <div style={{ marginTop: '30px' }}>
+  <h5 style={{ fontWeight: 'bold', color: '#333' }}>Pasos del trámite:</h5>
+  {steps.length > 0 ? (
+    <ol style={{ paddingLeft: '20px', marginTop: '10px' }}>
+      {steps.map((step, index) => (
+        <li
+          key={index}
+          style={{
+            backgroundColor: '#f8f9fa',
+            marginBottom: '10px',
+            padding: '10px 15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+            fontWeight: '500',
+            color: '#444'
+          }}
+        >
+          {step.name}
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <p style={{ fontStyle: 'italic', color: '#777' }}>Cargando pasos o no disponibles.</p>
+  )}
+</div>
+
+
                   <img
                     src={selectedService.imageDetail}
                     alt="Detalle"

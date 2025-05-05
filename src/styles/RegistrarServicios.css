@@ -15,7 +15,7 @@ body {
 }
 
 .card-registrar-tramite {
-  background-color: #ffffff;
+  background-color: #fff4f4;
   border-radius: 12px;
   padding: 40px;
   width: 100%;
@@ -73,7 +73,7 @@ body {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #a0aec0;
+  color: #1e1f21;
 }
 
 .form-group textarea {
