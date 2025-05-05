@@ -6,6 +6,7 @@ import { getAllProcess } from './../../api/api.js';
 import Navbar from '../NavbarUser.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react'; // Iconos con Iconify
+import { Modal, Button } from 'react-bootstrap';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -14,6 +15,9 @@ import './../../styles/ClienteServicios.css';
 export default function ClienteServicios() {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,18 +69,30 @@ export default function ClienteServicios() {
       <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
     </div>
   );
-  
+
+  const toggleZoom = () => {
+    setIsZoomed(!isZoomed);
+  };
+
+
   const NextArrow = ({ onClick }) => (
     <div className="slick-arrow slick-next" onClick={onClick}>
       <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
     </div>
   );
-  
+
+  const truncateDescription = (description, wordLimit) => {
+    const words = description.split(' ');
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return description;
+  };
 
   const sliderSettings = {
     dots: false,
     infinite: true,
-    speed: 500,
+    speed: 700,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
@@ -87,6 +103,16 @@ export default function ClienteServicios() {
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
       { breakpoint: 768, settings: { slidesToShow: 1 } }
     ]
+  };
+
+  const openModal = (service) => {
+    setSelectedService(service);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedService(null);
+    setModalIsOpen(false);
   };
 
   return (
@@ -100,15 +126,82 @@ export default function ClienteServicios() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <img src={service.image} alt={service.name} />
-              <h2>{service.description}</h2>
+              <h2>{truncateDescription(service.description, 40)}</h2>
               <p>{service.name}</p>
-              <p style={{ color : "#000", fontWeight : "bold" }}>Pago inicial:</p>
+              <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
-              <button>Mostrar Más</button>
+              <button onClick={() => openModal(service)}>Mostrar Más</button>
             </div>
           ))}
         </Slider>
       </div>
+
+      <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName="wide-modal">
+        {selectedService && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedService.description}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="modal-body-content">
+                <img src={selectedService.image} alt={selectedService.name} />
+                <div className="info">
+                  <p>{selectedService.name}</p>
+                  <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
+                  <p className="price" style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
+                  <img
+                    src={selectedService.imageDetail}
+                    alt="Detalle"
+                    onClick={toggleZoom}
+                    style={{
+                      width: '100%',
+                      marginTop: '10px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
+                {isZoomed && selectedService && (
+                  <div
+                    onClick={toggleZoom}
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      width: '100vw',
+                      height: '100vh',
+                      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      zIndex: 9999,
+                      cursor: 'zoom-out',
+                      padding: '20px',
+                      boxSizing: 'border-box',
+                    }}
+                  >
+                    <img
+                      src={selectedService.imageDetail}
+                      alt="Ampliado"
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        borderRadius: '10px',
+                        boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
+                      }}
+                    />
+                  </div>
+                )}
+
+              </div>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 }

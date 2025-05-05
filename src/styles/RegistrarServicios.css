@@ -1,121 +1,157 @@
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #e7e7e7;
-    margin: 0;
-  }
-  
-  .container-registrar-tramite {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    min-height: auto;
-    box-sizing: border-box;
-  }
-  
-  .card-registrar-tramite {
-    background-color: #f9f9f9;
-    border-radius: 20px;
-    border: 2px solid #000;
-    padding: 30px 40px;
-    width: 1000px;
-    max-width: 1200px;
-    box-sizing: border-box;
-    text-align: center;
-  }
-  
-  .card-registrar-tramite h2 {
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: #000;
-  }
-  
-  .form-registrar-tramite {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-  
-  .form-group label {
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 5px;
-    font-size: 16px;
-  }
-  
-  .form-group input,
-  .form-group textarea {
-    padding: 10px 12px;
-    border: none;
-    border-bottom: 1px solid #888;
-    background-color: transparent;
-    font-size: 16px;
-    color: #555;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-group input::placeholder,
-  .form-group textarea::placeholder {
-    color: #bbb;
-  }
-  
-  .form-group textarea {
-    border: 1px solid #4b4242;
-    border-radius: 12px;
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  /* Cambiar la regla general de button[type="submit"] a una clase específica */
-  .button-submit-service {
-    align-self: flex-end;
-    background-color: #00aaff;
-    color: black;
-    padding: 12px 24px;
-    border: 2px solid #000;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-
-  .button-submit-service:hover {
-    background-color: #003f7f; /* Color más oscuro */
-  }
-
-  
-  /* Estilos para los inputs de tipo archivo */
-input[type="file"] {
-  color: #000; /* Cambiar el color del texto a negro */
-  appearance: none; /* Asegura que el estilo predeterminado del navegador no interfiera */
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f9ff;
+  margin: 0;
+  color: #191f62; 
 }
 
-input[type="file"]:hover {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+.container-registrar-tramite {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: auto;
+  box-sizing: border-box;
 }
 
-input[type="file"]:focus {
+.card-registrar-tramite {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  min-width: 900px;
+  max-width: 800px;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 82, 163, 0.2);
+  border: 1px solid #e1e8f0;
+}
+
+.card-registrar-tramite h2 {
+  margin-bottom: 32px;
+  font-size: 24px;
+  color: #1a365d;
+  font-weight: 600;
+}
+
+.form-registrar-tramite {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #2c5282;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid #cbd5e0;
+  background-color: transparent;
+  font-size: 15px;
+  color: #4a5568;
   outline: none;
-  border-color: #0056b3;
-  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+  transition: all 0.2s ease;
 }
 
-/* Switch styles for CAS and CON */
+.form-group input:focus,
+.form-group textarea:focus {
+  border-bottom-color: #3182ce;
+  background-color: #f8fafc;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #a0aec0;
+}
+
+.form-group textarea {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 120px;
+  padding: 16px;
+  background-color: #f8fafc;
+}
+
+.button-submit-service {
+  align-self: flex-end;
+  background-color: #3182ce;
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.button-submit-service:hover {
+  background-color: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+/* Estilos para file inputs */
+input[type="file"] {
+  color: #4a5568;
+  padding: 12px 0;
+}
+
+.custom-file-button {
+  display: inline-block;
+  background-color: #4299e1;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  border: none;
+  width: 100%;
+}
+
+.custom-file-button:hover {
+  background-color: #3182ce;
+}
+
+.file-name {
+  display: block;
+  margin-top: 8px;
+  color: #718096;
+  font-size: 13px;
+}
+
+.preview-img {
+  margin-top: 16px;
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  object-fit: cover;
+}
+
+/* Switch styles */
 .switch {
   position: relative;
   display: inline-block;
-  width: 34px;
-  height: 20px;
+  width: 40px;
+  height: 24px;
 }
 
 .switch input {
@@ -131,80 +167,27 @@ input[type="file"]:focus {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #cbd5e0;
   transition: 0.4s;
-  border-radius: 20px;
+  border-radius: 24px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 3px;
-  background-color: rgb(0, 0, 0);
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
   transition: 0.4s;
   border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: #007bff;
+  background-color: #3182ce;
 }
 
 input:checked + .slider:before {
-  transform: translateX(14px);
+  transform: translateX(16px);
 }
-
-
-.btn-img:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
-
-.btn-img:active {
-  background-color: #003f7f;
-  transform: scale(0.95);
-}
-
-.custom-file-button {
-    display: inline-block;
-    background-color: #00aaff;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 12px;
-    border: 2px solid #000;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    text-align: center;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .custom-file-button:hover {
-    background-color: #0077cc;
-    transform: scale(1.05);
-  }
-  
-  .custom-file-button:active {
-    background-color: #005f99;
-    transform: scale(0.95);
-  }
-
-  .file-name {
-    display: block;
-    margin-top: 8px;
-    color: #333;
-    font-size: 14px;
-    font-style: italic;
-  }
-  
-  .preview-img {
-    margin-top: 10px;
-    max-width: 200px;
-    max-height: 150px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    object-fit: cover;
-  }
