@@ -192,6 +192,7 @@ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
     throw error;
   }
 };
+//Este es para asignar un servico a un cliente , pera que emprize el proceso de que va a empezar a darle el seguimiento  a su servicio
 export const RegistrarTransaccion = async (data) => {
   try {
     const response = await axios.post(`${API_URL}/progress`, data); 
@@ -201,4 +202,12 @@ export const RegistrarTransaccion = async (data) => {
     throw error;
   }
 };
-
+export const Obtenertrasacciones = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/progress`) 
+      return response.data;
+  } catch (error) {
+    console.error("Error obtener las trasacciones", error);
+    throw error;
+  }
+};

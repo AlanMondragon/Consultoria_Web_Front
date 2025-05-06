@@ -14,7 +14,16 @@ import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 
 const schema = yup.object().shape({
-  haveSimulation: yup.number().required('Campo obligatorio'),
+  paid: yup
+    .number()
+    .typeError('Debe ser un número')
+    .positive('Debe ser un número positivo')
+    .required('Campo obligatorio'),
+  advance: yup
+    .number()
+    .typeError('Debe ser un número')
+    .oneOf([0, 1], 'Debe seleccionar una opción')
+    .required('Campo obligatorio'),
   paidAll: yup
     .number()
     .typeError('Debe ser un número')
@@ -28,6 +37,8 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
@@ -37,6 +48,10 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
 
   const [usuarios, setUsuarios] = useState([]);
   const [transacciones, setTransacciones] = useState([]);
+
+  useEffect(() => {
+    register('advance');
+  }, [register]);
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -64,11 +79,10 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
           setTransacciones([]);
         }
       } catch (error) {
-        console.error("Error al obtener transacciones:", error);
+        console.error("Error al obtener los servicios:", error);
         setTransacciones([]);
       }
     };
-    
 
     if (show) {
       fetchClientes();
@@ -104,7 +118,7 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title className="Titulo">Registrar Trámite</Modal.Title>
+        <Modal.Title className="Titulo">Iniciar nuevo trámite</Modal.Title>
       </Modal.Header>
 
       <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -121,21 +135,19 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
           </div>
 
           <div className="form-group">
-            <label>Trámite:</label>
-            <select {...register('idTransact')} className={errors.idTransact ? 'input-error' : ''}>
-              <option value="">Selecciona un trámite</option>
-              {transacciones.map((transact) => (
-                <option key={transact.idTransact} value={transact.idTransact}>
-                  {transact.description}
-                </option>
-              ))}
-            </select>
-
-            <span className="error">{errors.idTransact?.message}</span>
+            <label>Pago inicial de:</label>
+            <input
+              type="number"
+              step="0.01"
+              placeholder="299.99"
+              {...register('paid')}
+              className={errors.paid ? 'input-error' : ''}
+            />
+            <span className="error">{errors.paid?.message}</span>
           </div>
 
           <div className="form-group">
-            <label>Monto Total:</label>
+            <label>Pago total:</label>
             <input
               type="number"
               step="0.01"
@@ -145,15 +157,40 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
             />
             <span className="error">{errors.paidAll?.message}</span>
           </div>
+          <div className="form-group">
+            <label>¿Hizo un adelanto?:</label>
+            <div className="checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={watch('advance') === 1}
+                  onChange={() => setValue('advance', 1)}
+                />
+                Sí
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={watch('advance') === 0}
+                  onChange={() => setValue('advance', 0)}
+                />
+                No
+              </label>
+            </div>
+            <span className="error">{errors.advance?.message}</span>
+          </div>
 
           <div className="form-group">
-            <label>¿Tiene Simulación?</label>
-            <select {...register('haveSimulation')} className={errors.haveSimulation ? 'input-error' : ''}>
-              <option value="">Selecciona una opción</option>
-              <option value={1}>Sí</option>
-              <option value={0}>No</option>
+            <label>Trámite:</label>
+            <select {...register('idTransact')} className={errors.idTransact ? 'input-error' : ''}>
+              <option value="">Selecciona un trámite</option>
+              {transacciones.map((transact) => (
+                <option key={transact.idTransact} value={transact.idTransact}>
+                  {transact.description}
+                </option>
+              ))}
             </select>
-            <span className="error">{errors.haveSimulation?.message}</span>
+            <span className="error">{errors.idTransact?.message}</span>
           </div>
         </Modal.Body>
 

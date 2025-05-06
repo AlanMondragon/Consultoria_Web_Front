@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,25 +9,37 @@ import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { actualizarTC } from './../../api/api.js';
 
-const schema = yup.object().shape({
-    advance: yup.boolean().required('Campo obligatorio'),
-    dateCas: yup.date().required('Campo obligatorio'),
-    dateCon: yup.date().required('Campo obligatorio'),
-    dateSimulation: yup.string().required('Campo obligatorio'),
-    dateStart: yup.date().required('Campo obligatorio'),
-    emailAcces: yup.string().email('Correo inválido').required('Campo obligatorio'),
-    haveSimulation: yup.number().required('Campo obligatorio'),
-    paid: yup.number().when('advance', {
-        is: true,
-        then: () => yup.number().required('Campo obligatorio'),
-        otherwise: () => yup.number().notRequired().nullable(),
-    }),
-    paidAll: yup.number().required('Campo obligatorio'),
-    status: yup.number().required('Campo obligatorio'),
-    stepProgress: yup.number().required('Campo obligatorio'),
-});
-
 export default function ActualizarTramite({ show, onHide, onClienteRegistrado, cliente }) {
+    const citaCas = cliente?.transact?.cas === true;
+    const citaCon = cliente?.transact?.con === true;
+    
+   console.log('LOS DATOS SON : ', cliente);
+    const schema = yup.object().shape({
+        advance: yup.boolean().required('Campo obligatorio'),
+        dateCas: yup.date().when([], {
+            is: () => citaCas,
+            then: yup.date().required('Campo obligatorio'),
+            otherwise: yup.date().nullable(),
+        }),
+        dateCon: yup.date().when([], {
+            is: () => citaCon,
+            then: yup.date().required('Campo obligatorio'),
+            otherwise: yup.date().nullable(),
+        }),
+        dateSimulation: yup.string().required('Campo obligatorio'),
+        dateStart: yup.date().required('Campo obligatorio'),
+        emailAcces: yup.string().email('Correo inválido').required('Campo obligatorio'),
+        haveSimulation: yup.number().required('Campo obligatorio'),
+        paid: yup.number().when('advance', {
+            is: true,
+            then: () => yup.number().required('Campo obligatorio'),
+            otherwise: () => yup.number().notRequired().nullable(),
+        }),
+        paidAll: yup.number().required('Campo obligatorio'),
+        status: yup.number().required('Campo obligatorio'),
+        stepProgress: yup.number().required('Campo obligatorio'),
+    });
+
     const {
         register,
         handleSubmit,
@@ -48,10 +60,18 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 ? cliente.dateSimulation.replace(' ', 'T').slice(0, 16)
                 : '';
 
+            const formattedCas = cliente.dateCas
+                ? cliente.dateCas.replace(' ', 'T').slice(0, 16)
+                : '';
+
+            const formattedCon = cliente.dateCon
+                ? cliente.dateCon.replace(' ', 'T').slice(0, 16)
+                : '';
+
             reset({
                 advance: cliente.advance,
-                dateCas: cliente.dateCas,
-                dateCon: cliente.dateCon,
+                dateCas: formattedCas,
+                dateCon: formattedCon,
                 dateSimulation: formattedDateSimulation,
                 dateStart: cliente.dateStart,
                 emailAcces: cliente.emailAcces,
@@ -69,8 +89,8 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             const payload = {
                 ...data,
                 dateSimulation: data.dateSimulation ? data.dateSimulation.replace('T', ' ') : '',
-                advance: data.advance ? 1 : 0, 
-                paid: data.advance ? data.paid : null 
+                advance: data.advance ? 1 : 0,
+                paid: data.advance ? data.paid : null,
             };
 
             await actualizarTC(cliente.idTransactProgress, payload);
@@ -95,7 +115,6 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             console.error(error);
         }
     };
-
 
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
@@ -124,6 +143,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                             disabled
                         />
                     </div>
+
                     <div className="form-group">
                         <label>Correo de acceso:</label>
                         <input
@@ -133,6 +153,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                         />
                         <span className="error">{errors.emailAcces?.message}</span>
                     </div>
+
                     <div className="form-group">
                         <label>Progreso:</label>
                         <input
@@ -149,6 +170,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                             disabled
                         />
                     </div>
+
                     <div className="form-group">
                         <label>Pago total:</label>
                         <input
@@ -200,27 +222,29 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                         </div>
                     )}
 
+                    {citaCas && (
+                        <div className="form-group">
+                            <label>Cita CAS:</label>
+                            <input
+                                type="datetime-local"
+                                {...register('dateCas')}
+                                className={`modern-input ${errors.dateCas ? 'input-error' : ''}`}
+                            />
+                            <span className="error">{errors.dateCas?.message}</span>
+                        </div>
+                    )}
 
-
-                    <div className="form-group">
-                        <label>Cita CAS:</label>
-                        <input
-                            type="datetime-local"
-                            {...register('dateCas')}
-                            className={`modern-input ${errors.dateCas ? 'input-error' : ''}`}
-                        />
-                        <span className="error">{errors.dateCas?.message}</span>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Cita CON:</label>
-                        <input
-                            type="datetime-local"
-                            {...register('dateCon')}
-                            className={`modern-input ${errors.dateCon ? 'input-error' : ''}`}
-                        />
-                        <span className="error">{errors.dateCon?.message}</span>
-                    </div>
+                    {citaCon && (
+                        <div className="form-group">
+                            <label>Cita CON:</label>
+                            <input
+                                type="datetime-local"
+                                {...register('dateCon')}
+                                className={`modern-input ${errors.dateCon ? 'input-error' : ''}`}
+                            />
+                            <span className="error">{errors.dateCon?.message}</span>
+                        </div>
+                    )}
 
                     <div className="form-group">
                         <label>Fecha inicio:</label>
@@ -241,6 +265,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                         />
                         <span className="error">{errors.dateSimulation?.message}</span>
                     </div>
+
                     <div className="form-group">
                         <label>Simulación realizada:</label>
                         <div className="checkbox-group">
