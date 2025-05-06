@@ -4,17 +4,22 @@ body {
   }
   
   .services-slider {
-    padding: 20px 40px;
+    padding: 5px 10px;
   }
   
   .service-card {
-    background-color: #ddd;
-    border-radius: 20px;
-    padding: 20px;
+    width: 300px; /* Ancho fijo */
+    height: 450px; /* Alto fijo */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
     text-align: center;
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
-    margin: 5px;
-    height: 100%;
     transition: transform 0.3s ease;
     max-width: 90%;
     margin-left: auto;
@@ -22,7 +27,7 @@ body {
   }
   
   .service-card:hover {
-    transform: scale(1.03);
+    transform: scale(0.94);
   }
   
   .service-card img {
@@ -86,6 +91,7 @@ body {
   /*Apartado de admin*/
 
   .botton-aggregate{
+    margin-top:10px ;
     background-color: #0c9728;
     color: white;
     padding: 10px 20px;
@@ -96,3 +102,61 @@ body {
     font-weight: bold;
     transition: background-color 0.3s ease;
   }
+
+  .wide-modal .modal-dialog {
+    max-width: auto !important;
+    width: 100%;
+  }
+  
+  .modal-body-content {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .modal-body-content img {
+    width: 45%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .modal-body-content .info {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .wide-modal .modal-dialog {
+    max-width: 90vw !important;
+    width: 100%;
+  }
+  
+  .modal-body-content {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .modal-body-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  
+  .modal-body-content .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  

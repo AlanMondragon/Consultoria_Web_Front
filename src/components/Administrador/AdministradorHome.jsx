@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { href, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Navbar from '../NavbarAdmin.jsx';
 import '../../styles/ContenedorHome.css'
@@ -25,6 +25,7 @@ export default function AdministradorHome() {
         navigate("/");
       }
     } catch (error) {
+      console.error("Error decoding token:", error);
       navigate("/");
     }
   }, []);

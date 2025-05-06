@@ -95,6 +95,36 @@ export const createService = async (serviceData) => {
 };
 
 //CLIENTES ADMINISTRADOR
+export const updateService = async (id, serviceData) => {
+    const serviceId = Number.isInteger(id) ? id : parseInt(id, 10); // Ensure id is a valid integer
+    if (isNaN(serviceId)) {
+        throw new Error(`Invalid service ID: ${id}`);
+    }
+
+    try {
+        const payload = {
+            name: serviceData.name,
+            description: serviceData.description,
+            image: serviceData.image, // Base64 string
+            imageDetail: serviceData.imageDetail, // Base64 string
+            simulation: serviceData.simulation,
+            cas: serviceData.cas,
+            con: serviceData.con,
+            cashAdvance: serviceData.cashAdvance
+        };
+
+        const response = await axios.put(`${API_URL}/transaction/${serviceId}`, payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating service:', error);
+        throw error;
+    }
+}
 
 //OBTENER TODOS LOS CLIENTES
 export const clientes = async ()=>{
