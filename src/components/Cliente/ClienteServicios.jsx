@@ -20,6 +20,7 @@ export default function ClienteServicios() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [showStepsModal, setShowStepsModal] = useState(false);
   const [steps, setSteps] = useState([]);
 
 
@@ -101,13 +102,14 @@ export default function ClienteServicios() {
     </div>
   );
 
-  const truncateDescription = (description, wordLimit) => {
-    const words = description.split(' ');
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(' ') + '...';
-    }
-    return description;
+  const truncateDescription = (description, maxChars) => {
+    if (!description) return '';
+    return description.length > maxChars
+      ? description.slice(0, maxChars) + '...'
+      : description;
   };
+  
+  
 
   const sliderSettings = {
     dots: false,
@@ -137,6 +139,17 @@ export default function ClienteServicios() {
     setSteps([]);
   };
 
+  const openStepsModal = async (idTransact) => {
+    try {
+      const response = await getStepById(idTransact);
+      setSteps(response.response.StepsTransacts || []);
+      setShowStepsModal(true);
+    } catch (error) {
+      console.error('Error al obtener pasos:', error);
+    }
+  };
+
+
   return (
     <div style={{ marginTop: '100px' }}>
       <div className='fixed-top'>
@@ -148,8 +161,8 @@ export default function ClienteServicios() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <img src={service.image} alt={service.name} />
-              <h2>{truncateDescription(service.description, 40)}</h2>
-              <p>{service.name}</p>
+              <h2>{service.description}</h2>
+              <p>{truncateDescription(service.name, 250)}</p>
               <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
               <button onClick={() => openModal(service)}>Mostrar Más</button>
@@ -171,33 +184,7 @@ export default function ClienteServicios() {
                   <p>{selectedService.name}</p>
                   <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
                   <p className="price" style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
-                  <div style={{ marginTop: '30px' }}>
-  <h5 style={{ fontWeight: 'bold', color: '#333' }}>Pasos del trámite:</h5>
-  {steps.length > 0 ? (
-    <ol style={{ paddingLeft: '20px', marginTop: '10px' }}>
-      {steps.map((step, index) => (
-        <li
-          key={index}
-          style={{
-            backgroundColor: '#f8f9fa',
-            marginBottom: '10px',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-            fontWeight: '500',
-            color: '#444'
-          }}
-        >
-          {step.name}
-        </li>
-      ))}
-    </ol>
-  ) : (
-    <p style={{ fontStyle: 'italic', color: '#777' }}>Cargando pasos o no disponibles.</p>
-  )}
-</div>
-
-
+                  <p style={{ color: "#000", fontWeight: "bold" }}>Informacion de costos:</p>
                   <img
                     src={selectedService.imageDetail}
                     alt="Detalle"
@@ -246,11 +233,67 @@ export default function ClienteServicios() {
             </Modal.Body>
 
             <Modal.Footer>
+              <Button variant="info" onClick={() => openStepsModal(selectedService.idTransact)}>Ver pasos</Button>
               <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
             </Modal.Footer>
           </>
         )}
       </Modal>
+      <Modal
+        show={showStepsModal}
+        onHide={() => setShowStepsModal(false)}
+        centered
+        className="modal-steps" // Agrega esta clase principal
+      >
+        <Modal.Header closeButton className="modal-header">
+          <Modal.Title className="modal-title">Pasos del trámite</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="modal-body">
+          {steps.length > 0 ? (
+            <ol className="steps-list" style={{ paddingLeft: '0' }}>
+              {steps.map((step, index) => (
+                <li
+                  key={index}
+                  className="step-item"
+                  style={{
+                    backgroundColor: '#fff',
+                    marginBottom: '15px',
+                    padding: '15px 15px 15px 50px',
+                    borderLeft: '4px solid #007bff',
+                    borderRadius: '6px',
+                    fontWeight: '500',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
+                    position: 'relative'
+                  }}
+                >
+                  {step.name}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="loading-message" style={{ fontStyle: 'italic', color: '#888', textAlign: 'center', padding: '20px 0' }}>
+              Cargando pasos...
+            </p>
+          )}
+        </Modal.Body>
+        <Modal.Footer className="modal-footer">
+          <Button
+            variant="secondary"
+            onClick={() => setShowStepsModal(false)}
+            className="btn-secondary"
+            style={{
+              backgroundColor: '#6c757d',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '8px 20px',
+              fontWeight: 'bold'
+            }}
+          >
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 }
