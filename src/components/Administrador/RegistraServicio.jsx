@@ -164,7 +164,7 @@ export default function RegistrarServicio() {
               <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' required />
             </div>
             <div className='form-group'>
-              <label htmlFor='simulacion'>Simulación</label>
+              <label htmlFor='simulacion'>Requiere datos de acceso</label>
               <label className='switch'>
                 <input type='checkbox' id='simulacion' name='simulation' />
                 <span className='slider round'></span>
