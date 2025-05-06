@@ -1,6 +1,6 @@
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #f5f9ff;
+  background-color: #e5effe;
   margin: 0;
   color: #191f62; 
 }
@@ -15,7 +15,7 @@ body {
 }
 
 .card-registrar-tramite {
-  background-color: #ffffff;
+  background-color: #fdf7f7;
   border-radius: 12px;
   padding: 40px;
   width: 100%;
@@ -73,7 +73,7 @@ body {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #a0aec0;
+  color: #1e1f21;
 }
 
 .form-group textarea {

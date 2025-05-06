@@ -94,6 +94,28 @@ export const createService = async (serviceData) => {
     }
 };
 
+
+//Pasos para los procesos (los pasos disponibles para el cliente)
+export const getSteps = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/steps`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching steps:', error);
+        throw error;
+    }
+};
+
+export const getStepById = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/steps/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching step by ID:', error);
+        throw error;
+    }
+};
+
 //CLIENTES ADMINISTRADOR
 export const updateService = async (id, serviceData) => {
     const serviceId = Number.isInteger(id) ? id : parseInt(id, 10); // Ensure id is a valid integer
