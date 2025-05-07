@@ -22,6 +22,8 @@ export default function AdministradorServicios() {
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [steps, setSteps] = useState([])
   const [newSteps, setNewSteps] = useState([{ name: "", description: "", stepNumber: 1 }]); // Initialize newSteps state
+  const [isEditingSteps, setIsEditingSteps] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -178,6 +180,16 @@ export default function AdministradorServicios() {
     setNewSteps(updatedSteps);
   };
 
+  const handleUpdateSteps = () => {
+    setIsEditingSteps(true);
+  };
+
+  const handleStepEditChange = (index, field, value) => {
+    const updatedSteps = [...steps];
+    updatedSteps[index][field] = value;
+    setSteps(updatedSteps);
+  };
+
   return (
     <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
@@ -296,7 +308,39 @@ export default function AdministradorServicios() {
                     position: 'relative'
                   }}
                 >
-                  {step.name}
+                  {isEditingSteps ? (
+                    <>
+                      <input
+                        type="text"
+                        value={step.name}
+                        className='form-control'
+                        onChange={(e) => handleStepEditChange(index, 'name', e.target.value)}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          marginBottom: '10px',
+                          padding: '10px',
+                          borderRadius: '5px',
+                          border: '1px solid #ccc'
+                        }}
+                      />
+                      <textarea
+                        value={step.description}
+                        className='form-control'
+                        onChange={(e) => handleStepEditChange(index, 'description', e.target.value)}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          marginBottom: '10px',
+                          padding: '10px',
+                          borderRadius: '5px',
+                          border: '1px solid #ccc'
+                        }}
+                      />
+                    </>
+                  ) : (
+                    step.name
+                  )}
                 </li>
               ))}
             </ol>
@@ -411,7 +455,7 @@ export default function AdministradorServicios() {
           {steps.length > 0 && (
           <Button  
             variant="primary"
-            onClick={() => setShowStepsModal(false)}
+            onClick={isEditingSteps ? () => setIsEditingSteps(false) : handleUpdateSteps}
             className="btn-primary"
             style={{
               backgroundColor: '#007bff', 
@@ -420,7 +464,7 @@ export default function AdministradorServicios() {
               borderRadius: '5px',
               padding: '8px 20px',
               fontWeight: 'bold'}}>
-                Actualizar
+                {isEditingSteps ? 'Guardar' : 'Actualizar'}
               </Button>)}
         </Modal.Footer>
       </Modal>
