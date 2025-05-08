@@ -21,8 +21,8 @@ export default function AdministradorServicios() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [steps, setSteps] = useState([])
-  const [newSteps, setNewSteps] = useState([{ name: "", description: "", stepNumber: 1 }]); // Initialize newSteps state
   const [isEditingSteps, setIsEditingSteps] = useState(false);
+  const [idService, setIdService] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -97,6 +97,8 @@ export default function AdministradorServicios() {
   const openModal = async (service) => {
     setSelectedService(service);
     setModalIsOpen(true);
+    setIdService(service.idTransact); // Store the ID of the selected service
+    console.log(idService);
     await fetchStepsById(service.idTransact);
   };
 
@@ -105,7 +107,6 @@ export default function AdministradorServicios() {
     setSelectedService(null);
     setModalIsOpen(false);
     setSteps([]); // Clear the steps list
-    setNewSteps([{ name: "", description: "", stepNumber: 1 }]); // Reset the form fields and remove inputs
   };
 
   const openStepsModal = async (idTransact) => {
@@ -113,6 +114,8 @@ export default function AdministradorServicios() {
       const response = await getStepById(idTransact);
       setSteps(response.response.StepsTransacts || []);
       setShowStepsModal(true);
+      setIdService(idTransact); // Store the ID of the selected service
+      console.log(idService);
     } catch (error) {
       console.error('Error al obtener pasos:', error);
     }
@@ -155,30 +158,6 @@ export default function AdministradorServicios() {
   // Format the price to show only 2 decimals
   const formatPrice = (price) => price.toFixed(2);
 
-  // Function to handle form submission
-  const handleAddSteps = () => {
-    console.log("Steps to add:", newSteps);
-    // Add logic to save steps to the backend
-    setNewSteps([{ name: "", description: "", stepNumber: 1 }]); // Reset the form after submission
-  };
-
-  // Function to handle step input changes
-  const handleStepChange = (index, field, value) => {
-    const updatedSteps = [...newSteps];
-    updatedSteps[index][field] = value;
-    setNewSteps(updatedSteps);
-  };
-
-  // Function to add a new step input
-  const addNewStepInput = () => {
-    setNewSteps([...newSteps, { name: "", description: "", stepNumber: newSteps.length + 1 }]);
-  };
-
-  // Function to remove a step input
-  const removeStep = (index) => {
-    const updatedSteps = newSteps.filter((_, i) => i !== index);
-    setNewSteps(updatedSteps);
-  };
 
   const handleUpdateSteps = () => {
     setIsEditingSteps(true);
@@ -350,86 +329,7 @@ export default function AdministradorServicios() {
               No hay pasos disponibles para este trámite.
               Desea agregar pasos al trámite?
             </p>
-            {newSteps.map((step, index) => (
-              <div key={index} style={{ marginBottom: '15px' }}>
-                <label htmlFor=""> Paso {index + 1} </label>
-                <input
-                  type="text"
-                  className='form-control'
-                  value={step.name}
-                  onChange={(e) => handleStepChange(index, 'name', e.target.value)}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    marginBottom: '10px',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc'
-                  }}
-                />
-                <label htmlFor=""> Descripción del paso {index + 1}</label>
-                <textarea
-                  value={step.description}
-                  className='form-control'
-                  onChange={(e) => handleStepChange(index, 'description', e.target.value)}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    marginBottom: '10px',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc'
-                  }}
-                />
-                <button
-                  className='btn btn-danger mt-2 mb-5'
-                  onClick={() => removeStep(index)}
-                  style={{
-                    display: 'block',
-                    margin: '10px auto',
-                    backgroundColor: '#dc3545',
-                    border: 'none',
-                    borderRadius: '5px',
-                    padding: '8px 20px',
-                    fontWeight: 'bold',
-                    color: '#fff'
-                  }}
-                >
-                  Eliminar paso
-                </button>
-              </div>
-            ))}
-            <Button
-              variant="secondary"
-              onClick={addNewStepInput}
-              style={{
-                display: 'block',
-                margin: '10px auto',
-                backgroundColor: '#6c757d',
-                border: 'none',
-                borderRadius: '5px',
-                padding: '8px 20px',
-                fontWeight: 'bold'
-              }}
-            >
-              Agregar otro paso
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleAddSteps}
-              style={{
-                display: 'block',
-                margin: '10px auto',
-                backgroundColor: '#007bff',
-                borderColor: '#0056b3',
-                border: 'none',
-                borderRadius: '5px',
-                padding: '8px 20px',
-                fontWeight: 'bold'
-              }}
-            >
-              Guardar pasos
-            </Button>
+            <Button  onClick={() => navigate("/RegistrarPasos", {state : {serviceID : idService}})} className='btn-info'>Agregar pasos</Button>
             </>
           )}
         </Modal.Body>
@@ -439,7 +339,6 @@ export default function AdministradorServicios() {
             onClick={() => {
               setShowStepsModal(false);
               setSteps([]); // Clear the steps list
-              setNewSteps([{ name: "", description: "", stepNumber: 1 }]); // Reset the form fields and remove inputs
             }}
             className="btn-secondary"
             style={{
