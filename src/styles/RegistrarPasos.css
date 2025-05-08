@@ -1,0 +1,111 @@
+
+.container-registrar-pasos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #fefeff00; /* Fondo más claro */
+  padding: 20px;
+}
+
+.card-registrar-pasos {
+  background-color: #ffffff; /* Fondo blanco para mayor contraste */
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+  padding: 20px;
+  width: 800px;
+  max-width: 1200px;
+}
+
+.card-registrar-pasos h2 {
+  font-size: 1.8rem; /* Tamaño de fuente más grande */
+  color: #2d3748;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-registrar-pasos {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step-form {
+  border: 1px solid #e2e8f0; /* Bordes más claros */
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra más suave */
+  background-color: #f2efef; /* Fondo blanco */
+}
+
+.step-form .form-group {
+  margin-bottom: 15px;
+}
+
+.step-form .form-group label {
+  display: block;
+  font-size: 1rem; /* Tamaño de fuente más legible */
+  color: #4a5568;
+  margin-bottom: 5px;
+}
+
+.step-form .form-group input,
+.step-form .form-group textarea {
+  background-color: #ffffff; /* Fondo blanco */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e0; /* Bordes más definidos */
+  border-radius: 6px;
+  font-size: 1rem; /* Tamaño de fuente más grande */
+  color: #2d3748; /* Texto más oscuro */
+}
+
+.step-form .form-group textarea {
+  resize: none;
+  height: 100px; /* Altura ajustada */
+}
+
+.custom-file-button {
+  background-color: #38a169;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.custom-file-button:hover {
+  background-color: #2f855a;
+}
+
+.button-submit-service {
+  background-color: #3182ce;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.button-submit-service:hover {
+  background-color: #2b6cb0;
+}
+
+.step-form button {
+  background-color: #e53e3e;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.step-form button:hover {
+  background-color: #c53030;
+}

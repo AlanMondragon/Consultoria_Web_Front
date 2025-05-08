@@ -21,6 +21,7 @@ import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
 import OlvidarContra from "./components/Home/OlvidarContra.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
+import AtualizarPasos from "./components/Administrador/AtualizarPasos.jsx";
 
 function App() {
   return (
@@ -77,6 +78,11 @@ function App() {
         <Route path="/RegistrarPasos" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <RegistrarPasos />
+          </ProtectedRoute>
+        } />
+         <Route path="/ActualizarPasos" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AtualizarPasos />
           </ProtectedRoute>
         } />
 

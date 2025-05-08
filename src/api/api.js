@@ -130,9 +130,9 @@ export const createSteps = async (stepsArray) => {
       const payload = {
         name: stepData.name,
         description: stepData.description,
-        numStep: stepData.stepNumber,
+        numStep: stepData.numStep, // Cambiado de stepNumber a numStep
         id: stepData.id,
-        needCalendar: stepData.needCalendar
+        needCalendar: 0
       };
 
       const response = await axios.post(`${API_URL}/steps`, payload, {
@@ -150,6 +150,40 @@ export const createSteps = async (stepsArray) => {
 
   return results;
 };
+
+// Actualizar pasos para los procesos
+export const updateSteps = async (idTransact, stepsArray) => {
+  if (!Array.isArray(stepsArray) || stepsArray.length === 0) {
+    throw new Error('Debe proporcionar un arreglo de pasos para actualizar.');
+  }
+
+  const results = [];
+
+  for (const stepData of stepsArray) {
+    try {
+      const payload = {
+        name: stepData.name,
+        description: stepData.description,
+        numStep: stepData.numStep, 
+        id: idTransact,
+        needCalendar: 0
+      };
+
+      const response = await axios.put(`${API_URL}/steps/${stepData.id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      results.push(response.data);
+    } catch (error) {
+      console.error('Error updating step:', stepData, error);
+      results.push({ error: error.message, stepData });
+    }
+  }
+
+  return results;
+}
 
 //CLIENTES ADMINISTRADOR
 export const updateService = async (id, serviceData) => {
