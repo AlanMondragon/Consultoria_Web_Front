@@ -95,10 +95,11 @@ export default function AdministradorServicios() {
 
   // Modal handlers
   const openModal = async (service) => {
+    console.log('ID del servicio seleccionado (openModal):', service.idTransact); // Verificar el ID antes de establecerlo
     setSelectedService(service);
     setModalIsOpen(true);
     setIdService(service.idTransact); // Store the ID of the selected service
-    console.log(idService);
+    console.log('ID almacenado en idService (openModal):', service.idTransact);
     await fetchStepsById(service.idTransact);
   };
 
@@ -110,12 +111,13 @@ export default function AdministradorServicios() {
   };
 
   const openStepsModal = async (idTransact) => {
+    console.log('ID del trámite seleccionado (openStepsModal):', idTransact); // Verificar el ID antes de establecerlo
     try {
       const response = await getStepById(idTransact);
       setSteps(response.response.StepsTransacts || []);
       setShowStepsModal(true);
       setIdService(idTransact); // Store the ID of the selected service
-      console.log(idService);
+      console.log('ID almacenado en idService (openStepsModal):', idTransact);
     } catch (error) {
       console.error('Error al obtener pasos:', error);
     }

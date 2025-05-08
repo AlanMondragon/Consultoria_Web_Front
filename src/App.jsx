@@ -22,6 +22,7 @@ import OlvidarContra from "./components/Home/OlvidarContra.jsx";
 import AdministradorPagos from "./components/Administrador/AdministradorPagos.jsx";
 import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
+import AtualizarPasos from "./components/Administrador/AtualizarPasos.jsx";
 
 function App() {
   return (
@@ -88,6 +89,11 @@ function App() {
         <Route path="/RegistrarPasos" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <RegistrarPasos />
+          </ProtectedRoute>
+        } />
+         <Route path="/ActualizarPasos" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AtualizarPasos />
           </ProtectedRoute>
         } />
 

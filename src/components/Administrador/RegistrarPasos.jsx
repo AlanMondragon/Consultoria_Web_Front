@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import './../../styles/RegistrarPasos.css';
 import { createSteps } from '../../api/api.js';
+import Navbar from './../NavbarUser.jsx';
 
 export default function RegistrarPasos() {
   const location = useLocation();
-  const idTransact = location.state?.idTransact;
+  const idTransact = location.state.serviceID;
 
-  const [steps, setSteps] = useState([
-    {
-      name: '',
-      description: '',
-      stepNumber: '',
-      needCalendar: false,
-      id: idTransact,
-    },
-  ]);
+  const [steps, setSteps] = useState([{
+    name: '',
+    description: '',
+    stepNumber: 1, // Inicializar el primer paso con número 1
+    needCalendar: false,
+    id: idTransact,
+  }]);
 
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.serviceID) {
+      console.log('ID recibido en RegistrarPasos:', location.state.serviceID); // Verificar el ID recibido
+      setSteps((prevSteps) => prevSteps.map((step) => ({
+        ...step,
+        id: location.state.serviceID,
+      })));
+    } else {
+      console.warn('No se recibió ningún ID en RegistrarPasos.');
+    }
+  }, [location.state]);
 
   const handleStepChange = (index, e) => {
     const { name, value, type, checked } = e.target;
@@ -37,7 +48,7 @@ export default function RegistrarPasos() {
       {
         name: '',
         description: '',
-        stepNumber: '',
+        stepNumber: prevSteps.length + 1, // Asignar número de paso automáticamente
         needCalendar: false,
         id: idTransact,
       },
@@ -46,14 +57,31 @@ export default function RegistrarPasos() {
 
   const removeStep = (index) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este paso?')) {
-      setSteps((prevSteps) => prevSteps.filter((_, i) => i !== index));
+      setSteps((prevSteps) => {
+        const updatedSteps = prevSteps.filter((_, i) => i !== index);
+        return updatedSteps.map((step, idx) => ({
+          ...step,
+          stepNumber: idx + 1, // Reasignar los números de paso
+        }));
+      });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('check idTransact', idTransact);
     try {
-      const response = await createSteps(steps);
+      const formattedSteps = steps.map((step) => ({
+        name: step.name,
+        description: step.description,
+        numStep: step.stepNumber, // Ajuste para usar numStep
+        id: idTransact,
+        needCalendar: step.needCalendar ? 1 : 0, // Convertir booleano a 0 o 1
+      }));
+
+      console.log('Formatted Steps:', formattedSteps); // Verifica el formato de los pasos antes de enviarlos
+
+      const response = await createSteps(formattedSteps);
       if (!response.some((res) => res.error)) {
         setMessage('✅ Todos los pasos fueron registrados exitosamente.');
         setSteps([
@@ -75,12 +103,30 @@ export default function RegistrarPasos() {
   };
 
   return (
-    <div className="container-registrar-tramite">
-      <div className="card-registrar-tramite">
+    
+    <div style={{ marginTop: '90px' }}>
+          <div className='fixed-top'>
+            <Navbar title={"-Registrar Servicios"} />
+          </div>
+
+    <div className="container-registrar-pasos">
+      <div className="card-registrar-pasos">
         <h2>Registrar pasos para el trámite</h2>
-        <form onSubmit={handleSubmit} className="form-registrar-tramite">
+        <form onSubmit={handleSubmit} className="form-registrar-pasos">
           {steps.map((step, index) => (
             <div key={index} className="step-form" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
+              
+              <div className="form-group">
+                <p className='h4'>Paso número {step.stepNumber}</p>
+                <input
+                  type="hidden" 
+                  name="stepNumber"
+                  value={step.stepNumber}
+                  onChange={(e) => handleStepChange(index, e)}
+                  required
+                />
+              </div>
+
               <div className="form-group">
                 <label>Nombre del paso</label>
                 <input
@@ -102,30 +148,6 @@ export default function RegistrarPasos() {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Número del paso</label>
-                <input
-                  type="number"
-                  name="stepNumber"
-                  value={step.stepNumber}
-                  onChange={(e) => handleStepChange(index, e)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>¿Requiere calendario?</label>
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    name="needCalendar"
-                    checked={step.needCalendar}
-                    onChange={(e) => handleStepChange(index, e)}
-                  />
-                  <span className="slider" />
-                </label>
-              </div>
-
               <button
                 type="button"
                 onClick={() => removeStep(index)}
@@ -144,7 +166,7 @@ export default function RegistrarPasos() {
             </div>
           ))}
 
-          <button type="button" onClick={addStep} className="custom-file-button" style={{ marginTop: '10px' }}>
+          <button type="button" onClick={addStep} className="custom-file-button" style={{  }}>
             ➕ Agregar Paso
           </button>
 
@@ -156,5 +178,6 @@ export default function RegistrarPasos() {
         {message && <p style={{ color: '#2c5282', marginTop: '16px' }}>{message}</p>}
       </div>
     </div>
+  </div>
   );
 }
