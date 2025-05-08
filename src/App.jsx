@@ -22,7 +22,7 @@ import OlvidarContra from "./components/Home/OlvidarContra.jsx";
 import AdministradorPagos from "./components/Administrador/AdministradorPagos.jsx";
 import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
-import AtualizarPasos from "./components/Administrador/AtualizarPasos.jsx";
+import AtualizarPasos from "./components/Administrador/ActualizarPasos.jsx";
 
 function App() {
   return (
