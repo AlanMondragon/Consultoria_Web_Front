@@ -116,6 +116,41 @@ export const getStepById = async (id) => {
     }
 };
 
+// Creacion de los pasos para los procesos
+
+export const createSteps = async (stepsArray) => {
+  if (!Array.isArray(stepsArray) || stepsArray.length === 0) {
+    throw new Error('Debe proporcionar un arreglo de pasos para crear.');
+  }
+
+  const results = [];
+
+  for (const stepData of stepsArray) {
+    try {
+      const payload = {
+        name: stepData.name,
+        description: stepData.description,
+        numStep: stepData.stepNumber,
+        id: stepData.id,
+        needCalendar: stepData.needCalendar
+      };
+
+      const response = await axios.post(`${API_URL}/steps`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      results.push(response.data);
+    } catch (error) {
+      console.error('Error creating step:', stepData, error);
+      results.push({ error: error.message, stepData });
+    }
+  }
+
+  return results;
+};
+
 //CLIENTES ADMINISTRADOR
 export const updateService = async (id, serviceData) => {
     const serviceId = Number.isInteger(id) ? id : parseInt(id, 10); // Ensure id is a valid integer

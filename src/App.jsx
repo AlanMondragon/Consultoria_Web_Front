@@ -21,6 +21,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import OlvidarContra from "./components/Home/OlvidarContra.jsx";
 import AdministradorPagos from "./components/Administrador/AdministradorPagos.jsx";
 import MiPerfil from "./components/Cliente/MiPerfil.jsx";
+import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
 
 function App() {
   return (
@@ -84,6 +85,11 @@ function App() {
             <RegistrarCliente />
           </ProtectedRoute>
         } />
+        <Route path="/RegistrarPasos" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <RegistrarPasos />
+          </ProtectedRoute>
+        } />
 
         {/* Rutas solo para USER */}
         <Route path="/ClienteHome" element={
@@ -106,6 +112,7 @@ function App() {
             <MisTramites />
           </ProtectedRoute>
         } />
+        
 
         <Route path="/no-encontrado" element={<NoAutorizado />} />
       </Routes>

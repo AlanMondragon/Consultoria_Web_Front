@@ -90,11 +90,11 @@ export default function ActualizarServicio() {
           <form className='form-registrar-tramite' onSubmit={handleSubmit}>
             <div className='form-group'>
               <label htmlFor='nombre'>Nombre del Tramite</label>
-              <input type='text' id='nombre' name='name' defaultValue={service?.name} required />
+              <input type='text' id='nombre' name='name' defaultValue={service?.description} required />
             </div>
             <div className='form-group'>
               <label htmlFor='descripcion'>Descripción</label>
-              <textarea id='descripcion' name='description' defaultValue={service?.description} required></textarea>
+              <textarea id='descripcion' name='description' defaultValue={service?.name} required></textarea>
             </div>
 
             {/* Imagen */}

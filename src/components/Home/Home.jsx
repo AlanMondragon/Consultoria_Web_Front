@@ -68,8 +68,13 @@ export default function Home() {
       }
 
     } catch (error) {
-      console.error('Error during login:', error);
-    }
+      Swal.fire({
+        icon: 'error',
+        title: '¡Opps...!',
+        text: `${error.response.data.message}`,
+        showConfirmButton: true,
+      })
+        }
   };
 
   //Olvide contraseña
