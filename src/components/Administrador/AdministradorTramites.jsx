@@ -95,8 +95,9 @@ export default function AdministradorTramites() {
       d.emailAcces?.toLowerCase().includes(busquedaStr) ||
       d.transact?.name?.toLowerCase().includes(busquedaStr);
 
-    const coincideEstado = estadoSeleccionado === "" || d.stepProgress.toString() === estadoSeleccionado;
-
+      const coincideEstado =
+      estadoSeleccionado === "" || d.status === parseInt(estadoSeleccionado, 10);
+    
     return coincideBusqueda && coincideEstado;
   });
 
@@ -211,7 +212,7 @@ export default function AdministradorTramites() {
                 </td>
                 <td>
                   <Form.Select
-                    value={cliente.stepProgress}
+                    value={cliente.status}
                     onChange={(e) =>
                       handleStatusChange(cliente.idTransactProgress, parseInt(e.target.value, 10))
                     }
