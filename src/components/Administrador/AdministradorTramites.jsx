@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
 import { FaInfo, FaPlus } from 'react-icons/fa';
-import { trasacciones, actualizarT,clientes  } from './../../api/api.js';
+import { trasacciones, actualizarT, clientes } from './../../api/api.js';
 import '../../styles/Clientes.css';
 import ModalRegistrarTramite from './RegistrarTramite.jsx';
 import ModalActualizarTramite from './ActualizarTramite.jsx';
@@ -62,6 +62,9 @@ export default function AdministradorTramites() {
   const fetchServices = async () => {
     try {
       const response = await trasacciones();
+      console.log('Respuesta completa:', response);
+      console.log('EL correo es: ', response.response.transactProgresses);
+
       if (response.success && Array.isArray(response.response.transactProgresses)) {
         setDatos(response.response.transactProgresses);
       } else {
@@ -95,9 +98,9 @@ export default function AdministradorTramites() {
       d.emailAcces?.toLowerCase().includes(busquedaStr) ||
       d.transact?.name?.toLowerCase().includes(busquedaStr);
 
-      const coincideEstado =
+    const coincideEstado =
       estadoSeleccionado === "" || d.status === parseInt(estadoSeleccionado, 10);
-    
+
     return coincideBusqueda && coincideEstado;
   });
 
@@ -206,10 +209,11 @@ export default function AdministradorTramites() {
                 <td>{cliente.user.name}</td>
                 <td>{cliente.user.phone}</td>
                 <td>
-                  <a href={`mailto:${cliente.emailAcces}`}>
-                    {cliente.emailAcces}
+                  <a href={`mailto:${cliente.emailAcces || cliente.user?.email}`}>
+                    {cliente.emailAcces || cliente.user?.email || "Sin correo"}
                   </a>
                 </td>
+
                 <td>
                   <Form.Select
                     value={cliente.status}
