@@ -139,7 +139,6 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
             <input
               type="number"
               step="0.01"
-              placeholder="299.99"
               {...register('paid')}
               className={errors.paid ? 'input-error' : ''}
             />
@@ -151,7 +150,6 @@ export default function RegistrarTramite({ show, onHide, onClienteRegistrado }) 
             <input
               type="number"
               step="0.01"
-              placeholder="299.99"
               {...register('paidAll')}
               className={errors.paidAll ? 'input-error' : ''}
             />

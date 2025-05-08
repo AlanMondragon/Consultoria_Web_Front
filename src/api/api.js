@@ -159,6 +159,46 @@ export const clientes = async ()=>{
     }
 };
 
+export const clientePorId = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error durante la peticion', error);
+    throw error;
+  }
+};
+
+
+export const tramitesPorId = async (id) => {
+  try {
+    console.log('ID de usuario enviado:', id);  // Para depuración
+    const response = await axios.get(`${API_URL}/progress/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las transacciones', error);
+    throw error;
+  }
+};
+export const cancelarCita = async (id)=>{
+  try{
+    const response = await axios.get(`${API_URL}/progress/cancelSimulation/${id}`);
+    return response.data;
+  }catch(error){
+    console.error('Error al cancelar la cita', error);
+    throw error;
+  }
+}
+export const actualizarContra = async (id_user, data)=>{
+  try{
+      const response = await axios.put(`${API_URL}/users/password/${id_user}`,{ password: data });
+      return response.data;
+  }catch(error){
+   console.error('Error al actualizar contraseña', error);
+   throw error;
+  }
+};
+
 export const RegistrarCliente = async (data) => {
   try {
     const response = await axios.post(`${API_URL}/users`, data); 
@@ -196,6 +236,15 @@ export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
 
   //TRANSACCIONES ADMINISTRADOR
   export const trasacciones = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/progress/transactWithDataUser`) 
+        return response.data;
+    } catch (error) {
+      console.error("Error obtener las trasacciones", error);
+      throw error;
+    }
+  };
+  export const trasaccionesPorCliente = async () => {
     try {
       const response = await axios.get(`${API_URL}/progress/transactWithDataUser`) 
         return response.data;

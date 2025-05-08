@@ -14,6 +14,9 @@ export default function NavbarAdmin({title}) {
   const [id2, setId2] = useState("");
   const [id3, setId3] = useState("");
   const [id4, setId4] = useState("");
+  const [id5, setId5] = useState("");
+  const [id6, setId6] = useState("");
+
   const [menuOpen, setMenuOpen] = useState(false);
     const [iconKey, setIconKey] = useState(0);
   
@@ -28,11 +31,16 @@ export default function NavbarAdmin({title}) {
         setId2("/TramitesAdmin-sm");
         setId3("/ClientesAdmin-sm");
         setId4("/HomeAdmin-sm");
+        setId5("/Pagos-sm");
+        setId6("/Perfil-sm");
+
       } else {
         setId1("/ServiciosAdmin");
         setId2("/TramitesAdmin");
         setId3("/ClientesAdmin");
         setId4("/HomeAdmin");
+        setId5("/Pagos");
+        setId6("/Perfil");
       }
     };
 
@@ -92,6 +100,10 @@ export default function NavbarAdmin({title}) {
         <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
         <Nav.Link href={id2} className="link-menu">Trámites</Nav.Link>
         <Nav.Link href={id3} className="link-menu">Clientes</Nav.Link>
+        <Nav.Link href={id5} className="link-menu">Pagos</Nav.Link>
+        <Nav.Link href={id6} className="link-menu">Mi Perfil</Nav.Link>
+
+
       </Nav>
     </div>
   )}

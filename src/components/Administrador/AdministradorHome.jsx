@@ -21,6 +21,7 @@ export default function AdministradorHome() {
 
     try {
       const decoded = jwtDecode(token);
+      console.log('El usuario es: ', decoded.idUser);
       if (decoded.role !== "ADMIN") {
         navigate("/");
       }

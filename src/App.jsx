@@ -11,8 +11,7 @@ import RegistrarServicio from "./components/Administrador/RegistraServicio";
 import ActualizarServicio from "./components/Administrador/ActualizarServicio";
 import RegistrarTramite from "./components/Administrador/RegistrarTramite";
 import RegistrarCliente from './components/Administrador/RegistrarCliente'
-
-
+import AdministradorPerfil from "./components/Administrador/AdministradorPerfil.jsx";
 import ClienteHome from "./components/Cliente/ClienteHome";
 import ClienteServicios from "./components/Cliente/ClienteServicios";
 import MisTramites from "./components/Cliente/MisTramites";
@@ -20,6 +19,8 @@ import MisTramites from "./components/Cliente/MisTramites";
 import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
 import OlvidarContra from "./components/Home/OlvidarContra.jsx";
+import AdministradorPagos from "./components/Administrador/AdministradorPagos.jsx";
+import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 
 function App() {
   return (
@@ -43,9 +44,19 @@ function App() {
             <AdministradorServicios />
           </ProtectedRoute>
         } />
+        <Route path="/Perfil" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdministradorPerfil />
+          </ProtectedRoute>
+        } />
         <Route path="/ClientesAdmin" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <AdministradorCliente />
+          </ProtectedRoute>
+        } />
+       <Route path="/Pagos" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdministradorPagos />
           </ProtectedRoute>
         } />
         <Route path="/TramitesAdmin" element={
@@ -83,6 +94,11 @@ function App() {
         <Route path="/ClienteServicios" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <ClienteServicios />
+          </ProtectedRoute>
+        } />
+        <Route path="/MiPerfil" element={
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <MiPerfil />
           </ProtectedRoute>
         } />
         <Route path="/MisTramites" element={

@@ -9,7 +9,7 @@ import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { actualizarTC } from './../../api/api.js';
 
-export default function ActualizarTramite({ show, onHide, onClienteRegistrado, cliente }) {
+export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
     const citaCon = cliente?.transact?.con === true;
     const citaSimulacion = cliente?.transact?.simulation === true;
@@ -48,7 +48,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
         paidAll: yup.number().required('Campo obligatorio'),
         status: yup.number().required('Campo obligatorio'),
         stepProgress: yup.number().required('Campo obligatorio'),
-        passwordAcces:  yup.string().required('Campo obligatorio')
+        passwordAcces: yup.string().required('Campo obligatorio')
     });
 
     const {
@@ -88,7 +88,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 paid: cliente.paid,
                 paidAll: cliente.paidAll,
                 status: cliente.status,
-                passwordAcces : cliente.passwordAcces,
+                passwordAcces: cliente.passwordAcces,
                 stepProgress: cliente.stepProgress,
             });
         }
@@ -106,7 +106,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 const mm = String(d.getMinutes()).padStart(2, '0');
                 return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
             };
-    
+
             const payload = {
                 ...data,
                 dateCas: formatDate(data.dateCas),
@@ -117,19 +117,19 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 haveSimulation: Number(data.haveSimulation),
                 paid: data.advance ? data.paid : null,
             };
-            
+
             await actualizarTC(cliente.idTransactProgress, payload);
-    
+
             Swal.fire({
                 icon: 'success',
                 title: 'Actualización exitosa',
                 confirmButtonText: 'Aceptar',
             });
-    
+
             if (typeof onClienteRegistrado === 'function') {
                 onClienteRegistrado();
             }
-    
+
             onHide();
         } catch (error) {
             Swal.fire({
@@ -140,7 +140,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             console.error(error);
         }
     };
-    
+
 
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
@@ -151,115 +151,60 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <Modal.Body>
                     <div className="form-group">
-                        <label>Trámite:</label>
-                        <input type="text" className="form-control modern-input" value={cliente?.transact?.name || ''} disabled />
+                        <label>Imagen:</label>
+                        {cliente?.transact?.image ? (
+                            <img src={cliente.transact.image} alt="Imagen" style={{ maxWidth: '100%', height: 'auto' }}/>
+                        ) : (
+                            <p>Sin imagen</p>
+                        )}
                     </div>
 
                     <div className="form-group">
-                        <label>Cliente:</label>
-                        <input type="text" className="form-control modern-input" value={cliente?.user?.name || ''} disabled />
+                        <label>Cita CAS:</label>
+                        <input type="text" className="form-control" value={cliente?.dateCas ?? ''} disabled />
                     </div>
 
                     <div className="form-group">
-                        <label>Correo de acceso:</label>
-                        <input type="email" {...register('emailAcces')} className={`modern-input ${errors.emailAcces ? 'input-error' : ''}`} />
-                        <span className="error">{errors.emailAcces?.message}</span>
+                        <label>Cita CON:</label>
+                        <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
                     </div>
+
                     <div className="form-group">
-                        <label>Contraseña:</label>
-                        <input type="password" {...register('passwordAcces')} className={`modern-input ${errors.passwordAcces ? 'input-error' : ''}`} />
-                        <span className="error">{errors.passwordAcces?.message}</span>
+                        <label>Pago Adelantado:</label>
+                        <input type="text" className="form-control" value={cliente?.paid ?? ''} disabled />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Pago Total:</label>
+                        <input type="text" className="form-control" value={cliente?.paidAll ?? ''} disabled />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Estado:</label>
+                        <input type="text" className="form-control" value={cliente?.status === 1 ? 'Iniciado' : 'Finalizado'} disabled />
                     </div>
 
                     <div className="form-group">
                         <label>Progreso:</label>
-                        <input type="text" className="form-control modern-input" value={
+                        <input type="text" className="form-control" value={
                             cliente?.stepProgress === 1 ? 'En proceso' :
-                            cliente?.stepProgress === 2 ? 'En espera' :
-                            cliente?.stepProgress === 3 ? 'Falta de pago' :
-                            cliente?.stepProgress === 4 ? 'Terminado' :
-                            cliente?.stepProgress === 5 ? 'Cancelado' :
-                            cliente?.stepProgress === 6 ? 'Revisar' : ''
+                                cliente?.stepProgress === 2 ? 'En espera' :
+                                    cliente?.stepProgress === 3 ? 'Falta de pago' :
+                                        cliente?.stepProgress === 4 ? 'Terminado' :
+                                            cliente?.stepProgress === 5 ? 'Cancelado' :
+                                                cliente?.stepProgress === 6 ? 'Revisar' : ''
                         } disabled />
                     </div>
 
                     <div className="form-group">
-                        <label>Pago total:</label>
-                        <input type="number" step="0.01" {...register('paidAll')} className={`modern-input ${errors.paidAll ? 'input-error' : ''}`} />
-                        <span className="error">{errors.paidAll?.message}</span>
+                        <label>Simulación:</label>
+                        <input type="text" className="form-control" value={cliente?.dateSimulation ?? ''} disabled />
                     </div>
 
-                    <div className="form-group">
-                        <label>Adelanto:</label>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <label><input type="radio" name="advance" checked={advanceValue === true} onChange={() => setValue('advance', true)} /> Sí</label>
-                            <label><input type="radio" name="advance" checked={advanceValue === false} onChange={() => setValue('advance', false)} /> No</label>
-                        </div>
-                        <span className="error">{errors.advance?.message}</span>
-                    </div>
-
-                    {advanceValue && (
-                        <div className="form-group">
-                            <label>Monto de Pago:</label>
-                            <input type="number" step="0.01" {...register('paid')} className={`modern-input ${errors.paid ? 'input-error' : ''}`} />
-                            <span className="error">{errors.paid?.message}</span>
-                        </div>
-                    )}
-
-                    {citaCas && (
-                        <div className="form-group">
-                            <label>Cita CAS:</label>
-                            <input type="datetime-local" {...register('dateCas')} className={`modern-input ${errors.dateCas ? 'input-error' : ''}`} />
-                            <span className="error">{errors.dateCas?.message}</span>
-                        </div>
-                    )}
-
-                    {citaCon && (
-                        <div className="form-group">
-                            <label>Cita CON:</label>
-                            <input type="datetime-local" {...register('dateCon')} className={`modern-input ${errors.dateCon ? 'input-error' : ''}`} />
-                            <span className="error">{errors.dateCon?.message}</span>
-                        </div>
-                    )}
-
-                    <div className="form-group">
-                        <label>Fecha inicio:</label>
-                        <input type="date" {...register('dateStart')} className={`modern-input ${errors.dateStart ? 'input-error' : ''}`} />
-                        <span className="error">{errors.dateStart?.message}</span>
-                    </div>
-
-                    {citaSimulacion && (
-                        <div className="form-group">
-                            <label>Fecha y Hora Simulación:</label>
-                            <input type="datetime-local" {...register('dateSimulation')} className={`modern-input ${errors.dateSimulation ? 'input-error' : ''}`} />
-                            <span className="error">{errors.dateSimulation?.message}</span>
-                        </div>
-                    )}
-
-                    {citaSimulacion && (
-                        <div className="form-group">
-                            <label>Simulación realizada:</label>
-                            <div className="checkbox-group">
-                                <label><input type="checkbox" checked={watch('haveSimulation') === 1} onChange={() => setValue('haveSimulation', 1)} /> Sí</label>
-                                <label><input type="checkbox" checked={watch('haveSimulation') === 0} onChange={() => setValue('haveSimulation', 0)} /> No</label>
-                            </div>
-                            <span className="error">{errors.haveSimulation?.message}</span>
-                        </div>
-                    )}
-
-                    <div className="form-group">
-                        <label>Estado:</label>
-                        <select {...register('status')} className={`modern-input ${errors.status ? 'input-error' : ''}`}>
-                            <option value="1">Iniciado</option>
-                            <option value="0">Finalizado</option>
-                        </select>
-                        <span className="error">{errors.status?.message}</span>
-                    </div>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={onHide}>Cancelar <MdClose /></Button>
-                    <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>Guardar <FaCheck /></Button>
+                    <Button variant="secondary" onClick={onHide}>Cerrar <MdClose /></Button>
                 </Modal.Footer>
             </form>
         </Modal>
