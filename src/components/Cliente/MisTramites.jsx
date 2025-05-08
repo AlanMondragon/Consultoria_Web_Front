@@ -85,7 +85,7 @@ export default function AdministradorTramites() {
       d.transact?.name?.toLowerCase().includes(busquedaStr) ||
       d.emailAcces?.toLowerCase().includes(busquedaStr);
 
-    const coincideEstado = estadoSeleccionado === "" || d.stepProgress.toString() === estadoSeleccionado;
+    const coincideEstado = estadoSeleccionado === "" || d.status.toString() === estadoSeleccionado;
 
     return coincideBusqueda && coincideEstado;
   });
@@ -190,12 +190,12 @@ export default function AdministradorTramites() {
                 <td>{cliente.dateCon}</td>
 
                 <td>
-                  {cliente.stepProgress === 1 ? 'En proceso' :
-                    cliente.stepProgress === 2 ? 'En espera' :
-                      cliente.stepProgress === 3 ? 'Falta de pago' :
-                        cliente.stepProgress === 4 ? 'Terminado' :
-                          cliente.stepProgress === 5 ? 'Cancelado' :
-                            cliente.stepProgress === 6 ? 'Revisar' : 'Desconocido'}
+                  {cliente.status === 1 ? 'En proceso' :
+                    cliente.status === 2 ? 'En espera' :
+                      cliente.status === 3 ? 'Falta de pago' :
+                        cliente.status === 4 ? 'Terminado' :
+                          cliente.status === 5 ? 'Cancelado' :
+                            cliente.status === 6 ? 'Revisar' : 'Desconocido'}
                 </td>
 
 

@@ -7,12 +7,14 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos } from './../../api/api.js';
 
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
     const citaCon = cliente?.transact?.con === true;
     const citaSimulacion = cliente?.transact?.simulation === true;
+
+    const [nombreDelPaso, setNombreDelPaso] = useState('');
 
     const schema = yup.object().shape({
         advance: yup.boolean().required('Campo obligatorio'),
@@ -94,6 +96,24 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         }
     }, [cliente, reset]);
 
+    // Obtener nombre del paso actual según el stepProgress
+    useEffect(() => {
+        const obtenerPasoActual = async () => {
+            if (cliente?.idTransact && cliente?.stepProgress != null) {
+                try {
+                    const resultado = await obtenerLosPasos(cliente.idTransact);
+                    const pasos = resultado?.response?.StepsTransacts || [];
+                    const pasoActual = pasos.find(p => p.stepNumber === cliente.stepProgress);
+                    setNombreDelPaso(pasoActual?.name || 'Paso no encontrado');
+                } catch (error) {
+                    console.error('Error al obtener el paso actual', error);
+                    setNombreDelPaso('Error al cargar paso');
+                }
+            }
+        };
+        obtenerPasoActual();
+    }, [cliente]);
+
     const onSubmit = async (data) => {
         try {
             const formatDate = (date) => {
@@ -141,7 +161,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         }
     };
 
-
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
             <Modal.Header closeButton>
@@ -153,7 +172,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                     <div className="form-group">
                         <label>Imagen:</label>
                         {cliente?.transact?.image ? (
-                            <img src={cliente.transact.image} alt="Imagen" style={{ maxWidth: '100%', height: 'auto' }}/>
+                            <img src={cliente.transact.image} alt="Imagen" style={{ maxWidth: '100%', height: 'auto' }} />
                         ) : (
                             <p>Sin imagen</p>
                         )}
@@ -181,26 +200,25 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
                     <div className="form-group">
                         <label>Estado:</label>
-                        <input type="text" className="form-control" value={cliente?.status === 1 ? 'Iniciado' : 'Finalizado'} disabled />
+                        <input type="text" className="form-control" value={
+                            cliente?.status === 1 ? 'En proceso' :
+                                cliente?.status === 2 ? 'En espera' :
+                                    cliente?.status === 3 ? 'Falta de pago' :
+                                        cliente?.status === 4 ? 'Terminado' :
+                                            cliente?.status === 5 ? 'Cancelado' :
+                                                cliente?.status === 6 ? 'Revisar' : ''
+                        } disabled />
                     </div>
 
                     <div className="form-group">
-                        <label>Progreso:</label>
-                        <input type="text" className="form-control" value={
-                            cliente?.stepProgress === 1 ? 'En proceso' :
-                                cliente?.stepProgress === 2 ? 'En espera' :
-                                    cliente?.stepProgress === 3 ? 'Falta de pago' :
-                                        cliente?.stepProgress === 4 ? 'Terminado' :
-                                            cliente?.stepProgress === 5 ? 'Cancelado' :
-                                                cliente?.stepProgress === 6 ? 'Revisar' : ''
-                        } disabled />
+                        <label>Paso del trámite actual:</label>
+                        <input type="text" className="form-control" value={nombreDelPaso} disabled />
                     </div>
 
                     <div className="form-group">
                         <label>Simulación:</label>
                         <input type="text" className="form-control" value={cliente?.dateSimulation ?? ''} disabled />
                     </div>
-
                 </Modal.Body>
 
                 <Modal.Footer>

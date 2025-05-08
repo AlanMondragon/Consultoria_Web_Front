@@ -249,6 +249,16 @@ export const tramitesPorId = async (id) => {
     throw error;
   }
 };
+export const obtenerLosPasos = async (id) => {
+  try {
+    console.log('ID de la  trasnsaccionm enviada:', id);  // Para depuración
+    const response = await axios.get(`${API_URL}/steps/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener los pasos', error);
+    throw error;
+  }
+};
 export const cancelarCita = async (id)=>{
   try{
     const response = await axios.get(`${API_URL}/progress/cancelSimulation/${id}`);
@@ -325,8 +335,8 @@ export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
   export const actualizarT = async (idTransactProgress, nuevoEstado) => {
     try {
       const response = await axios.patch(
-        `${API_URL}/progress/${idTransactProgress}/stepProgress`,
-        { stepProgress: nuevoEstado }
+        `${API_URL}/progress/${idTransactProgress}/status`,
+        { status: nuevoEstado }
       );
       return response.data;
     } catch (error) {
