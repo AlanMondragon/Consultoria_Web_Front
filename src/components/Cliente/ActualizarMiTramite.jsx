@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, cancelarCita } from './../../api/api.js';
 
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
@@ -16,6 +16,8 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
+    const [mensaje, setMensaje] = useState();
+
 
     const schema = yup.object().shape({
         advance: yup.boolean().required('Campo obligatorio'),
@@ -97,6 +99,8 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         }
     }, [cliente, reset]);
 
+
+
     // Obtener nombre y descripción del paso actual
     useEffect(() => {
         const obtenerPasoActual = async () => {
@@ -164,11 +168,56 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             console.error(error);
         }
     };
+   async function eliminarCita(cliente) {
+    const result = await Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro que quieres cancelar la cita?',
+        text: 'Solamente puedes cancelar la cita una vez',
+        showCancelButton: true,
+        confirmButtonText: 'Cancelar',
+        cancelButtonText: 'Aceptar',
+    });
+
+    if (result.isDismissed) {
+        try {
+            const response = await cancelarCita(cliente.idTransactProgress);
+            if (response.success === true) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cancelación exitosa',
+                    confirmButtonText: 'Aceptar',
+                });
+
+                if (typeof onClienteRegistrado === 'function') {
+                    onClienteRegistrado(); // Recarga los datos actualizados del cliente
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al cancelar',
+                    text: 'No se pudo cancelar la cita.',
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error del servidor',
+                text: 'Ocurrió un problema al conectar con el servidor.',
+            });
+            console.error("Error al cancelar la cita:", error);
+        }
+    } else {
+        console.log("Cancelación de cita abortada por el usuario");
+    }
+}
+
+
+
 
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title className="Titulo">Actualizar Trámite</Modal.Title>
+                <Modal.Title className="Titulo" style={{ marginLeft: "350px" }}>{cliente?.transact?.description}</Modal.Title>
             </Modal.Header>
 
             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -184,11 +233,21 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
                     <div className="form-group">
                         <label>Cita CAS:</label>
+                        <p>
+                            {cliente?.dateCas
+                                ? "Ya cuentas con una cita agendada"
+                                : "No cuentas con cita agendada"}
+                        </p>
                         <input type="text" className="form-control" value={cliente?.dateCas ?? ''} disabled />
                     </div>
 
                     <div className="form-group">
                         <label>Cita CON:</label>
+                        <p>
+                            {cliente?.dateCon
+                                ? "Ya cuentas con una cita agendada"
+                                : "No cuentas con cita agendada"}
+                        </p>
                         <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
                     </div>
 
@@ -206,11 +265,11 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <label>Estado:</label>
                         <input type="text" className="form-control" value={
                             cliente?.status === 1 ? 'En proceso' :
-                            cliente?.status === 2 ? 'En espera' :
-                            cliente?.status === 3 ? 'Falta de pago' :
-                            cliente?.status === 4 ? 'Terminado' :
-                            cliente?.status === 5 ? 'Cancelado' :
-                            cliente?.status === 6 ? 'Revisar' : ''
+                                cliente?.status === 2 ? 'En espera' :
+                                    cliente?.status === 3 ? 'Falta de pago' :
+                                        cliente?.status === 4 ? 'Terminado' :
+                                            cliente?.status === 5 ? 'Cancelado' :
+                                                cliente?.status === 6 ? 'Revisar' : ''
                         } disabled />
                     </div>
 
@@ -223,11 +282,30 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <label>Descripción del paso:</label>
                         <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                     </div>
-
                     <div className="form-group">
-                        <label>Simulación:</label>
-                        <input type="text" className="form-control" value={cliente?.dateSimulation ?? ''} disabled />
+                        <label>Cita simulation:</label>
+                        <p>
+                            {cliente?.dateSimulation
+                                ? "Ya cuentas con una cita agendada"
+                                : "No cuentas con cita agendada"}
+                        </p>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={cliente?.dateSimulation ?? ''}
+                            disabled
+                        />
+                        {cliente?.dateSimulation && (
+                            <button
+                                className="btn btn-danger mt-2"
+                                onClick={() => eliminarCita(cliente)}
+                            >
+                                Cancelar cita
+                            </button>
+                        )}
                     </div>
+
+
                 </Modal.Body>
 
                 <Modal.Footer>

@@ -346,11 +346,9 @@ export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
     }
   };
   
-
-export const actualizarTC = async (idTransactProgress, datosActualizados) => {
+ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
   try {
-    const response = await axios.put(
-      `${API_URL}/progress/${idTransactProgress}`,
+    const response = await axios.put(`${API_URL}/progress/${idTransactProgress}`,
       {
         idTransactProgress,
         advance: datosActualizados.advance ? 1 : 0,
@@ -364,6 +362,24 @@ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
         paidAll: datosActualizados.paidAll,
         status: datosActualizados.status,
         stepProgress: datosActualizados.stepProgress
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el trámite", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+export const actualizarPaso = async (idTransactProgress, datosActualizados) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/progress/${idTransactProgress}/stepProgress`,
+      {
+        idTransactProgress,
+        stepProgress: datosActualizados.stepProgress
+       
       }
     );
     return response.data;

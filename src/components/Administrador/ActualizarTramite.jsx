@@ -7,56 +7,59 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, actualizarPaso } from './../../api/api.js';
 
 export default function ActualizarTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
     const citaCon = cliente?.transact?.con === true;
     const citaSimulacion = cliente?.transact?.simulation === true;
+    const [nombreDelPaso, setNombreDelPaso] = useState('');
+    const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
+
 
     const schema = yup.object().shape({
-    advance: yup.boolean().nullable(),
-    dateCas: yup
-        .date()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    dateCon: yup
-        .date()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    dateSimulation: yup
-        .date()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    dateStart: yup
-        .date()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    emailAcces: yup
-        .string()
-        .email('Correo inválido')
-        .nullable()
-        .notRequired(),
-    haveSimulation: yup.number().nullable(),
-    paid: yup
-        .number()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    paidAll: yup
-        .number()
-        .nullable()
-        .transform((curr, orig) => (orig === '' ? null : curr)),
-    status: yup
-        .number()
-        .nullable(),
-    stepProgress: yup
-        .number()
-        .nullable(),
-    passwordAcces: yup
-        .string()
-        .nullable()
-        .notRequired()
-});
+        advance: yup.boolean().nullable(),
+        dateCas: yup
+            .date()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        dateCon: yup
+            .date()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        dateSimulation: yup
+            .date()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        dateStart: yup
+            .date()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        emailAcces: yup
+            .string()
+            .email('Correo inválido')
+            .nullable()
+            .notRequired(),
+        haveSimulation: yup.number().nullable(),
+        paid: yup
+            .number()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        paidAll: yup
+            .number()
+            .nullable()
+            .transform((curr, orig) => (orig === '' ? null : curr)),
+        status: yup
+            .number()
+            .nullable(),
+        stepProgress: yup
+            .number()
+            .nullable(),
+        passwordAcces: yup
+            .string()
+            .nullable()
+            .notRequired()
+    });
 
 
     const {
@@ -71,7 +74,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
         mode: 'onChange',
     });
 
-    const advanceValue = watch('advance');
+
 
     useEffect(() => {
         if (cliente) {
@@ -96,11 +99,42 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 paid: cliente.paid,
                 paidAll: cliente.paidAll,
                 status: cliente.status,
-                passwordAcces : cliente.passwordAcces,
+                passwordAcces: cliente.passwordAcces,
                 stepProgress: cliente.stepProgress,
             });
         }
     }, [cliente, reset]);
+
+    const [pasosDisponibles, setPasosDisponibles] = useState([]);
+
+    useEffect(() => {
+        const obtenerPasoActual = async () => {
+            if (cliente?.transact?.idTransact && cliente?.stepProgress != null) {
+                try {
+                    const resultado = await obtenerLosPasos(cliente.transact.idTransact);
+                    // Verificar si StepsTransacts es un array antes de actualizar el estado
+                    const pasos = Array.isArray(resultado?.response?.StepsTransacts)
+                        ? resultado.response.StepsTransacts
+                        : [];
+                    setPasosDisponibles(pasos);
+
+                    const pasoActual = pasos.find(p => p.stepNumber === cliente.stepProgress);
+                    setNombreDelPaso(pasoActual?.name?.trim() || 'Paso no encontrado');
+                    setDescripcionDelPaso(pasoActual?.description?.trim() || 'Sin descripción');
+
+                    // Preseleccionar paso actual
+                    setValue('stepProgress', pasoActual?.stepNumber || null);
+                } catch (error) {
+                    console.error('Error al obtener el paso actual', error);
+                    setNombreDelPaso('Error al cargar paso');
+                    setDescripcionDelPaso('Error al cargar descripción');
+                }
+            }
+        };
+        obtenerPasoActual();
+    }, [cliente, setValue]);
+
+
 
     const onSubmit = async (data) => {
         try {
@@ -114,7 +148,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 const mm = String(d.getMinutes()).padStart(2, '0');
                 return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
             };
-    
+
             const payload = {
                 ...data,
                 dateCas: formatDate(data.dateCas),
@@ -125,19 +159,19 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 haveSimulation: Number(data.haveSimulation),
                 paid: data.advance ? data.paid : null,
             };
-            
+
             await actualizarTC(cliente.idTransactProgress, payload);
-    
+
             Swal.fire({
                 icon: 'success',
                 title: 'Datos guardados',
                 confirmButtonText: 'Aceptar',
             });
-    
+
             if (typeof onClienteRegistrado === 'function') {
                 onClienteRegistrado();
             }
-    
+
             onHide();
         } catch (error) {
             Swal.fire({
@@ -148,7 +182,9 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             console.error(error);
         }
     };
-    
+    const advanceValue = watch('advance');
+
+
 
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
@@ -156,7 +192,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 <Modal.Title className="Titulo">Actualizar Trámite</Modal.Title>
             </Modal.Header>
 
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" >
                 <Modal.Body>
                     <div className="form-group">
                         <label>Trámite:</label>
@@ -178,16 +214,50 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                         <input type="password" {...register('passwordAcces')} className={`modern-input ${errors.passwordAcces ? 'input-error' : ''}`} />
                         <span className="error">{errors.passwordAcces?.message}</span>
                     </div>
+                    <div className="form-group">
+                        <label>Selecciona el paso del trámite:</label>
+                        <select
+                            className="form-control modern-input"
+                            value={watch('stepProgress') || ''}
+                            onChange={(e) => {
+                                const selectedStep = Number(e.target.value);
+                                setValue('stepProgress', selectedStep);
+                                const pasoSeleccionado = pasosDisponibles.find(p => p.stepNumber === selectedStep);
+                                setDescripcionDelPaso(pasoSeleccionado?.description?.trim() || 'Sin descripción');
+                            }}
+                        >
+                            <option value="">Selecciona un paso</option>
+                            {pasosDisponibles.map((paso) => (
+                                <option key={paso.stepNumber} value={paso.stepNumber}>
+                                    {paso.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <span className="error">{errors.stepProgress?.message}</span>
+                    </div>
+
+
+
+                    <div className="form-group">
+                        <label>Descripción del paso actual:</label>
+                        <textarea
+                            className="form-control"
+                            value={descripcionDelPaso}
+                            rows={3}
+                            disabled
+                        />
+                    </div>
 
                     <div className="form-group">
                         <label>Progreso:</label>
                         <input type="text" className="form-control modern-input" value={
-                            cliente?.stepProgress === 1 ? 'En proceso' :
-                            cliente?.stepProgress === 2 ? 'En espera' :
-                            cliente?.stepProgress === 3 ? 'Falta de pago' :
-                            cliente?.stepProgress === 4 ? 'Terminado' :
-                            cliente?.stepProgress === 5 ? 'Cancelado' :
-                            cliente?.stepProgress === 6 ? 'Revisar' : ''
+                            cliente?.status === 1 ? 'En proceso' :
+                                cliente?.status === 2 ? 'En espera' :
+                                    cliente?.status === 3 ? 'Falta de pago' :
+                                        cliente?.status === 4 ? 'Terminado' :
+                                            cliente?.status === 5 ? 'Cancelado' :
+                                                cliente?.status === 6 ? 'Revisar' : ''
                         } disabled />
                     </div>
 
@@ -255,14 +325,6 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                         </div>
                     )}
 
-                    <div className="form-group">
-                        <label>Estado:</label>
-                        <select {...register('status')} className={`modern-input ${errors.status ? 'input-error' : ''}`}>
-                            <option value="1">Iniciado</option>
-                            <option value="0">Finalizado</option>
-                        </select>
-                        <span className="error">{errors.status?.message}</span>
-                    </div>
                 </Modal.Body>
 
                 <Modal.Footer>
