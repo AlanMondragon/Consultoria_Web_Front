@@ -15,41 +15,49 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
     const citaSimulacion = cliente?.transact?.simulation === true;
 
     const schema = yup.object().shape({
-        advance: yup.boolean().required('Campo obligatorio'),
-        dateCas: yup
-            .date()
-            .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-cas', 'Campo obligatorio', function (value) {
-                return !citaCas || !!value;
-            }),
-        dateCon: yup
-            .date()
-            .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-con', 'Campo obligatorio', function (value) {
-                return !citaCon || !!value;
-            }),
-        dateSimulation: yup
-            .date()
-            .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-simulation', 'Campo obligatorio', function (value) {
-                return !citaSimulacion || !!value;
-            }),
-        dateStart: yup.date().required('Campo obligatorio'),
-        emailAcces: yup.string().email('Correo inválido').required('Campo obligatorio'),
-        haveSimulation: yup.number().required('Campo obligatorio'),
-        paid: yup.number().when('advance', {
-            is: true,
-            then: () => yup.number().required('Campo obligatorio'),
-            otherwise: () => yup.number().notRequired().nullable(),
-        }),
-        paidAll: yup.number().required('Campo obligatorio'),
-        status: yup.number().required('Campo obligatorio'),
-        stepProgress: yup.number().required('Campo obligatorio'),
-        passwordAcces:  yup.string().required('Campo obligatorio')
-    });
+    advance: yup.boolean().nullable(),
+    dateCas: yup
+        .date()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    dateCon: yup
+        .date()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    dateSimulation: yup
+        .date()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    dateStart: yup
+        .date()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    emailAcces: yup
+        .string()
+        .email('Correo inválido')
+        .nullable()
+        .notRequired(),
+    haveSimulation: yup.number().nullable(),
+    paid: yup
+        .number()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    paidAll: yup
+        .number()
+        .nullable()
+        .transform((curr, orig) => (orig === '' ? null : curr)),
+    status: yup
+        .number()
+        .nullable(),
+    stepProgress: yup
+        .number()
+        .nullable(),
+    passwordAcces: yup
+        .string()
+        .nullable()
+        .notRequired()
+});
+
 
     const {
         register,
@@ -122,7 +130,7 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
     
             Swal.fire({
                 icon: 'success',
-                title: 'Actualización exitosa',
+                title: 'Datos guardados',
                 confirmButtonText: 'Aceptar',
             });
     

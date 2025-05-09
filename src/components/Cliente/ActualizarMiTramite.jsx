@@ -15,6 +15,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     const citaSimulacion = cliente?.transact?.simulation === true;
 
     const [nombreDelPaso, setNombreDelPaso] = useState('');
+    const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
 
     const schema = yup.object().shape({
         advance: yup.boolean().required('Campo obligatorio'),
@@ -96,18 +97,21 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         }
     }, [cliente, reset]);
 
-    // Obtener nombre del paso actual según el stepProgress
+    // Obtener nombre y descripción del paso actual
     useEffect(() => {
         const obtenerPasoActual = async () => {
-            if (cliente?.idTransact && cliente?.stepProgress != null) {
+            if (cliente?.transact?.idTransact && cliente?.stepProgress != null) {
                 try {
-                    const resultado = await obtenerLosPasos(cliente.idTransact);
+                    const resultado = await obtenerLosPasos(cliente.transact.idTransact);
                     const pasos = resultado?.response?.StepsTransacts || [];
                     const pasoActual = pasos.find(p => p.stepNumber === cliente.stepProgress);
-                    setNombreDelPaso(pasoActual?.name || 'Paso no encontrado');
+
+                    setNombreDelPaso(pasoActual?.name?.trim() || 'Paso no encontrado');
+                    setDescripcionDelPaso(pasoActual?.description?.trim() || 'Sin descripción');
                 } catch (error) {
                     console.error('Error al obtener el paso actual', error);
                     setNombreDelPaso('Error al cargar paso');
+                    setDescripcionDelPaso('Error al cargar descripción');
                 }
             }
         };
@@ -202,17 +206,22 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <label>Estado:</label>
                         <input type="text" className="form-control" value={
                             cliente?.status === 1 ? 'En proceso' :
-                                cliente?.status === 2 ? 'En espera' :
-                                    cliente?.status === 3 ? 'Falta de pago' :
-                                        cliente?.status === 4 ? 'Terminado' :
-                                            cliente?.status === 5 ? 'Cancelado' :
-                                                cliente?.status === 6 ? 'Revisar' : ''
+                            cliente?.status === 2 ? 'En espera' :
+                            cliente?.status === 3 ? 'Falta de pago' :
+                            cliente?.status === 4 ? 'Terminado' :
+                            cliente?.status === 5 ? 'Cancelado' :
+                            cliente?.status === 6 ? 'Revisar' : ''
                         } disabled />
                     </div>
 
                     <div className="form-group">
                         <label>Paso del trámite actual:</label>
                         <input type="text" className="form-control" value={nombreDelPaso} disabled />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Descripción del paso:</label>
+                        <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                     </div>
 
                     <div className="form-group">

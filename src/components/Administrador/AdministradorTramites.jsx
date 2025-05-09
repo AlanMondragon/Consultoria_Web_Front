@@ -209,8 +209,8 @@ export default function AdministradorTramites() {
                 <td>{cliente.user.name}</td>
                 <td>{cliente.user.phone}</td>
                 <td>
-                  <a href={`mailto:${cliente.emailAcces || cliente.user?.email}`}>
-                    {cliente.emailAcces || cliente.user?.email || "Sin correo"}
+                  <a href={`mailto:${cliente.user.email}`}>
+                    {cliente.user?.email}
                   </a>
                 </td>
 
