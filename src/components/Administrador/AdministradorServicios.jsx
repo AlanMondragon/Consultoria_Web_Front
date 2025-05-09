@@ -21,7 +21,6 @@ export default function AdministradorServicios() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [steps, setSteps] = useState([])
-  const [isEditingSteps, setIsEditingSteps] = useState(false);
   const [idService, setIdService] = useState(null);
 
   useEffect(() => {
@@ -90,9 +89,8 @@ export default function AdministradorServicios() {
     } catch (error) {
       console.error("Error al obtener pasos:", error);
       setSteps([]);
-    }
+    };
   };
-
   // Modal handlers
   const openModal = async (service) => {
     console.log('ID del servicio seleccionado (openModal):', service.idTransact); // Verificar el ID antes de establecerlo
@@ -160,16 +158,6 @@ export default function AdministradorServicios() {
   // Format the price to show only 2 decimals
   const formatPrice = (price) => price.toFixed(2);
 
-
-  const handleUpdateSteps = () => {
-    setIsEditingSteps(true);
-  };
-
-  const handleStepEditChange = (index, field, value) => {
-    const updatedSteps = [...steps];
-    updatedSteps[index][field] = value;
-    setSteps(updatedSteps);
-  };
 
   return (
     <div style={{ marginTop: '80px' }}>
@@ -288,40 +276,7 @@ export default function AdministradorServicios() {
                     boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
                     position: 'relative'
                   }}
-                >
-                  {isEditingSteps ? (
-                    <>
-                      <input
-                        type="text"
-                        value={step.name}
-                        className='form-control'
-                        onChange={(e) => handleStepEditChange(index, 'name', e.target.value)}
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          marginBottom: '10px',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          border: '1px solid #ccc'
-                        }}
-                      />
-                      <textarea
-                        value={step.description}
-                        className='form-control'
-                        onChange={(e) => handleStepEditChange(index, 'description', e.target.value)}
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          marginBottom: '10px',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          border: '1px solid #ccc'
-                        }}
-                      />
-                    </>
-                  ) : (
-                    step.name
-                  )}
+                >{step.name} {/* Texto de los pasos */}
                 </li>
               ))}
             </ol>
@@ -356,7 +311,7 @@ export default function AdministradorServicios() {
           {steps.length > 0 && (
           <Button  
             variant="primary"
-            onClick={isEditingSteps ? () => setIsEditingSteps(false) : handleUpdateSteps}
+            onClick={ () => navigate("/ActualizarPasos", {state : {serviceID : idService, isEditMode: true}})}
             className="btn-primary"
             style={{
               backgroundColor: '#007bff', 
@@ -365,7 +320,7 @@ export default function AdministradorServicios() {
               borderRadius: '5px',
               padding: '8px 20px',
               fontWeight: 'bold'}}>
-                {isEditingSteps ? 'Guardar' : 'Actualizar'}
+                {'Actualizar'}
               </Button>)}
         </Modal.Footer>
       </Modal>
