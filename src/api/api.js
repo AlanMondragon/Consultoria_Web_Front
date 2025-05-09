@@ -2,6 +2,13 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 
+/**
+ * Función para actualizar pasos existentes y crear nuevos si es necesario
+ * @param {number} idTransact - ID del trámite
+ * @param {Array} stepsArray - Arreglo de pasos a actualizar o crear
+ * @returns {Array} - Resultados de las operaciones
+ */
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 console.log('API_URL:', API_URL); 
@@ -94,6 +101,17 @@ export const createService = async (serviceData) => {
     }
 };
 
+export const getNameService = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/transaction/${id}`);
+        const name = response.data.response.Transact.name;
+        return name;
+    } catch (error) {
+        console.error('Error fetching service by ID:', error);
+        throw error;
+    }
+}
+
 
 //Pasos para los procesos (los pasos disponibles para el cliente)
 export const getSteps = async () => {
@@ -151,39 +169,100 @@ export const createSteps = async (stepsArray) => {
   return results;
 };
 
-// Actualizar pasos para los procesos
 export const updateSteps = async (idTransact, stepsArray) => {
   if (!Array.isArray(stepsArray) || stepsArray.length === 0) {
     throw new Error('Debe proporcionar un arreglo de pasos para actualizar.');
   }
 
+  console.log("Iniciando actualización/creación de pasos. Total:", stepsArray.length);
+  console.table(stepsArray.map(s => ({
+    id: s.id || 'NUEVO', 
+    name: s.name, 
+    numStep: s.numStep || s.stepNumber
+  })));
+
   const results = [];
 
   for (const stepData of stepsArray) {
     try {
+      // Comprobamos si es un paso nuevo o existente
+      const isNewStep = !stepData.id;
+      
+      // Formato correcto según StepUpdateRequest o CreateRequest
       const payload = {
         name: stepData.name,
         description: stepData.description,
-        numStep: stepData.numStep, 
-        id: idTransact,
-        needCalendar: 0
+        numStep: stepData.numStep || stepData.stepNumber,
+        needCalendar: stepData.needCalendar ? 1 : 0
       };
 
-      const response = await axios.put(`${API_URL}/steps/${stepData.id}`, payload, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const payloadCreate = {
+        name: stepData.name,
+        description: stepData.description,
+        numStep: stepData.numStep || stepData.stepNumber,
+        id: idTransact,
+        needCalendar: stepData.needCalendar ? 1 : 0
+      };
 
-      results.push(response.data);
+      // Para pasos nuevos, agregamos el idTransact en el payload
+      if (isNewStep) {
+
+        payloadCreate.id = idTransact;
+      }
+
+      let response;
+      
+      if (isNewStep) {
+        // Creamos un nuevo paso
+        console.log(`Creando nuevo paso #${stepData.numStep || stepData.stepNumber} para el trámite ${idTransact}:`, payload);
+        
+        response = await axios.post(`${API_URL}/steps`, payloadCreate, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        results.push({
+          success: true,
+          data: response.data,
+          message: `Paso ${stepData.numStep || stepData.stepNumber} creado correctamente`
+        });
+      } else {
+        // Actualizamos un paso existente
+        console.log(`Actualizando paso ID=${stepData.id} (Paso #${stepData.numStep || stepData.stepNumber}) para el trámite ${idTransact}:`, payload);
+        
+        response = await axios.put(`${API_URL}/steps/${stepData.id}`, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        results.push({
+          success: true,
+          data: response.data,
+          message: `Paso ${stepData.numStep || stepData.stepNumber} actualizado correctamente`
+        });
+      }
+
+      console.log(`Respuesta para operación en paso #${stepData.numStep || stepData.stepNumber}:`, response.data);
     } catch (error) {
-      console.error('Error updating step:', stepData, error);
-      results.push({ error: error.message, stepData });
+      console.error(`Error en operación de paso:`, error);
+      
+      results.push({ 
+        error: true, 
+        message: error.response?.data?.message || error.message || 'Error desconocido',
+        stepData
+      });
     }
   }
 
+  console.log("Resultados de las operaciones:", results);
   return results;
 }
+
+
 
 //CLIENTES ADMINISTRADOR
 export const updateService = async (id, serviceData) => {

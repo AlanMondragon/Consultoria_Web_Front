@@ -89,9 +89,8 @@ export default function AdministradorServicios() {
     } catch (error) {
       console.error("Error al obtener pasos:", error);
       setSteps([]);
-    }
+    };
   };
-
   // Modal handlers
   const openModal = async (service) => {
     console.log('ID del servicio seleccionado (openModal):', service.idTransact); // Verificar el ID antes de establecerlo
@@ -312,7 +311,7 @@ export default function AdministradorServicios() {
           {steps.length > 0 && (
           <Button  
             variant="primary"
-            onClick={ () => navigate("/ActualizarPasos", {state : {serviceID : idService}})}
+            onClick={ () => navigate("/ActualizarPasos", {state : {serviceID : idService, isEditMode: true}})}
             className="btn-primary"
             style={{
               backgroundColor: '#007bff', 

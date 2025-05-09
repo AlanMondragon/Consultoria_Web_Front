@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import './../../styles/RegistrarPasos.css';
 import { createSteps } from '../../api/api.js';
-import Navbar from './../NavbarUser.jsx';
+import Navbar from './../NavbarAdmin.jsx';
 
 export default function RegistrarPasos() {
   const location = useLocation();
