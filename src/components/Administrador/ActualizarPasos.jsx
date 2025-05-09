@@ -53,15 +53,12 @@ export default function ActualizarPasos() {
   const fetchStepsById = async () => {
     try {
       const response = await getStepById(idTransact);
-      console.log("Respuesta de getStepById:", response);
       
       if (response.success && Array.isArray(response.response.StepsTransacts)) {
         
         // Asegurarse de que todos los pasos tengan los campos necesarios
         const formattedSteps = response.response.StepsTransacts.map(step => {
-          // Registrar cada paso para depuración
-          console.log("Procesando paso:", step);
-          
+          // Registrar cada paso para depuración          
           return {
             id: step.idStep, // ID del paso para actualización
             name: step.name || '',
@@ -74,9 +71,7 @@ export default function ActualizarPasos() {
         });
         
         setSteps(formattedSteps);
-        console.log("Pasos formateados:", formattedSteps);
       } else {
-        console.log("No se encontraron pasos o la respuesta tiene formato incorrecto");
         setSteps([]);
         Swal.fire({
           icon: 'info',
@@ -177,8 +172,6 @@ export default function ActualizarPasos() {
         needCalendar: step.needCalendar ? 1 : 0,
         idTransact: idTransact // ID del trámite
       }));
-
-      console.log("Pasos a actualizar/crear:", formattedSteps);
       
       // Muestra un indicador de carga
       Swal.fire({
@@ -202,7 +195,7 @@ export default function ActualizarPasos() {
           title: 'Éxito',
           text: 'Todos los pasos fueron procesados exitosamente.',
         }).then(() => {
-          navigate('/services'); // Redireccionar después de actualizar
+          navigate('/ServiciosAdmin'); // Redireccionar después de actualizar
         });
       } else {
         // Mostrar mensajes de error específicos
@@ -305,12 +298,12 @@ export default function ActualizarPasos() {
                   <div className="form-group">
                     <label>
                       <input
-                        type="checkbox"
+                        type="hidden"
                         name="needCalendar"
+                        value={false}
                         checked={step.needCalendar}
                         onChange={(e) => handleStepChange(index, e)}
                       />
-                      Requiere calendario
                     </label>
                   </div>
 
