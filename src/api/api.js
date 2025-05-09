@@ -217,7 +217,7 @@ export const tramitesPorId = async (id) => {
 };
 export const obtenerLosPasos = async (id) => {
   try {
-    console.log('ID de la  trasnsaccionm enviada:', id);  // Para depuración
+    console.log('ID de la  trasnsaccionm enviada:', id); 
     const response = await axios.get(`${API_URL}/steps/${id}`);
     return response.data;
   } catch (error) {
