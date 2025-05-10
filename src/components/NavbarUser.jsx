@@ -9,11 +9,12 @@ import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
 
 
-export default function NavbarAdmin({title}) {
+export default function NavbarAdmin({ title }) {
   const [id1, setId1] = useState("");
   const [id2, setId2] = useState("");
   const [id3, setId3] = useState("");
   const [id4, setId4] = useState("");
+  const [id5, setId5] = useState("");
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [iconKey, setIconKey] = useState(0);
@@ -29,10 +30,14 @@ export default function NavbarAdmin({title}) {
         setId2("/MisTramites-sm");
         setId3("/ClienteHome-sm");
         setId4("/MiPerfil-sm");
+        setId5("/Calendario-sm");
+
       } else {
         setId1("/ClienteServicios");
         setId2("/MisTramites");
         setId4("/MiPerfil");
+        setId5("/Calendario");
+
       }
     };
 
@@ -63,37 +68,38 @@ export default function NavbarAdmin({title}) {
   }
 
   return (
-    <Navbar  fixed="top" expand="lg" className="encabezado-navbar">
-  <Container fluid className="contenedor-navbar">
-    
-    {/* Botón Hamburguesa */}
-    <Button variant="link" className="boton-menu" onClick={toggleMenu}>
-      <span className="navbar-toggler-icon"></span>
-    </Button>
+    <Navbar fixed="top" expand="lg" className="encabezado-navbar">
+      <Container fluid className="contenedor-navbar">
 
-    {/* Título */}
-    <h1 className="titulo-navbar">Consultoria Jas{title}</h1>
+        {/* Botón Hamburguesa */}
+        <Button variant="link" className="boton-menu" onClick={toggleMenu}>
+          <span className="navbar-toggler-icon"></span>
+        </Button>
 
-    {/* Logo + Botón cerrar sesión */}
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img src={Logo} alt="Logo" className="logo-navbar" />
-      <Icon key={iconKey} icon="line-md:logout" width="50" height="50" color="black" onClick={cerrarSesion} onMouseMove={recargarIcono} style={{ cursor: 'pointer' }}/>  
-    </div>
+        {/* Título */}
+        <h1 className="titulo-navbar">Consultoria Jas{title}</h1>
 
-  </Container>
+        {/* Logo + Botón cerrar sesión */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={Logo} alt="Logo" className="logo-navbar" />
+          <Icon key={iconKey} icon="line-md:logout" width="50" height="50" color="black" onClick={cerrarSesion} onMouseMove={recargarIcono} style={{ cursor: 'pointer' }} />
+        </div>
 
-  {/* Menú lateral desplegable */}
-  {menuOpen && (
-    <div className="menu-lateral">
-      <Nav className="flex-column">
-        <Nav.Link href={id3} className="link-menu">Home</Nav.Link>
-        <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
-        <Nav.Link href={id2} className="link-menu">Mis trámites</Nav.Link>
-        <Nav.Link href={id4} className="link-menu">Mi Perfil</Nav.Link>
-      </Nav>
-    </div>
-  )}
-</Navbar>
+      </Container>
+
+      {/* Menú lateral desplegable */}
+      {menuOpen && (
+        <div className="menu-lateral">
+          <Nav className="flex-column">
+            <Nav.Link href={id3} className="link-menu">Home</Nav.Link>
+            <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
+            <Nav.Link href={id2} className="link-menu">Mis trámites</Nav.Link>
+            <Nav.Link href={id5} className="link-menu">Calendario</Nav.Link>
+            <Nav.Link href={id4} className="link-menu">Mi Perfil</Nav.Link>
+          </Nav>
+        </div>
+      )}
+    </Navbar>
 
   );
 }

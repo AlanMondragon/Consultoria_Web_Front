@@ -15,6 +15,7 @@ import AdministradorPerfil from "./components/Administrador/AdministradorPerfil.
 import ClienteHome from "./components/Cliente/ClienteHome";
 import ClienteServicios from "./components/Cliente/ClienteServicios";
 import MisTramites from "./components/Cliente/MisTramites";
+import Calendario from "./components/Cliente/Calendario.jsx";
 
 import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -116,6 +117,11 @@ function App() {
         <Route path="/MisTramites" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <MisTramites />
+          </ProtectedRoute>
+        } />
+        <Route path="/Calendario" element={
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <Calendario />
           </ProtectedRoute>
         } />
         
