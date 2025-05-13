@@ -3,10 +3,14 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Navbar from '../NavbarAdmin.jsx';
-import '../../styles/ContenedorHome.css'
+// Importamos los estilos como módulo
+import styles from './../../styles/ContenedorHome.module.css';
 import clientes from '../../img/Clientes.png';
 import servicios from '../../img/Servicios.png';
 import tramites from '../../img/Tramites.png';
+// Deberías agregar tus imágenes para estadísticas y configuración
+import estadisticas from '../../img/Servicios.png'; // Agrega esta imagen
+import configuracion from '../../img/Servicios.png'; // Agrega esta imagen
 
 export default function AdministradorHome() {
   const navigate = useNavigate();
@@ -29,31 +33,57 @@ export default function AdministradorHome() {
       console.error("Error decoding token:", error);
       navigate("/");
     }
+
+    // Aplica la clase al body para estilos globales si se necesita
+    document.body.classList.add('home-admin-body');
+    return () => {
+      document.body.classList.remove('home-admin-body');
+    };
   }, []);
 
 
   return (
-    <div style={{ marginTop: '100px' }}>
-      <Navbar></Navbar>
-      <div className="ContenedorG">
-        <div className="tarjeta" onClick={() => navigate("/ServiciosAdmin")}>
-          <img src={servicios} alt="Servicios" />
-          <h3>Servicios</h3>
-          <p>Gestión de servicios</p>
-        </div>
-        <div className="tarjeta" onClick={() => navigate("/ClientesAdmin")}>
-          <img src={clientes} alt="Clientes" />
-          <h3>Clientes</h3>
-          <p>Gestión de clientes</p>
-        </div>
-        <div className="tarjeta " onClick={() => navigate("/TramitesAdmin")}>
-          <img src={tramites} alt="Trámites" />
-          <h3>Trámites</h3>
-          <p>Trámites Activos</p>
+    <div className={styles.adminHomeContainer}>
+      <Navbar />
+      <div className={styles.contenerCards}>
+        <div className={styles.contenedorG}>
+          {/* Primera fila: 3 tarjetas */}
+          <div className={styles.tarjeta} onClick={() => navigate("/TramitesAdmin")}>
+            <img src={tramites} alt="Trámites" />
+            <h3>Trámites</h3>
+            <p>Trámites Activos</p>
+          </div>
+          <div className={styles.tarjeta} onClick={() => navigate("/ClientesAdmin")}>
+            <img src={clientes} alt="Clientes" />
+            <h3>Clientes</h3>
+            <p>Gestión de clientes</p>
+          </div>
+          <div className={styles.tarjeta} onClick={() => navigate("/ServiciosAdmin")}>
+            <img src={servicios} alt="Servicios" />
+            <h3>Servicios</h3>
+            <p>Gestión de servicios</p>
+          </div>
+
+          {/* Segunda fila: 2 tarjetas centralizadas */}
+          <div className={styles.segundaFila}>
+            <div className={styles.tarjeta} onClick={() => navigate("/EstadisticasAdmin")}>
+              <img src={estadisticas} alt="Estadísticas" />
+              <h3>Estadísticas</h3>
+              <p>Reportes y métricas</p>
+            </div>
+            <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
+              <img src={configuracion} alt="Configuración" />
+              <h3>Configuración</h3>
+              <p>Ajustes del sistema</p>
+            </div>
+            <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
+              <img src={configuracion} alt="Configuración" />
+              <h3>Configuración</h3>
+              <p>Ajustes del sistema</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
   );
 }
-
