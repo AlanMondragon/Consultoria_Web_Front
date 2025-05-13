@@ -77,7 +77,7 @@ export default function NavbarAdmin({ title }) {
         </Button>
 
         {/* Título */}
-        <h1 className="titulo-navbar">Consultoria Jas{title}</h1>
+        <h1 className="titulo-navbar">ConsultorÍa JAS{title}</h1>
 
         {/* Logo + Botón cerrar sesión */}
         <div style={{ display: 'flex', alignItems: 'center' }}>

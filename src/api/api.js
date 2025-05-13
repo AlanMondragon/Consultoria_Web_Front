@@ -328,6 +328,7 @@ export const tramitesPorId = async (id) => {
     throw error;
   }
 };
+
 export const obtenerLosPasos = async (id) => {
   try {
     console.log('ID de la  trasnsaccionm enviada:', id); 

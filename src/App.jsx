@@ -16,6 +16,7 @@ import ClienteHome from "./components/Cliente/ClienteHome";
 import ClienteServicios from "./components/Cliente/ClienteServicios";
 import MisTramites from "./components/Cliente/MisTramites";
 import Calendario from "./components/Cliente/Calendario.jsx";
+import CalendarioAdmin from "./components/Administrador/CalendarioAdmin.jsx";
 
 import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -95,6 +96,11 @@ function App() {
          <Route path="/ActualizarPasos" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <CombinedStepManager />
+          </ProtectedRoute>
+        } />
+          <Route path="/Calendar" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <CalendarioAdmin />
           </ProtectedRoute>
         } />
 

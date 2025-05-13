@@ -16,6 +16,8 @@ export default function NavbarAdmin({title}) {
   const [id4, setId4] = useState("");
   const [id5, setId5] = useState("");
   const [id6, setId6] = useState("");
+  const [id7, setId7] = useState("");
+
 
   const [menuOpen, setMenuOpen] = useState(false);
     const [iconKey, setIconKey] = useState(0);
@@ -33,6 +35,7 @@ export default function NavbarAdmin({title}) {
         setId4("/HomeAdmin-sm");
         setId5("/Pagos-sm");
         setId6("/Perfil-sm");
+        setId7("/Calendar-sm");
 
       } else {
         setId1("/ServiciosAdmin");
@@ -41,6 +44,7 @@ export default function NavbarAdmin({title}) {
         setId4("/HomeAdmin");
         setId5("/Pagos");
         setId6("/Perfil");
+        setId7("/Calendar");
       }
     };
 
@@ -82,7 +86,7 @@ export default function NavbarAdmin({title}) {
     </Button>
 
     {/* Título */}
-    <h1 className="titulo-navbar">Consultoria Jas{title}</h1>
+    <h1 className="titulo-navbar">Consultoría JAS{title}</h1>
 
     {/* Logo + Botón cerrar sesión */}
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -97,11 +101,13 @@ export default function NavbarAdmin({title}) {
     <div className="menu-lateral">
       <Nav className="flex-column">
         <Nav.Link href={id4} className="link-menu">Home</Nav.Link>
+        <Nav.Link href={id7} className="link-menu">Calendario</Nav.Link>
         <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
         <Nav.Link href={id2} className="link-menu">Trámites</Nav.Link>
         <Nav.Link href={id3} className="link-menu">Clientes</Nav.Link>
         <Nav.Link href={id5} className="link-menu">Pagos</Nav.Link>
         <Nav.Link href={id6} className="link-menu">Mi Perfil</Nav.Link>
+
 
 
       </Nav>
