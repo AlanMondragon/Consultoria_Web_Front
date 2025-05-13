@@ -37,6 +37,7 @@ export default function NavbarAdmin({ title }) {
         setId2("/MisTramites");
         setId4("/MiPerfil");
         setId5("/Calendario");
+        setId3("/ClienteHome")
 
       }
     };

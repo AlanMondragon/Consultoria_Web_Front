@@ -1,32 +1,30 @@
+.clientContainer {
+  margin-top: 100px;
+}
+
 .ContenedorG {
-    background-color: #d3f0fd;
-    border-radius: 20px;
-    padding: 20px;
-    width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid black;
-  }
-  
-  .tarjeta {
-    background-color: #b0e6ff;
-    border: 2px solid black;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    width: 200px;
-    margin-left: 75px;
-    margin-right: 75px ;
-    transition: transform 0.3s;
-    cursor: pointer;
-    height:  250px;
-  }
-  
-  .tarjeta:hover {
-    transform: scale(1.05);
-  }
-  
+  background-color: #1d5e87;
+  width: 900px;
+  height: 400px;
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  align-items: center;
+}
+
+.tarjeta {
+  background-color: #F0F8FF;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  text-align: center;
+  width: 220px;
+  /* Ancho fijo de la tarjeta */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.tarjeta:hover {
+  transform: scale(1.05);
+}
