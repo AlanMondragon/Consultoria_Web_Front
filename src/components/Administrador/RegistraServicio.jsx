@@ -67,8 +67,13 @@ export default function RegistrarServicio() {
       if (response.success) {
         Swal.fire({
           icon: 'success',
-          title: 'Servicio registrado exitosamente',
-          text: 'El servicio ha sido registrado correctamente.',
+          title: 'El servicio se ha registrado exitosamente',
+          text: 'Servicio registrado con exito',
+          confirmButtonText: 'Continuar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/ServiciosAdmin");
+          }
         });
       } else {
         Swal.fire({
