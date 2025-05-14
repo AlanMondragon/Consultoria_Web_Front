@@ -26,18 +26,27 @@ import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
 import CombinedStepManager from "./components/Administrador/ActualizarPasos.jsx";
 
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Stripe solo para esta ruta */}
+        <Route path="/ClienteServicios" element={
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <Elements stripe={stripePromise}>
+              <ClienteServicios />
+            </Elements>
+          </ProtectedRoute>
+        } />
 
-        {/*Contraseña olvidada*/}
+        <Route path="/" element={<Home />} />
         <Route path="/olvidar-contra" element={<OlvidarContra />} />
 
-        {/* Rutas públicas */}
-
-        {/* Rutas solo para ADMIN */}
+        {/* ADMIN */}
         <Route path="/HomeAdmin" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <AdministradorHome />
@@ -58,7 +67,7 @@ function App() {
             <AdministradorCliente />
           </ProtectedRoute>
         } />
-       <Route path="/Pagos" element={
+        <Route path="/Pagos" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <AdministradorPagos />
           </ProtectedRoute>
@@ -93,26 +102,21 @@ function App() {
             <RegistrarPasos />
           </ProtectedRoute>
         } />
-         <Route path="/ActualizarPasos" element={
+        <Route path="/ActualizarPasos" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <CombinedStepManager />
           </ProtectedRoute>
         } />
-          <Route path="/Calendar" element={
+        <Route path="/Calendar" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <CalendarioAdmin />
           </ProtectedRoute>
         } />
 
-        {/* Rutas solo para USER */}
+        {/* USER */}
         <Route path="/ClienteHome" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <ClienteHome />
-          </ProtectedRoute>
-        } />
-        <Route path="/ClienteServicios" element={
-          <ProtectedRoute allowedRoles={["USER"]}>
-            <ClienteServicios />
           </ProtectedRoute>
         } />
         <Route path="/MiPerfil" element={
@@ -130,7 +134,6 @@ function App() {
             <Calendario />
           </ProtectedRoute>
         } />
-        
 
         <Route path="/no-encontrado" element={<NoAutorizado />} />
       </Routes>

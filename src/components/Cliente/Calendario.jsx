@@ -7,6 +7,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import esLocale from '@fullcalendar/core/locales/es';
 import { tramitesPorId } from './../../api/api';
 import Navbar from '../NavbarUser';
+import React from 'react';
+import Logo from '../../img/calendar.gif';
 
 export default function Calendario() {
     const navigate = useNavigate();
@@ -151,7 +153,9 @@ export default function Calendario() {
 
     return (
         <div style={{ marginTop: '100px', backgroundColor: 'white', color: 'black', minHeight: '100vh' }}>
-            <Navbar />
+            <Navbar title={"Calendario"}
+            />
+
             <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', width: '1000px', margin: '0 auto' , padding: '50px'}}>
                 <div style={{ flex: 3 }}>
                     <select

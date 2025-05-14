@@ -123,7 +123,7 @@ export default function AdministradorTramites() {
 
   return (
     <div style={{ marginTop: '100px' }}>
-      <Navbar title={"-Mis Trámites"} />
+      <Navbar title={"Mis Trámites"} />
 
       <div className="d-flex justify-content-between align-items-center p-3">
         <Form.Control

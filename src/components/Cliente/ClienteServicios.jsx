@@ -1,18 +1,23 @@
+// ... importaciones
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
-import { getAllProcess } from './../../api/api.js';
+import { getAllProcess, getStepById } from './../../api/api.js';
 import Navbar from '../NavbarUser.jsx';
 import Slider from 'react-slick';
-import { Icon } from '@iconify/react'; // Iconos con Iconify
+import { Icon } from '@iconify/react';
 import { Modal, Button } from 'react-bootstrap';
-import { getStepById } from './../../api/api'; // Importar función para obtener pasos
-
+import CheckoutForm from './../CheckoutForm.jsx';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './../../styles/ClienteServicios.css';
+
+// ✅ Configura tu public key de Stripe
+const stripePromise = loadStripe("pk_test_51QrBlZJkhVNwEnzwnMQJP2ePgjyJxOlIvzHEFibaqygiHUB65TVG7JBPiDTcfv28Vp4eQ9ovJtCYyUogtJEi3AqL00JGxmMV5e");
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
@@ -22,7 +27,8 @@ export default function ClienteServicios() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [steps, setSteps] = useState([]);
-
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [serviceToPay, setServiceToPay] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -55,11 +61,9 @@ export default function ClienteServicios() {
     try {
       const response = await getAllProcess();
       if (response.success && Array.isArray(response.response.Transacts)) {
-        console.log('Datos recibidos');
         setServices(response.response.Transacts);
       } else {
         console.error("Unexpected API response format:", response);
-        console.log('Datos NO RECIBIDOS');
         setServices([]);
       }
     } catch (error) {
@@ -68,7 +72,6 @@ export default function ClienteServicios() {
     }
   };
 
-  // Función para obtener los pasos del trámite
   const fetchStepsById = async (stepId) => {
     try {
       const response = await getStepById(stepId);
@@ -83,18 +86,11 @@ export default function ClienteServicios() {
     }
   };
 
-
-  // Flechas personalizadas con Iconify
   const PrevArrow = ({ onClick }) => (
     <div className="slick-arrow slick-prev" onClick={onClick}>
       <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
     </div>
   );
-
-  const toggleZoom = () => {
-    setIsZoomed(!isZoomed);
-  };
-
 
   const NextArrow = ({ onClick }) => (
     <div className="slick-arrow slick-next" onClick={onClick}>
@@ -104,12 +100,8 @@ export default function ClienteServicios() {
 
   const truncateDescription = (description, maxChars) => {
     if (!description) return '';
-    return description.length > maxChars
-      ? description.slice(0, maxChars) + '...'
-      : description;
+    return description.length > maxChars ? description.slice(0, maxChars) + '...' : description;
   };
-  
-  
 
   const sliderSettings = {
     dots: false,
@@ -132,11 +124,16 @@ export default function ClienteServicios() {
     setModalIsOpen(true);
     await fetchStepsById(service.idTransact);
   };
-  // 👇 Al cerrar, limpiamos pasos
+
   const closeModal = () => {
     setSelectedService(null);
     setModalIsOpen(false);
     setSteps([]);
+    setIsZoomed(false);
+  };
+
+  const toggleZoom = () => {
+    setIsZoomed(!isZoomed);
   };
 
   const openStepsModal = async (idTransact) => {
@@ -149,12 +146,31 @@ export default function ClienteServicios() {
     }
   };
 
+  const openPaymentModal = (service) => {
+    setServiceToPay(service);
+    setPaymentModalOpen(true);
+  };
+
+  const closePaymentModal = () => {
+    setServiceToPay(null);
+    setPaymentModalOpen(false);
+  };
+
+  const handlePaymentSuccess = (paymentIntent) => {
+    closePaymentModal();
+    Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
+  };
+
+  const handlePaymentError = (error) => {
+    Swal.fire('Error', error.message || 'Falló el pago.', 'error');
+  };
 
   return (
     <div style={{ marginTop: '100px' }}>
       <div className='fixed-top'>
-        <Navbar title={"-Servicios"} />
+        <Navbar title={"Servicios"} />
       </div>
+
       <div className="services-slider">
         <h1 className="title">Servicios disponibles</h1>
         <Slider {...sliderSettings}>
@@ -166,11 +182,18 @@ export default function ClienteServicios() {
               <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
               <p className="price">MX${service.cashAdvance}.00</p>
               <button onClick={() => openModal(service)}>Mostrar Más</button>
+              <button
+                className="btn btn-primary mt-2"
+                onClick={() => openPaymentModal(service)}
+              >
+                Pagar MX${service.cashAdvance}
+              </button>
             </div>
           ))}
         </Slider>
       </div>
 
+      {/* Modal de detalles del servicio */}
       <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName="wide-modal">
         {selectedService && (
           <>
@@ -182,9 +205,9 @@ export default function ClienteServicios() {
                 <img src={selectedService.image} alt={selectedService.name} />
                 <div className="info">
                   <p>{selectedService.name}</p>
-                  <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
+                  <p style={{ fontWeight: "bold" }}>Pago inicial:</p>
                   <p className="price" style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
-                  <p style={{ color: "#000", fontWeight: "bold" }}>Informacion de costos:</p>
+                  <p style={{ fontWeight: "bold" }}>Información de costos:</p>
                   <img
                     src={selectedService.imageDetail}
                     alt="Detalle"
@@ -196,7 +219,8 @@ export default function ClienteServicios() {
                     }}
                   />
                 </div>
-                {isZoomed && selectedService && (
+
+                {isZoomed && (
                   <div
                     onClick={toggleZoom}
                     style={{
@@ -228,10 +252,8 @@ export default function ClienteServicios() {
                     />
                   </div>
                 )}
-
               </div>
             </Modal.Body>
-
             <Modal.Footer>
               <Button variant="info" onClick={() => openStepsModal(selectedService.idTransact)}>Ver pasos</Button>
               <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
@@ -239,12 +261,9 @@ export default function ClienteServicios() {
           </>
         )}
       </Modal>
-      <Modal
-        show={showStepsModal}
-        onHide={() => setShowStepsModal(false)}
-        centered
-        className="modal-steps" // Agrega esta clase principal
-      >
+
+      {/* Modal de pasos */}
+      <Modal show={showStepsModal} onHide={() => setShowStepsModal(false)} centered className="modal-steps">
         <Modal.Header closeButton className="modal-header">
           <Modal.Title className="modal-title">Pasos del trámite</Modal.Title>
         </Modal.Header>
@@ -277,23 +296,27 @@ export default function ClienteServicios() {
           )}
         </Modal.Body>
         <Modal.Footer className="modal-footer">
-          <Button
-            variant="secondary"
-            onClick={() => setShowStepsModal(false)}
-            className="btn-secondary"
-            style={{
-              backgroundColor: '#6c757d',
-              border: 'none',
-              borderRadius: '5px',
-              padding: '8px 20px',
-              fontWeight: 'bold'
-            }}
-          >
-            Cerrar
-          </Button>
+          <Button variant="secondary" onClick={() => setShowStepsModal(false)}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
 
+      {/* ✅ Modal de pago con Stripe */}
+      <Modal show={paymentModalOpen} onHide={closePaymentModal} centered size="sm">
+        <Modal.Header closeButton>
+          <Modal.Title>Pago de {serviceToPay?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {serviceToPay && (
+            <Elements stripe={stripePromise}>
+              <CheckoutForm
+                amount={serviceToPay.cashAdvance}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+              />
+            </Elements>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

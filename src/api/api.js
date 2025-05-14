@@ -328,7 +328,6 @@ export const tramitesPorId = async (id) => {
     throw error;
   }
 };
-
 export const obtenerLosPasos = async (id) => {
   try {
     console.log('ID de la  trasnsaccionm enviada:', id); 
@@ -486,4 +485,14 @@ export const Obtenertrasacciones = async () => {
     console.error("Error obtener las trasacciones", error);
     throw error;
   }
+};
+
+export const getAllServices = async () => {
+  const response = await axios.get(`${API_URL}/services`);
+  return response.data;
+};
+
+export const createPaymentIntent = async (data) => {
+  const response = await axios.post(`${API_URL}/stripe/payment-intent`, data);
+  return response.data;
 };
