@@ -1,11 +1,4 @@
-body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #e5effe;
-  margin: 0;
-  color: #191f62; 
-}
-
-.container-registrar-tramite {
+.containerRegistrarTramite {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,8 +7,8 @@ body {
   box-sizing: border-box;
 }
 
-.card-registrar-tramite {
-  background-color: #fdf7f7;
+.cardRegistrarTramite {
+  background-color: #dfeeff;
   border-radius: 12px;
   padding: 40px;
   width: 100%;
@@ -23,38 +16,38 @@ body {
   max-width: 800px;
   box-sizing: border-box;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 82, 163, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 82, 163, 0.5);
   border: 1px solid #e1e8f0;
 }
 
-.card-registrar-tramite h2 {
+.cardRegistrarTramite h2 {
   margin-bottom: 32px;
   font-size: 24px;
   color: #1a365d;
   font-weight: 600;
 }
 
-.form-registrar-tramite {
+.formRegistrarTramite {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-group {
+.formGroup {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-.form-group label {
+.formGroup label {
   font-weight: 500;
   color: #2c5282;
   margin-bottom: 8px;
   font-size: 14px;
 }
 
-.form-group input,
-.form-group textarea {
+.formGroup input,
+.formGroup textarea {
   padding: 12px 16px;
   border: none;
   border-bottom: 1px solid #cbd5e0;
@@ -65,18 +58,18 @@ body {
   transition: all 0.2s ease;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.formGroup input:focus,
+.formGroup textarea:focus {
   border-bottom-color: #3182ce;
   background-color: #f8fafc;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
   color: #1e1f21;
 }
 
-.form-group textarea {
+.formGroup textarea {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   resize: vertical;
@@ -85,7 +78,7 @@ body {
   background-color: #f8fafc;
 }
 
-.button-submit-service {
+.buttonSubmitService {
   align-self: flex-end;
   background-color: #3182ce;
   color: white;
@@ -100,18 +93,13 @@ body {
   margin-top: 16px;
 }
 
-.button-submit-service:hover {
+.buttonSubmitService:hover {
   background-color: #2b6cb0;
   transform: translateY(-1px);
 }
 
 /* Estilos para file inputs */
-input[type="file"] {
-  color: #4a5568;
-  padding: 12px 0;
-}
-
-.custom-file-button {
+.customFileButton {
   display: inline-block;
   background-color: #4299e1;
   color: white;
@@ -126,18 +114,18 @@ input[type="file"] {
   width: 100%;
 }
 
-.custom-file-button:hover {
+.customFileButton:hover {
   background-color: #3182ce;
 }
 
-.file-name {
+.fileName {
   display: block;
   margin-top: 8px;
   color: #718096;
   font-size: 13px;
 }
 
-.preview-img {
+.previewImg {
   margin-top: 16px;
   max-width: 200px;
   max-height: 150px;
