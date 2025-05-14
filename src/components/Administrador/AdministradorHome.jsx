@@ -9,8 +9,9 @@ import clientes from '../../img/Clientes.png';
 import servicios from '../../img/Servicios.png';
 import tramites from '../../img/Tramites.png';
 // Deberías agregar tus imágenes para estadísticas y configuración
-import estadisticas from '../../img/Servicios.png'; // Agrega esta imagen
-import configuracion from '../../img/Servicios.png'; // Agrega esta imagen
+import calendario from '../../img/Calendario.png'; 
+import pagos from '../../img/Pagos.png'; 
+import perfil from '../../img/Perfil.png'; 
 
 export default function AdministradorHome() {
   const navigate = useNavigate();
@@ -66,19 +67,19 @@ export default function AdministradorHome() {
 
           {/* Segunda fila: 2 tarjetas centralizadas */}
           <div className={styles.segundaFila}>
-            <div className={styles.tarjeta} onClick={() => navigate("/EstadisticasAdmin")}>
-              <img src={estadisticas} alt="Estadísticas" />
-              <h3>Estadísticas</h3>
+            <div className={styles.tarjeta} onClick={() => navigate("/Calendar")}>
+              <img src={calendario} alt="Estadísticas" />
+              <h3>Calendario</h3>
               <p>Reportes y métricas</p>
             </div>
             <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
-              <img src={configuracion} alt="Configuración" />
-              <h3>Configuración</h3>
+              <img src={pagos} alt="Configuración" />
+              <h3>Pagos</h3>
               <p>Ajustes del sistema</p>
             </div>
             <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
-              <img src={configuracion} alt="Configuración" />
-              <h3>Configuración</h3>
+              <img src={perfil} alt="Configuración" />
+              <h3>Perfil</h3>
               <p>Ajustes del sistema</p>
             </div>
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Navbar from '../NavbarAdmin.jsx';
-import './../../styles/RegistrarServicios.css';
+import styles from './../../styles/RegistrarServicio.module.css';
 import { createService } from '../../api/api';
 import Swal from 'sweetalert2';
 
@@ -93,20 +93,20 @@ export default function RegistrarServicio() {
         <Navbar title={"-Registrar Servicios"} />
       </div>
 
-      <div className='container-registrar-tramite'>
-        <div className='card-registrar-tramite'>
+      <div className={styles.containerRegistrarTramite}>
+        <div className={styles.cardRegistrarTramite}>
           <h2>Registrar Servicio</h2>
-          <form className='form-registrar-tramite' onSubmit={handleSubmit}>
-            <div className='form-group'>
+          <form className={styles.formRegistrarTramite} onSubmit={handleSubmit}>
+            <div className={styles.formGroup}>
               <label htmlFor='nombre'>Nombre del Tramite</label>
               <input type='text' id='nombre' name='name' required />
             </div>
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='descripcion'>Descripción</label>
               <textarea id='descripcion' name='description' required></textarea>
             </div>
             {/* Imagen */}
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='imagen'>Imagen</label>
               <input
                 type='file'
@@ -125,16 +125,15 @@ export default function RegistrarServicio() {
                   }
                 }}
               />
-              <label htmlFor='imagen' className='custom-file-button'>Seleccionar imagen</label>
-              <span className='file-name'>{imagenNombre}</span>
+              <label htmlFor='imagen' className={styles.customFileButton}>Seleccionar imagen</label>
+              <span className={styles.fileName}>{imagenNombre}</span>
               {imagenPreview && (
-                <img src={imagenPreview} alt="Vista previa" className='preview-img' />
+                <img src={imagenPreview} alt="Vista previa" className={styles.previewImg} />
               )}
-
             </div>
 
             {/* Imagen Detalle */}
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='imagenDetalle'>Imagen de detalles</label>
               <input
                 type='file'
@@ -153,45 +152,41 @@ export default function RegistrarServicio() {
                   }
                 }}
               />
-              <label htmlFor='imagenDetalle' className='custom-file-button'>Seleccionar imagen</label>
-              <span className='file-name'>{imagenDetalleNombre}</span>
+              <label htmlFor='imagenDetalle' className={styles.customFileButton}>Seleccionar imagen</label>
+              <span className={styles.fileName}>{imagenDetalleNombre}</span>
               {imagenDetallePreview && (
-                <img src={imagenDetallePreview} alt="Vista previa detalle" className='preview-img' />
+                <img src={imagenDetallePreview} alt="Vista previa detalle" className={styles.previewImg} />
               )}
             </div>
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo</label>
               <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' required />
             </div>
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='simulacion'>Requiere datos de acceso</label>
-              <label className='switch'>
+              <label className={styles.switch}>
                 <input type='checkbox' id='simulacion' name='simulation' />
-                <span className='slider round'></span>
+                <span className={styles.slider}></span>
               </label>
             </div>
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='cas'>CAS</label>
-              <label className='switch'>
+              <label className={styles.switch}>
                 <input type='checkbox' id='cas' name='cas' />
-                <span className='slider round'></span>
+                <span className={styles.slider}></span>
               </label>
             </div>
-            <div className='form-group'>
+            <div className={styles.formGroup}>
               <label htmlFor='con'>CON</label>
-              <label className='switch'>
+              <label className={styles.switch}>
                 <input type='checkbox' id='con' name='con' />
-                <span className='slider round'></span>
+                <span className={styles.slider}></span>
               </label>
             </div>
-            <button type='submit' className='button-submit-service'>Registrar</button>
+            <button type='submit' className={styles.buttonSubmitService}>Registrar</button>
           </form>
         </div>
       </div>
-
     </div>
   );
 }
-
-
-
