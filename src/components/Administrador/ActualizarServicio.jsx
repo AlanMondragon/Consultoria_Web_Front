@@ -3,6 +3,7 @@ import Navbar from './../NavbarAdmin.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { updateService } from './../../api/api.js';
+import styles from './../../styles/ActualizarServicio.module.css';
 
 export default function ActualizarServicio() {
   const navigate = useNavigate();
@@ -79,26 +80,26 @@ export default function ActualizarServicio() {
   };
 
   return (
-    <div style={{ marginTop: '80px' }}>
+    <div style={{ marginTop: '100px' }}>
       <div className='fixed-top'>
-        <Navbar title={"-Actualizar Servicios"} />
+        <Navbar title={"Actualizar Servicios"} />
       </div>
 
-      <div className='container-registrar-tramite'>
-        <div className='card-registrar-tramite'>
+      <div className={styles['container-registrar-tramite']}>
+        <div className={styles['card-registrar-tramite']}>
           <h2>Actualizar Servicio</h2>
-          <form className='form-registrar-tramite' onSubmit={handleSubmit}>
-            <div className='form-group'>
+          <form className={styles['form-registrar-tramite']} onSubmit={handleSubmit}>
+            <div className={styles['form-group']}>
               <label htmlFor='nombre'>Nombre del Tramite</label>
               <input type='text' id='nombre' name='name' defaultValue={service?.description} required />
             </div>
-            <div className='form-group'>
+            <div className={styles['form-group']}>
               <label htmlFor='descripcion'>Descripción</label>
               <textarea id='descripcion' name='description' defaultValue={service?.name} required></textarea>
             </div>
 
             {/* Imagen */}
-            <div className='form-group'>
+            <div className={styles['form-group']}>
               <label htmlFor='imagen'>Imagen</label>
               <input
                 type='file'
@@ -117,15 +118,15 @@ export default function ActualizarServicio() {
                   }
                 }}
               />
-              <label htmlFor='imagen' className='custom-file-button'>Seleccionar imagen</label>
-              <span className='file-name'>{truncateFileName(imagenNombre)}</span>
+              <label htmlFor='imagen' className={styles['custom-file-button']}>Seleccionar imagen</label>
+              <span className={styles['file-name']}>{truncateFileName(imagenNombre)}</span>
               {imagenPreview && (
-                <img src={imagenPreview} alt="Vista previa" className='preview-img' />
+                <img src={imagenPreview} alt="Vista previa" className={styles['preview-img']} />
               )}
             </div>
 
             {/* Imagen Detalle */}
-            <div className='form-group'>
+            <div className={styles['form-group']}>
               <label htmlFor='imagenDetalle'>Imagen de detalles</label>
               <input
                 type='file'
@@ -144,43 +145,43 @@ export default function ActualizarServicio() {
                   }
                 }}
               />
-              <label htmlFor='imagenDetalle' className='custom-file-button'>Seleccionar imagen</label>
-              <span className='file-name'>{truncateFileName(imagenDetalleNombre)}</span>
+              <label htmlFor='imagenDetalle' className={styles['custom-file-button']}>Seleccionar imagen</label>
+              <span className={styles['file-name']}>{truncateFileName(imagenDetalleNombre)}</span>
               {imagenDetallePreview && (
-                <img src={imagenDetallePreview} alt="Vista previa detalle" className='preview-img' />
+                <img src={imagenDetallePreview} alt="Vista previa detalle" className={styles['preview-img']} />
               )}
             </div>
 
-            <div className='form-group'>
+            <div className={styles['form-group']}>
               <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo</label>
               <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' defaultValue={service?.cashAdvance} required />
             </div>
 
-            <div className='form-group'>
+            <div className={styles['form-group-switch']}>
               <label htmlFor='simulacion'>Simulación</label>
-              <label className='switch'>
+              <label className={styles['switch']}>
                 <input type='checkbox' id='simulacion' name='simulation' defaultChecked={service?.simulation} />
-                <span className='slider round'></span>
+                <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
 
-            <div className='form-group'>
+            <div className={styles['form-group-switch']}>
               <label htmlFor='cas'>CAS</label>
-              <label className='switch'>
+              <label className={styles['switch']}>
                 <input type='checkbox' id='cas' name='cas' defaultChecked={service?.cas} />
-                <span className='slider round'></span>
+                <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
 
-            <div className='form-group'>
+            <div className={styles['form-group-switch']}>
               <label htmlFor='con'>CON</label>
-              <label className='switch'>
+              <label className={styles['switch']}>
                 <input type='checkbox' id='con' name='con' defaultChecked={service?.con} />
-                <span className='slider round'></span>
+                <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
 
-            <button type='submit' className='button-submit-service'>Actualizar</button>
+            <button type='submit' className={styles['button-submit-service']}>Actualizar</button>
           </form>
         </div>
       </div>
