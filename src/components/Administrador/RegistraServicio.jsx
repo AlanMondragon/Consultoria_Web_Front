@@ -167,21 +167,21 @@ export default function RegistrarServicio() {
               <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo</label>
               <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' required />
             </div>
-            <div className={styles.formGroup}>
+            <div className={styles.switchContainer}>
               <label htmlFor='simulacion'>Requiere datos de acceso</label>
               <label className={styles.switch}>
                 <input type='checkbox' id='simulacion' name='simulation' />
                 <span className={styles.slider}></span>
               </label>
             </div>
-            <div className={styles.formGroup}>
+            <div className={styles.switchContainer}>
               <label htmlFor='cas'>CAS</label>
               <label className={styles.switch}>
                 <input type='checkbox' id='cas' name='cas' />
                 <span className={styles.slider}></span>
               </label>
             </div>
-            <div className={styles.formGroup}>
+            <div className={styles.switchContainer}>
               <label htmlFor='con'>CON</label>
               <label className={styles.switch}>
                 <input type='checkbox' id='con' name='con' />

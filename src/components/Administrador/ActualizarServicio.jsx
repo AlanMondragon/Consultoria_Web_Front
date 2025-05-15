@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { updateService } from './../../api/api.js';
 import styles from './../../styles/ActualizarServicio.module.css';
+import Swal from 'sweetalert2';
 
 export default function ActualizarServicio() {
   const navigate = useNavigate();
@@ -71,8 +72,24 @@ export default function ActualizarServicio() {
 
     try {
       const response = await updateService(service.idTransact, serviceData);
-      alert('Servicio actualizado exitosamente');
-      console.log('Response:', response);
+      if (response.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'El servicio se ha actualizado exitosamente',
+          text: 'Servicio actualizado con exito',
+          confirmButtonText: 'Continuar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/ServiciosAdmin");
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar el servicio',
+          text: 'Hubo un problema al actualizar el servicio. Por favor, inténtelo de nuevo.',
+        });
+      }
     } catch (error) {
       alert('Error al actualizar el servicio');
       console.error('Error:', error);
@@ -157,6 +174,7 @@ export default function ActualizarServicio() {
               <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' defaultValue={service?.cashAdvance} required />
             </div>
 
+            {/* Switches modificados: ahora con las etiquetas arriba y switches abajo */}
             <div className={styles['form-group-switch']}>
               <label htmlFor='simulacion'>Simulación</label>
               <label className={styles['switch']}>
