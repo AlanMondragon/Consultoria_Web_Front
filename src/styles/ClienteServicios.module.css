@@ -16,7 +16,7 @@
 
 .serviceCard {
   width: 300px; 
-  min-height: 450px; 
+  height: 500px; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -295,3 +295,42 @@
   font-size: 1.2rem;
   font-weight: bold;
 }
+
+
+/* Estilos para el modal de pasos */
+.modalSteps :global(.modal-content) {
+  border-radius: 12px;
+  border: 1px solid #746e6e;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
+  max-height: 90vh; /* Limita la altura máxima del modal */
+  display: flex;
+  flex-direction: column;
+}
+
+.modalSteps :global(.modal-header) {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #a4a7a9;
+  border-radius: 10px 10px 0 0;
+  padding: 15px 20px;
+}
+
+.modalSteps :global(.modal-title) {
+  font-weight: bold;
+  color: #000;
+  font-size: 1.25rem;
+}
+
+.modalSteps :global(.modal-body) {
+  padding: 20px;
+  background-color: #f0f0f0;
+  max-height: 60vh; /* Altura máxima del contenido */
+  overflow-y: auto; /* Habilita el scroll vertical */
+}
+
+.modalSteps :global(.modal-footer) {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  border-radius: 0 0 10px 10px;
+  padding: 15px 20px;
+}
+
