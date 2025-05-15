@@ -1,4 +1,4 @@
-// ... importaciones
+// ClienteServicios.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -16,7 +16,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './../../styles/ClienteServicios.css';
 
-// ✅ Configura tu public key de Stripe
+// ✅ Clave pública de Stripe
 const stripePromise = loadStripe("pk_test_51QrBlZJkhVNwEnzwnMQJP2ePgjyJxOlIvzHEFibaqygiHUB65TVG7JBPiDTcfv28Vp4eQ9ovJtCYyUogtJEi3AqL00JGxmMV5e");
 
 export default function ClienteServicios() {
@@ -29,17 +29,17 @@ export default function ClienteServicios() {
   const [steps, setSteps] = useState([]);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [serviceToPay, setServiceToPay] = useState(null);
+  const [userEmail, setUserEmail] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/");
-      return;
-    }
+    if (!token) return navigate("/");
 
     try {
       const decoded = jwtDecode(token);
+      setUserEmail(decoded.sub || "");
+      setUserId(decoded.idUser || "");
       if (decoded.role !== "USER") {
         Swal.fire({
           icon: 'error',
@@ -72,9 +72,9 @@ export default function ClienteServicios() {
     }
   };
 
-  const fetchStepsById = async (stepId) => {
+  const fetchStepsById = async (idTransact) => {
     try {
-      const response = await getStepById(stepId);
+      const response = await getStepById(idTransact);
       if (response.success && Array.isArray(response.response.StepsTransacts)) {
         setSteps(response.response.StepsTransacts);
       } else {
@@ -85,6 +85,9 @@ export default function ClienteServicios() {
       setSteps([]);
     }
   };
+
+  const truncateDescription = (text, max) =>
+    text?.length > max ? `${text.slice(0, max)}...` : text || '';
 
   const PrevArrow = ({ onClick }) => (
     <div className="slick-arrow slick-prev" onClick={onClick}>
@@ -97,11 +100,6 @@ export default function ClienteServicios() {
       <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
     </div>
   );
-
-  const truncateDescription = (description, maxChars) => {
-    if (!description) return '';
-    return description.length > maxChars ? description.slice(0, maxChars) + '...' : description;
-  };
 
   const sliderSettings = {
     dots: false,
@@ -132,18 +130,11 @@ export default function ClienteServicios() {
     setIsZoomed(false);
   };
 
-  const toggleZoom = () => {
-    setIsZoomed(!isZoomed);
-  };
+  const toggleZoom = () => setIsZoomed(!isZoomed);
 
   const openStepsModal = async (idTransact) => {
-    try {
-      const response = await getStepById(idTransact);
-      setSteps(response.response.StepsTransacts || []);
-      setShowStepsModal(true);
-    } catch (error) {
-      console.error('Error al obtener pasos:', error);
-    }
+    await fetchStepsById(idTransact);
+    setShowStepsModal(true);
   };
 
   const openPaymentModal = (service) => {
@@ -156,7 +147,7 @@ export default function ClienteServicios() {
     setPaymentModalOpen(false);
   };
 
-  const handlePaymentSuccess = (paymentIntent) => {
+  const handlePaymentSuccess = () => {
     closePaymentModal();
     Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
   };
@@ -167,8 +158,8 @@ export default function ClienteServicios() {
 
   return (
     <div style={{ marginTop: '100px' }}>
-      <div className='fixed-top'>
-        <Navbar title={"Servicios"} />
+      <div className="fixed-top">
+        <Navbar title="Servicios" />
       </div>
 
       <div className="services-slider">
@@ -193,7 +184,7 @@ export default function ClienteServicios() {
         </Slider>
       </div>
 
-      {/* Modal de detalles del servicio */}
+      {/* Modal Detalles */}
       <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName="wide-modal">
         {selectedService && (
           <>
@@ -206,7 +197,9 @@ export default function ClienteServicios() {
                 <div className="info">
                   <p>{selectedService.name}</p>
                   <p style={{ fontWeight: "bold" }}>Pago inicial:</p>
-                  <p className="price" style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
+                  <p className="price" style={{ color: "blue" }}>
+                    MX$ {selectedService.cashAdvance}.00
+                  </p>
                   <p style={{ fontWeight: "bold" }}>Información de costos:</p>
                   <img
                     src={selectedService.imageDetail}
@@ -255,25 +248,26 @@ export default function ClienteServicios() {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="info" onClick={() => openStepsModal(selectedService.idTransact)}>Ver pasos</Button>
+              <Button variant="info" onClick={() => openStepsModal(selectedService.idTransact)}>
+                Ver pasos
+              </Button>
               <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
             </Modal.Footer>
           </>
         )}
       </Modal>
 
-      {/* Modal de pasos */}
+      {/* Modal Pasos */}
       <Modal show={showStepsModal} onHide={() => setShowStepsModal(false)} centered className="modal-steps">
-        <Modal.Header closeButton className="modal-header">
-          <Modal.Title className="modal-title">Pasos del trámite</Modal.Title>
+        <Modal.Header closeButton>
+          <Modal.Title>Pasos del trámite</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="modal-body">
+        <Modal.Body>
           {steps.length > 0 ? (
             <ol className="steps-list" style={{ paddingLeft: '0' }}>
               {steps.map((step, index) => (
                 <li
                   key={index}
-                  className="step-item"
                   style={{
                     backgroundColor: '#fff',
                     marginBottom: '15px',
@@ -295,12 +289,12 @@ export default function ClienteServicios() {
             </p>
           )}
         </Modal.Body>
-        <Modal.Footer className="modal-footer">
+        <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowStepsModal(false)}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* ✅ Modal de pago con Stripe */}
+      {/* Modal Pago Stripe */}
       <Modal show={paymentModalOpen} onHide={closePaymentModal} centered size="sm">
         <Modal.Header closeButton>
           <Modal.Title>Pago de {serviceToPay?.name}</Modal.Title>
@@ -310,6 +304,9 @@ export default function ClienteServicios() {
             <Elements stripe={stripePromise}>
               <CheckoutForm
                 amount={serviceToPay.cashAdvance}
+                description={serviceToPay.description}
+                userEmail={userEmail}
+                customer={userId}
                 onSuccess={handlePaymentSuccess}
                 onError={handlePaymentError}
               />
