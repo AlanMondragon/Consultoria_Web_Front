@@ -14,10 +14,10 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './../../styles/ClienteServicios.css';
+import styles from './../../styles/ClienteServicios.module.css';
 
 // ✅ Clave pública de Stripe
-const stripePromise = loadStripe("pk_test_51QrBlZJkhVNwEnzwnMQJP2ePgjyJxOlIvzHEFibaqygiHUB65TVG7JBPiDTcfv28Vp4eQ9ovJtCYyUogtJEi3AqL00JGxmMV5e");
+const stripePromise = loadStripe(import.meta.env.VITE_PUBLIC_SECRET_KEY);
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
@@ -90,13 +90,13 @@ export default function ClienteServicios() {
     text?.length > max ? `${text.slice(0, max)}...` : text || '';
 
   const PrevArrow = ({ onClick }) => (
-    <div className="slick-arrow slick-prev" onClick={onClick}>
+    <div className={styles.slickArrowPrev} onClick={onClick}>
       <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
     </div>
   );
 
   const NextArrow = ({ onClick }) => (
-    <div className="slick-arrow slick-next" onClick={onClick}>
+    <div className={styles.slickArrowNext} onClick={onClick}>
       <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
     </div>
   );
@@ -157,24 +157,35 @@ export default function ClienteServicios() {
   };
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div className={styles.container}>
       <div className="fixed-top">
         <Navbar title="Servicios" />
       </div>
 
-      <div className="services-slider">
-        <h1 className="title">Servicios disponibles</h1>
+      <div className={styles.servicesSlider}>
+        <h1 className={styles.title}>Servicios disponibles</h1>
         <Slider {...sliderSettings}>
           {services.map((service, index) => (
-            <div key={index} className="service-card">
-              <img src={service.image} alt={service.name} />
-              <h2>{service.description}</h2>
-              <p>{truncateDescription(service.name, 250)}</p>
-              <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
-              <p className="price">MX${service.cashAdvance}.00</p>
-              <button onClick={() => openModal(service)}>Mostrar Más</button>
+            <div key={index} className={styles.serviceCard}>
+              <img 
+                src={service.image} 
+                alt={service.name} 
+                className={styles.serviceCardImage}
+              />
+              <h2 className={styles.serviceCardTitle}>{service.description}</h2>
+              <p className={styles.serviceCardDescription}>
+                {truncateDescription(service.name, 250)}
+              </p>
+              <p className={styles.costInfoLabel}>Pago inicial:</p>
+              <p className={styles.price}>MX${service.cashAdvance}.00</p>
+              <button 
+                className={styles.cardButton}
+                onClick={() => openModal(service)}
+              >
+                Mostrar Más
+              </button>
               <button
-                className="btn btn-primary mt-2"
+                className={styles.cardButtonPay}
                 onClick={() => openPaymentModal(service)}
               >
                 Pagar MX${service.cashAdvance}
@@ -185,22 +196,31 @@ export default function ClienteServicios() {
       </div>
 
       {/* Modal Detalles */}
-      <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName="wide-modal">
+      <Modal 
+        show={modalIsOpen} 
+        onHide={closeModal} 
+        centered 
+        dialogClassName={styles.wideModal}
+      >
         {selectedService && (
           <>
             <Modal.Header closeButton>
               <Modal.Title>{selectedService.description}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              <div className="modal-body-content">
-                <img src={selectedService.image} alt={selectedService.name} />
-                <div className="info">
+            <Modal.Body className={styles.modalBody}>
+              <div className={styles.modalBodyContent}>
+                <img 
+                  src={selectedService.image} 
+                  alt={selectedService.name} 
+                  className={styles.modalImage}
+                />
+                <div className={styles.modalInfo}>
                   <p>{selectedService.name}</p>
-                  <p style={{ fontWeight: "bold" }}>Pago inicial:</p>
-                  <p className="price" style={{ color: "blue" }}>
+                  <p className={styles.costInfoLabel}>Pago inicial:</p>
+                  <p className={styles.price} style={{ color: "blue" }}>
                     MX$ {selectedService.cashAdvance}.00
                   </p>
-                  <p style={{ fontWeight: "bold" }}>Información de costos:</p>
+                  <p className={styles.costInfoLabel}>Información de costos:</p>
                   <img
                     src={selectedService.imageDetail}
                     alt="Detalle"
@@ -216,32 +236,12 @@ export default function ClienteServicios() {
                 {isZoomed && (
                   <div
                     onClick={toggleZoom}
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      width: '100vw',
-                      height: '100vh',
-                      backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      zIndex: 9999,
-                      cursor: 'zoom-out',
-                      padding: '20px',
-                      boxSizing: 'border-box',
-                    }}
+                    className={styles.imageZoomOverlay}
                   >
                     <img
                       src={selectedService.imageDetail}
                       alt="Ampliado"
-                      style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
-                        borderRadius: '10px',
-                        boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
-                      }}
+                      className={styles.zoomedImage}
                     />
                   </div>
                 )}
@@ -258,46 +258,56 @@ export default function ClienteServicios() {
       </Modal>
 
       {/* Modal Pasos */}
-      <Modal show={showStepsModal} onHide={() => setShowStepsModal(false)} centered className="modal-steps">
+      <Modal 
+        show={showStepsModal} 
+        onHide={() => setShowStepsModal(false)} 
+        centered 
+        className={styles.modalSteps}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Pasos del trámite</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {steps.length > 0 ? (
-            <ol className="steps-list" style={{ paddingLeft: '0' }}>
+            <ol className={styles.stepsList}>
               {steps.map((step, index) => (
                 <li
                   key={index}
-                  style={{
-                    backgroundColor: '#fff',
-                    marginBottom: '15px',
-                    padding: '15px 15px 15px 50px',
-                    borderLeft: '4px solid #007bff',
-                    borderRadius: '6px',
-                    fontWeight: '500',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
-                    position: 'relative'
-                  }}
+                  className={styles.stepItem}
                 >
                   {step.name}
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="loading-message" style={{ fontStyle: 'italic', color: '#888', textAlign: 'center', padding: '20px 0' }}>
+            <p className={styles.loadingMessage}>
               Cargando pasos...
             </p>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowStepsModal(false)}>Cerrar</Button>
+          <Button 
+            variant="secondary"
+            className={styles.btnSecondary}
+            onClick={() => setShowStepsModal(false)}
+          >
+            Cerrar
+          </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Modal Pago Stripe */}
-      <Modal show={paymentModalOpen} onHide={closePaymentModal} centered size="sm">
+      <Modal 
+        show={paymentModalOpen} 
+        onHide={closePaymentModal} 
+        centered 
+        size="sm"
+        className={styles.paymentModal}
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Pago de {serviceToPay?.name}</Modal.Title>
+          <Modal.Title className={styles.paymentModalTitle}>
+            Pago de {serviceToPay?.description}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {serviceToPay && (
