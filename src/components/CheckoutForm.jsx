@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 
-export default function CheckoutForm({ amount, onSuccess, onError }) {
+export default function CheckoutForm({ amount, description, userEmail, customer, onSuccess, onError }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -14,10 +14,18 @@ export default function CheckoutForm({ amount, onSuccess, onError }) {
     setMessage('');
 
     try {
+      // Enviar todos los datos relevantes al backend
       const { data } = await axios.post(
         'http://localhost:8080/api/pay/create',
-        { amount: amount * 100, currency: 'mxn' }
+        {
+          amount: amount * 100,
+          currency: 'mxn',
+          description: description, // Descripción del producto
+          customerEmail: userEmail, // Email del cliente
+          customerId: customer      // ID del cliente
+        }
       );
+      
       const clientSecret = data.clientSecret;
 
       const cardElement = elements.getElement(CardElement);
@@ -27,8 +35,15 @@ export default function CheckoutForm({ amount, onSuccess, onError }) {
         return;
       }
 
+      // Incluir datos de facturación al confirmar el pago
       const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: { card: cardElement },
+        payment_method: { 
+          card: cardElement,
+          billing_details: {
+            name: 'Cliente ' + customer,  // Nombre del cliente
+            email: userEmail              // Email del cliente
+          }
+        },
       });
 
       if (result.error) {
@@ -47,25 +62,58 @@ export default function CheckoutForm({ amount, onSuccess, onError }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <p>Vas a pagar <strong>MX${amount}</strong></p>
-      <CardElement
-        options={{
-          style: {
-            base: {
-              fontSize: '16px',
-              color: '#424770',
-              '::placeholder': { color: '#aab7c4' },
+    <form onSubmit={handleSubmit} className="checkout-form">
+      <div className="product-info" style={{ marginBottom: '20px' }}>
+        <h4>{description}</h4>
+        <p>Monto a pagar: <strong>MX${amount}</strong></p>
+        <p>Cliente: {userEmail}</p>
+      </div>
+      
+      <div className="card-element-container" style={{ padding: '10px', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '20px' }}>
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': { color: '#aab7c4' },
+              },
+              invalid: { color: '#c23d4b' },
             },
-            invalid: { color: '#c23d4b' },
-          },
-          hidePostalCode: true,
+            hidePostalCode: true,
+          }}
+        />
+      </div>
+      
+      <button 
+        type="submit" 
+        disabled={!stripe || loading}
+        style={{
+          backgroundColor: '#007bff',
+          color: 'white',
+          padding: '10px 15px',
+          border: 'none',
+          borderRadius: '4px',
+          fontSize: '16px',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          width: '100%'
         }}
-      />
-      <button type="submit" disabled={!stripe || loading}>
+      >
         {loading ? 'Procesando...' : `Pagar MX$${amount}`}
       </button>
-      {message && <p style={{ marginTop: '1rem' }}>{message}</p>}
+      
+      {message && (
+        <div style={{ 
+          marginTop: '15px', 
+          padding: '10px', 
+          backgroundColor: message.includes('exitoso') ? '#d4edda' : '#f8d7da',
+          color: message.includes('exitoso') ? '#155724' : '#721c24',
+          borderRadius: '4px',
+          textAlign: 'center'
+        }}>
+          {message}
+        </div>
+      )}
     </form>
   );
 }
