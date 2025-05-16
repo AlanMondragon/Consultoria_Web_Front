@@ -308,6 +308,7 @@ export default function ClienteServicios() {
                     description={serviceToPay.description}
                     userEmail={userEmail}
                     customer={userId}
+                    idProductoTransaccion={serviceToPay.idTransact}
                     onSuccess={handlePaymentSuccess}
                     onError={handlePaymentError}
                   />
