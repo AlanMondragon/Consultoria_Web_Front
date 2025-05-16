@@ -1,3 +1,5 @@
+/* ActualizarServicio.module.css */
+
 .containerRegistrarTramite {
   display: flex;
   justify-content: center;
@@ -8,7 +10,7 @@
 }
 
 .cardRegistrarTramite {
-  background-color: #dfeeff;
+  background-color: #f6f6f6;
   border-radius: 12px;
   padding: 40px;
   width: 100%;
@@ -16,8 +18,8 @@
   max-width: 800px;
   box-sizing: border-box;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 82, 163, 0.5);
-  border: 1px solid #e1e8f0;
+  box-shadow: 0 8px 20px rgba(35, 52, 69, 0.5);
+  border: 1px solid #707376;
 }
 
 .cardRegistrarTramite h2 {
@@ -50,7 +52,7 @@
 .formGroup textarea {
   padding: 12px 16px;
   border: none;
-  border-bottom: 1px solid #cbd5e0;
+  border-bottom: 1px solid #3d96f4;
   background-color: transparent;
   font-size: 15px;
   color: #4a5568;
@@ -60,7 +62,7 @@
 
 .formGroup input:focus,
 .formGroup textarea:focus {
-  border-bottom-color: #3182ce;
+  border-bottom-color: #02101e;
   background-color: #f8fafc;
 }
 
@@ -71,11 +73,21 @@
 
 .formGroup textarea {
   border: 1px solid #e2e8f0;
+  border-bottom: 1px solid #3d96f4 ;
   border-radius: 8px;
   resize: vertical;
   min-height: 120px;
   padding: 16px;
   background-color: #f8fafc;
+}
+
+/* Modificación para el contenedor del switch */
+.formGroup .switch {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #3d96f4;
+  width: 100%;
+  display: flex;
 }
 
 .buttonSubmitService {
@@ -178,4 +190,64 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(16px);
+}
+
+/* Estilos para los contenedores de switches */
+.switchContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid #afc2d5c4;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.switchContainer label:first-child {
+  font-weight: 500;
+  color: #2c5282;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.switchContainer .switch {
+  margin-top: 4px;
+  margin-left: 0;
+}
+
+/* Clases para compatibilidad con los nombres anteriores */
+.container-registrar-tramite {
+  composes: containerRegistrarTramite;
+}
+
+.card-registrar-tramite {
+  composes: cardRegistrarTramite;
+}
+
+.form-registrar-tramite {
+  composes: formRegistrarTramite;
+}
+
+.form-group {
+  composes: formGroup;
+}
+
+.custom-file-button {
+  composes: customFileButton;
+}
+
+.file-name {
+  composes: fileName;
+}
+
+.preview-img {
+  composes: previewImg;
+}
+
+.form-group-switch {
+  composes: switchContainer;
+}
+
+.button-submit-service {
+  composes: buttonSubmitService;
 }

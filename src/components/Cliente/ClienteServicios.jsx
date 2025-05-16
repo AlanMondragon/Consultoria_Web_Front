@@ -14,10 +14,11 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './../../styles/ClienteServicios.css';
+import styles from './../../styles/ClienteServicios.module.css';
 
-
-const stripePromise = loadStripe("pk_test_51QrBlZJkhVNwEnzwnMQJP2ePgjyJxOlIvzHEFibaqygiHUB65TVG7JBPiDTcfv28Vp4eQ9ovJtCYyUogtJEi3AqL00JGxmMV5e");
+// ✅ Clave pública de Stripe
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = loadStripe(stripeKey);
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function ClienteServicios() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/");
+    console.log(stripeKey)
 
     try {
       const decoded = jwtDecode(token);
@@ -90,13 +92,13 @@ export default function ClienteServicios() {
     text?.length > max ? `${text.slice(0, max)}...` : text || '';
 
   const PrevArrow = ({ onClick }) => (
-    <div className="slick-arrow slick-prev" onClick={onClick}>
+    <div className={styles.slickArrowPrev} onClick={onClick}>
       <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
     </div>
   );
 
   const NextArrow = ({ onClick }) => (
-    <div className="slick-arrow slick-next" onClick={onClick}>
+    <div className={styles.slickArrowNext} onClick={onClick}>
       <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
     </div>
   );
@@ -157,24 +159,35 @@ export default function ClienteServicios() {
   };
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div className={styles.container}>
       <div className="fixed-top">
         <Navbar title="Servicios" />
       </div>
 
-      <div className="services-slider">
-        <h1 className="title">Servicios disponibles</h1>
+      <div className={styles.servicesSlider}>
+        <h1 className={styles.title}>Servicios disponibles</h1>
         <Slider {...sliderSettings}>
           {services.map((service, index) => (
-            <div key={index} className="service-card">
-              <img src={service.image} alt={service.name} />
-              <h2>{service.description}</h2>
-              <p>{truncateDescription(service.name, 250)}</p>
-              <p style={{ color: "#000", fontWeight: "bold" }}>Pago inicial:</p>
-              <p className="price">MX${service.cashAdvance}.00</p>
-              <button onClick={() => openModal(service)}>Mostrar Más</button>
+            <div key={index} className={styles.serviceCard}>
+              <img
+                src={service.image}
+                alt={service.name}
+                className={styles.serviceCardImage}
+              />
+              <h2 className={styles.serviceCardTitle}>{service.description}</h2>
+              <p className={styles.serviceCardDescription}>
+                {truncateDescription(service.name, 250)}
+              </p>
+              <p className={styles.costInfoLabel}>Pago inicial:</p>
+              <p className={styles.price}>MX${service.cashAdvance}.00</p>
               <button
-                className="btn btn-primary mt-2"
+                className={styles.cardButton}
+                onClick={() => openModal(service)}
+              >
+                Mostrar Más
+              </button>
+              <button
+                className={styles.cardButtonPay}
                 onClick={() => openPaymentModal(service)}
               >
                 Pagar MX${service.cashAdvance}
@@ -185,22 +198,31 @@ export default function ClienteServicios() {
       </div>
 
       {/* Modal Detalles */}
-      <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName="wide-modal">
+      <Modal
+        show={modalIsOpen}
+        onHide={closeModal}
+        centered
+        dialogClassName={styles.wideModal}
+      >
         {selectedService && (
           <>
             <Modal.Header closeButton>
               <Modal.Title>{selectedService.description}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              <div className="modal-body-content">
-                <img src={selectedService.image} alt={selectedService.name} />
-                <div className="info">
+            <Modal.Body className={styles.modalBody}>
+              <div className={styles.modalBodyContent}>
+                <img
+                  src={selectedService.image}
+                  alt={selectedService.name}
+                  className={styles.modalImage}
+                />
+                <div className={styles.modalInfo}>
                   <p>{selectedService.name}</p>
-                  <p style={{ fontWeight: "bold" }}>Pago inicial:</p>
-                  <p className="price" style={{ color: "blue" }}>
+                  <p className={styles.costInfoLabel}>Pago inicial:</p>
+                  <p className={styles.price} style={{ color: "blue" }}>
                     MX$ {selectedService.cashAdvance}.00
                   </p>
-                  <p style={{ fontWeight: "bold" }}>Información de costos:</p>
+                  <p className={styles.costInfoLabel}>Información de costos:</p>
                   <img
                     src={selectedService.imageDetail}
                     alt="Detalle"
@@ -216,32 +238,12 @@ export default function ClienteServicios() {
                 {isZoomed && (
                   <div
                     onClick={toggleZoom}
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      width: '100vw',
-                      height: '100vh',
-                      backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      zIndex: 9999,
-                      cursor: 'zoom-out',
-                      padding: '20px',
-                      boxSizing: 'border-box',
-                    }}
+                    className={styles.imageZoomOverlay}
                   >
                     <img
                       src={selectedService.imageDetail}
                       alt="Ampliado"
-                      style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
-                        borderRadius: '10px',
-                        boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
-                      }}
+                      className={styles.zoomedImage}
                     />
                   </div>
                 )}
@@ -257,64 +259,92 @@ export default function ClienteServicios() {
         )}
       </Modal>
 
-      {/* Modal Pasos */}
-      <Modal show={showStepsModal} onHide={() => setShowStepsModal(false)} centered className="modal-steps">
-        <Modal.Header closeButton>
-          <Modal.Title>Pasos del trámite</Modal.Title>
+      {/* Modal Pago Stripe - Versión Profesional */}
+      <Modal
+        show={paymentModalOpen}
+        onHide={closePaymentModal}
+        centered
+        className={styles.paymentModal}
+        dialogClassName="my-custom-dialog" // Clase adicional para el diálogo
+      >
+        <Modal.Header closeButton className={styles.modalHeader}>
+          <Modal.Title className={styles.paymentModalTitle}>
+            <div className={styles.serviceIcon}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+              </svg>
+            </div>
+            <div>
+              <div className={styles.serviceTitle}>{serviceToPay?.description}</div>
+              <div className={styles.serviceSubtitle}>Pago seguro con Stripe</div>
+            </div>
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {steps.length > 0 ? (
-            <ol className="steps-list" style={{ paddingLeft: '0' }}>
-              {steps.map((step, index) => (
-                <li
-                  key={index}
-                  style={{
-                    backgroundColor: '#fff',
-                    marginBottom: '15px',
-                    padding: '15px 15px 15px 50px',
-                    borderLeft: '4px solid #007bff',
-                    borderRadius: '6px',
-                    fontWeight: '500',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
-                    position: 'relative'
-                  }}
-                >
-                  {step.name}
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="loading-message" style={{ fontStyle: 'italic', color: '#888', textAlign: 'center', padding: '20px 0' }}>
-              Cargando pasos...
-            </p>
+
+        <Modal.Body className={styles.modalBody}>
+          {serviceToPay && (
+            <>
+              {/* Monto con diseño mejorado */}
+              <div className={styles.paymentAmountContainer}>
+                <div className={styles.paymentAmount}>
+                  <span className={styles.paymentAmountLabel}>Total a pagar</span>
+                  <span className={styles.paymentAmountValue}>${serviceToPay.cashAdvance}.00 <span className={styles.currency}>MXN</span></span>
+                </div>
+                <div className={styles.paymentDetails}>
+                  <div className={styles.paymentDetailItem}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                    </svg>
+                    <span>Este es un pago inicial del servicio</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Formulario Stripe con mejor espaciado */}
+              <div className={styles.stripeFormContainer}>
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm
+                    amount={serviceToPay.cashAdvance}
+                    description={serviceToPay.description}
+                    userEmail={userEmail}
+                    customer={userId}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                  />
+                </Elements>
+              </div>
+
+              {/* Sección de seguridad mejorada */}
+              <div className={styles.securitySection}>
+                <div className={styles.securityBadge}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                  </svg>
+                  <span>Pago 100% seguro</span>
+                </div>
+
+                <div className={styles.securityFeatures}>
+                  <div className={styles.securityFeature}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z" />
+                      <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
+                    <span>Encriptación SSL</span>
+                  </div>
+                  <div className={styles.securityFeature}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                      <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                    </svg>
+                    <span>Sin almacenar datos</span>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowStepsModal(false)}>Cerrar</Button>
-        </Modal.Footer>
       </Modal>
 
-      {/* Modal Pago Stripe */}
-      <Modal show={paymentModalOpen} onHide={closePaymentModal} centered size="sm">
-        <Modal.Header closeButton>
-          <Modal.Title>Pago de {serviceToPay?.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {serviceToPay && (
-            <Elements stripe={stripePromise}>
-              <CheckoutForm
-                amount={serviceToPay.cashAdvance}
-                description={serviceToPay.description}
-                userEmail={userEmail}
-                customer={userId}
-                idProductoTransaccion={serviceToPay.idTransact} 
-                onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
-              />
-            </Elements>
-          )}
-        </Modal.Body>
-      </Modal>
     </div>
   );
 }
