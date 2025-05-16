@@ -106,7 +106,7 @@ export default function RegistrarPasos() {
     
     <div style={{ marginTop: '90px' }}>
           <div className='fixed-top'>
-            <Navbar title={"-Registrar Servicios"} />
+            <Navbar title={"- Registrar Servicios"} />
           </div>
 
     <div className="container-registrar-pasos">

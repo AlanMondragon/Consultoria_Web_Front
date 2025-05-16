@@ -195,7 +195,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 Swal.fire({
                     icon: 'error',
                     title: 'Error al cancelar',
-                    text: 'No se pudo cancelar la cita.',
+                    text: 'No puedes cancelar una cita 24 horas antes.',
                 });
             }
         } catch (error) {

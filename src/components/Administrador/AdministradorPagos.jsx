@@ -142,8 +142,6 @@ export default function AdministradorPagos() {
         const busquedaStr = busqueda.toLowerCase();
         const coincideBusqueda =
             d.user?.name?.toLowerCase().includes(busquedaStr) ||
-            d.user?.phone?.toLowerCase().includes(busquedaStr) ||
-            d.user?.email?.toLowerCase().includes(busquedaStr) ||
             d.transact?.name?.toLowerCase().includes(busquedaStr);
 
         const coincideFiltroEstado =
@@ -167,7 +165,7 @@ export default function AdministradorPagos() {
 
     return (
         <div style={{ marginTop: '100px', width: '100%', maxWidth: '1000px', overflowX: 'hidden' }}>
-            <Navbar title={"-Pagos"} />
+            <Navbar title={"- Pagos"} />
 
             <div className="d-flex justify-content-between align-items-center p-3">
                 <div className="d-flex align-items-center gap-2 w-75">
@@ -217,15 +215,15 @@ export default function AdministradorPagos() {
                     {datosPaginados.map((pago, index) => (
                         <Card
                             key={pago.idPayment}
-                            className="mb-3 p-3 shadow-sm mx-auto" // Reducimos un poco el padding vertical y el margen inferior
-                            style={{ borderRadius: '16px', maxWidth: '1100px', overflow: 'hidden' }} // Aseguramos que no se desborde
+                            className="mb-3 p-3 shadow-sm mx-auto" 
+                            style={{ borderRadius: '16px', maxWidth: '1100px', overflow: 'hidden' }}
                         >
                             <div className="d-flex justify-content-between align-items-center flex-nowrap">
                                 <div style={{ minWidth: '40px' }}><strong>#{(paginaActual - 1) * itemsPorPagina + index + 1}</strong></div>
                                 <div style={{ minWidth: '150px', marginLeft: '10px' }}><strong>Trámite:</strong> {pago.transact?.name || 'No disponible'}</div>
                                 <div style={{ minWidth: '150px', marginLeft: '10px' }}><strong>Cliente:</strong> {pago.user?.name || 'No disponible'}</div>
-                                <div style={{ minWidth: '120px', marginLeft: '10px' }}><strong>Fecha:</strong> {pago.dateStart ? new Date(pago.dateStart).toLocaleDateString() : 'N/A'}</div>
-                                <div style={{ minWidth: '80px', marginLeft: '10px' }}><strong>Total:</strong> ${pago.total?.toFixed(2) || '0.00'}</div>
+                                <div style={{ minWidth: '120px', marginLeft: '10px' }}><strong>Fecha:</strong> { pago.dateStart}</div>
+                                <div style={{ minWidth: '80px', marginLeft: 'px' }}><strong>Total:</strong> ${pago.total?.toFixed(2) || '0.00'}</div>
                                 <div style={{ minWidth: '120px', marginLeft: '10px' }}><strong>Teléfono:</strong> {pago.user?.phone || 'N/A'}</div>
                                 <div className="d-flex align-items-center" style={{ minWidth: '180px', marginLeft: '10px', justifyContent: 'flex-end' }}>
                                     <div style={{ marginRight: '10px' }}>

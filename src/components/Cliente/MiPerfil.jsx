@@ -107,7 +107,7 @@ export default function MiPerfil() {
 
     return (
         <div style={{ marginTop: '80px' }}>
-            <Navbar title={'Mi Perfil'} />
+            <Navbar title={'- Mi Perfil'} />
             <div className="profile-container">
                 <div className="form-group">
                     <label>Email:</label>

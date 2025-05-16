@@ -95,7 +95,7 @@ export default function RegistrarServicio() {
   return (
     <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
-        <Navbar title={"-Registrar Servicios"} />
+        <Navbar title={"- Registrar Servicios"} />
       </div>
 
       <div className={styles.containerRegistrarTramite}>
