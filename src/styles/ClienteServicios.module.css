@@ -334,3 +334,177 @@
   padding: 15px 20px;
 }
 
+/* Modal principal */
+.paymentModal {
+  /* Tamaño deseado */
+  width: 500px; /* o el valor que prefieras */
+  max-width: 90%; /* para responsive */
+  
+  /* Centrado absoluto */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+}
+
+.modalHeader {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.modalBody {
+  padding: 1.5rem;
+}
+
+/* Encabezado */
+.paymentModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.serviceIcon {
+  background-color: #4a6cf7;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.serviceTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.serviceSubtitle {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Sección de monto */
+.paymentAmountContainer {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.paymentAmount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.paymentAmountLabel {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.paymentAmountValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.currency {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6c757d;
+}
+
+.paymentDetails {
+  font-size: 0.875rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.paymentDetailItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Formulario Stripe */
+.stripeFormContainer {
+  margin: 1.5rem 0;
+}
+
+/* Sección de seguridad */
+.securitySection {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.securityBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #f0f7ff;
+  color: #4a6cf7;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.securityFeatures {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.securityFeature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Métodos de pago */
+.paymentMethods {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.paymentMethods img {
+  height: 24px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.paymentMethods img:hover {
+  opacity: 1;
+}
+
+/* Esto centrará y dará tamaño manteniendo la alineación */
+.my-custom-dialog {
+  max-width: 500px; /* Ancho máximo */
+  width: 90%; /* Ancho relativo en móviles */
+  margin: 1.75rem auto; /* Centrado vertical/horizontal */
+}
+
+/* Opcional: ajustar el modal-wrapper para centrado perfecto */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
