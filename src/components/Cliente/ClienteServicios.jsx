@@ -16,7 +16,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './../../styles/ClienteServicios.css';
 
-// ✅ Clave pública de Stripe
+
 const stripePromise = loadStripe("pk_test_51QrBlZJkhVNwEnzwnMQJP2ePgjyJxOlIvzHEFibaqygiHUB65TVG7JBPiDTcfv28Vp4eQ9ovJtCYyUogtJEi3AqL00JGxmMV5e");
 
 export default function ClienteServicios() {
@@ -307,6 +307,7 @@ export default function ClienteServicios() {
                 description={serviceToPay.description}
                 userEmail={userEmail}
                 customer={userId}
+                idProductoTransaccion={serviceToPay.idTransact} 
                 onSuccess={handlePaymentSuccess}
                 onError={handlePaymentError}
               />

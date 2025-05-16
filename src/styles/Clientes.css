@@ -38,3 +38,9 @@
 .estado-badge + .btn-success {
   margin-top: 10px;  /* Separación entre la badge y el botón */
 }
+.card {
+  transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+  transform: scale(1.02);
+}

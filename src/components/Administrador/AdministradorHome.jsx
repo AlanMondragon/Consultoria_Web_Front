@@ -70,17 +70,17 @@ export default function AdministradorHome() {
             <div className={styles.tarjeta} onClick={() => navigate("/Calendar")}>
               <img src={calendario} alt="Estadísticas" />
               <h3>Calendario</h3>
-              <p>Reportes y métricas</p>
+              <p>Citas CAS/CON y Simulación</p>
             </div>
-            <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
+            <div className={styles.tarjeta} onClick={() => navigate("/Pagos")}>
               <img src={pagos} alt="Configuración" />
               <h3>Pagos</h3>
-              <p>Ajustes del sistema</p>
+              <p>Gestión de pagos</p>
             </div>
-            <div className={styles.tarjeta} onClick={() => navigate("/ConfiguracionAdmin")}>
+            <div className={styles.tarjeta} onClick={() => navigate("/Perfil")}>
               <img src={perfil} alt="Configuración" />
-              <h3>Perfil</h3>
-              <p>Ajustes del sistema</p>
+              <h3>Mi Perfil</h3>
+              <p>Visualización de mi perfil</p>
             </div>
           </div>
         </div>

@@ -492,6 +492,24 @@ export const getAllServices = async () => {
   return response.data;
 };
 
+export const getAllPayments = async () => {
+  const response = await axios.get(`${API_URL}/payment`);
+  return response.data;
+};
+
+export const statusPayments = async (idPayment, datosActualizados) => {
+  try{
+    const response = await axios.put(`${API_URL}/payment/${idPayment}`, {
+      idPayment,
+      status: datosActualizados.status,
+      total: datosActualizados.total
+    });
+    return response.data;
+    }catch (error) {
+    console.error("Error al actualizar el estado del pago", error.response?.data || error.message);
+    throw error;
+  }  
+};
 export const createPaymentIntent = async (data) => {
   const response = await axios.post(`${API_URL}/stripe/payment-intent`, data);
   return response.data;

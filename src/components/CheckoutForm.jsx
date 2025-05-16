@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
-export default function CheckoutForm({ amount, description, userEmail, customer, onSuccess, onError }) {
+export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -13,35 +14,39 @@ export default function CheckoutForm({ amount, description, userEmail, customer,
     setLoading(true);
     setMessage('');
 
-    try {
-      // Enviar todos los datos relevantes al backend
-      const { data } = await axios.post(
-        'http://localhost:8080/api/pay/create',
-        {
-          amount: amount * 100,
-          currency: 'mxn',
-          description: description, // Descripción del producto
-          customerEmail: userEmail, // Email del cliente
-          customerId: customer      // ID del cliente
-        }
-      );
-      
-      const clientSecret = data.clientSecret;
+    // Validación temprana de idProductoTransaccion
+    if (idProductoTransaccion === undefined || idProductoTransaccion === null || isNaN(parseInt(idProductoTransaccion, 10))) {
+      setMessage('Error: Identificador de transacción del producto no válido o no proporcionado.');
+      console.error("Error: idProductoTransaccion no es válido:", idProductoTransaccion);
+      setLoading(false);
+      onError && onError({ message: 'ID de transacción de producto inválido.' });
+      return;
+    }
 
+    try {
+      const { data } = await axios.post(`${API_URL}/pay/payint`, {
+        amount: amount * 100,
+        currency: 'mxn',
+        description: description,
+        customerEmail: userEmail,
+        customerId: customer
+      });
+
+      const clientSecret = data.clientSecret;
       const cardElement = elements.getElement(CardElement);
+
       if (!cardElement) {
         setMessage('No se encontró el método de pago.');
         setLoading(false);
         return;
       }
 
-      // Incluir datos de facturación al confirmar el pago
       const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: { 
+        payment_method: {
           card: cardElement,
           billing_details: {
-            name: 'Cliente ' + customer,  // Nombre del cliente
-            email: userEmail              // Email del cliente
+            name: 'Cliente ' + customer,
+            email: userEmail
           }
         },
       });
@@ -52,9 +57,41 @@ export default function CheckoutForm({ amount, description, userEmail, customer,
       } else if (result.paymentIntent.status === 'succeeded') {
         setMessage('¡Pago exitoso!');
         onSuccess && onSuccess(result.paymentIntent);
+
+        // Guardar el registro del pago en la base de datos
+        try {
+          const paymentData = {
+            total: amount, // Usa el monto original
+            status: 1, //  1 para "pagado"
+            idUser: parseInt(customer),
+            idTransact: parseInt(idProductoTransaccion, 10), // Asegúrate de que sea un número
+          };
+
+          console.log("Guardando pago en base de datos:", paymentData);
+
+          const response = await axios.post(`${API_URL}/payment`, paymentData);
+
+          if (response.data && response.data.success) {
+            console.log("Pago guardado con éxito en BD:", response.data);
+          } else {
+            console.error("Error al guardar en BD (respuesta del backend):", response.data?.message || "Error desconocido del backend.");
+            setMessage(`Pago en Stripe exitoso, pero contacte a soporte si no ve su servicio activado (Error Ref: DB_SAVE)`);
+          }
+        } catch (dbError) {
+          console.error("Error en la llamada para guardar el pago en la base de datos:", dbError);
+          console.error("Detalles del error de red/axios:", dbError.response?.data || dbError.message);
+           setMessage(`Pago en Stripe exitoso, pero hubo un problema al guardar su registro. Por favor, contacte a soporte.`);
+        }
       }
     } catch (err) {
-      setMessage(err.response?.data?.message || 'Error al procesar el pago.');
+      console.error("Error en proceso de pago (Stripe):", err);
+      let errorMessage = 'Error al procesar el pago.';
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      setMessage(errorMessage);
       onError && onError(err);
     } finally {
       setLoading(false);
@@ -68,7 +105,7 @@ export default function CheckoutForm({ amount, description, userEmail, customer,
         <p>Monto a pagar: <strong>MX${amount}</strong></p>
         <p>Cliente: {userEmail}</p>
       </div>
-      
+
       <div className="card-element-container" style={{ padding: '10px', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '20px' }}>
         <CardElement
           options={{
@@ -84,9 +121,9 @@ export default function CheckoutForm({ amount, description, userEmail, customer,
           }}
         />
       </div>
-      
-      <button 
-        type="submit" 
+
+      <button
+        type="submit"
         disabled={!stripe || loading}
         style={{
           backgroundColor: '#007bff',
@@ -101,11 +138,11 @@ export default function CheckoutForm({ amount, description, userEmail, customer,
       >
         {loading ? 'Procesando...' : `Pagar MX$${amount}`}
       </button>
-      
+
       {message && (
-        <div style={{ 
-          marginTop: '15px', 
-          padding: '10px', 
+        <div style={{
+          marginTop: '15px',
+          padding: '10px',
           backgroundColor: message.includes('exitoso') ? '#d4edda' : '#f8d7da',
           color: message.includes('exitoso') ? '#155724' : '#721c24',
           borderRadius: '4px',
