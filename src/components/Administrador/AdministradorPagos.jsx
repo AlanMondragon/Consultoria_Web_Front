@@ -6,7 +6,7 @@ import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner, Card, FloatingLabel, Accordion } from 'react-bootstrap';
 import { FaInfo, FaPlus, FaFilter } from 'react-icons/fa';
 import { getAllPayments, clientePorId, getNameService, statusPayments } from './../../api/api.js';
-import '../../styles/Clientes.css';
+import styles from '../../styles/AdministradorPagos.module.css';
 import ModalRegistrarTramite from './RegistrarTramite.jsx';
 import ModalActualizarTramite from './ActualizarTramite.jsx';
 
@@ -166,22 +166,22 @@ export default function AdministradorPagos() {
 
 
     return (
-        <div style={{ marginTop: '100px', width: '100%', maxWidth: '1000px', overflowX: 'hidden' }}>
-            <Navbar title={"-Pagos"} />
+        <div className={styles.pagosContainer}>
+            <Navbar title={"Pagos"} />
 
-            <div className="d-flex justify-content-between align-items-center p-3">
-                <div className="d-flex align-items-center gap-2 w-75">
+            <div className={styles.searchContainer}>
+                <div className={styles.searchInput}>
                     <Form.Control
                         type="text"
                         placeholder="Buscar por cliente, trámite o contacto..."
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}
-                        style={{ borderRadius: '12px', borderWidth: '2px' }}
+                        className={styles.inputField}
                     />
                 </div>
 
                 <Form.Select
-                    style={{ width: '200px', borderRadius: '12px', borderWidth: '2px' }}
+                    className={styles.filterSelect}
                     value={filtroEstado}
                     onChange={(e) => setFiltroEstado(e.target.value === "" ? null : parseInt(e.target.value, 10))}
                 >
@@ -189,7 +189,6 @@ export default function AdministradorPagos() {
                     <option value="1">Activo</option>
                     <option value="0">Inactivo</option>
                 </Form.Select>
-
             </div>
 
             <ModalRegistrarTramite
@@ -205,11 +204,11 @@ export default function AdministradorPagos() {
             />
 
             {cargando ? (
-                <div className="text-center p-3">
+                <div className={styles.spinnerContainer}>
                     <Spinner animation="border" />
                 </div>
             ) : filtrados.length === 0 ? (
-                <div className="text-center p-5">
+                <div className={styles.emptyResults}>
                     <h4>No se encontraron registros</h4>
                 </div>
             ) : (
@@ -217,18 +216,27 @@ export default function AdministradorPagos() {
                     {datosPaginados.map((pago, index) => (
                         <Card
                             key={pago.idPayment}
-                            className="mb-3 p-3 shadow-sm mx-auto" // Reducimos un poco el padding vertical y el margen inferior
-                            style={{ borderRadius: '16px', maxWidth: '1100px', overflow: 'hidden' }} // Aseguramos que no se desborde
+                            className={styles.pagoCard}
                         >
-                            <div className="d-flex justify-content-between align-items-center flex-nowrap">
-                                <div style={{ minWidth: '40px' }}><strong>#{(paginaActual - 1) * itemsPorPagina + index + 1}</strong></div>
-                                <div style={{ minWidth: '150px', marginLeft: '10px' }}><strong>Trámite:</strong> {pago.transact?.name || 'No disponible'}</div>
-                                <div style={{ minWidth: '150px', marginLeft: '10px' }}><strong>Cliente:</strong> {pago.user?.name || 'No disponible'}</div>
-                                <div style={{ minWidth: '120px', marginLeft: '10px' }}><strong>Fecha:</strong> {pago.dateStart ? new Date(pago.dateStart).toLocaleDateString() : 'N/A'}</div>
-                                <div style={{ minWidth: '80px', marginLeft: '10px' }}><strong>Total:</strong> ${pago.total?.toFixed(2) || '0.00'}</div>
-                                <div style={{ minWidth: '120px', marginLeft: '10px' }}><strong>Teléfono:</strong> {pago.user?.phone || 'N/A'}</div>
-                                <div className="d-flex align-items-center" style={{ minWidth: '180px', marginLeft: '10px', justifyContent: 'flex-end' }}>
-                                    <div style={{ marginRight: '10px' }}>
+                            <div className={styles.cardHeader}>
+                                <div className={styles.cardNumber}><strong>#{(paginaActual - 1) * itemsPorPagina + index + 1}</strong></div>
+                                <div className={styles.cardTramite}><strong>Trámite:</strong>
+                                <p>{pago.transact?.name || 'No disponible'}</p> 
+                                </div>
+                                <div className={styles.cardCliente}><strong>Cliente:</strong> 
+                                <p>{pago.user?.name || 'No disponible'}</p>
+                                </div>
+                                <div className={styles.cardFecha}><strong>Fecha:</strong>
+                                <p>{pago.dateStart} </p>
+                                </div>
+                                <div className={styles.cardTotal}><strong>Total:</strong>
+                                 <p className={styles.cardTextCash}>${pago.total?.toFixed(2) || '0.00'}</p>
+                                </div>
+                                <div className={styles.cardTelefono}><strong>Teléfono:</strong> 
+                                 <p>{pago.user?.phone || 'N/A'}</p>
+                                </div>
+                                <div className={styles.cardEstado}>
+                                    <div className={styles.statusSwitch}>
                                         <strong>Estado:</strong>
                                         <Form.Check
                                             type="switch"
@@ -236,7 +244,6 @@ export default function AdministradorPagos() {
                                             label={pago.status === 1 ? "Activo" : "Inactivo"}
                                             checked={pago.status === 1}
                                             onChange={(e) => handleStatusChange(pago.idPayment, e.target.checked ? 1 : 0, pago.total)}
-                                            style={{ fontSize: '0.9rem' }}
                                         />
                                     </div>
                                 </div>
@@ -247,7 +254,7 @@ export default function AdministradorPagos() {
             )}
 
             {totalPaginas > 0 && (
-                <div className="d-flex justify-content-center align-items-center my-4 gap-2">
+                <div className={styles.paginationContainer}>
                     <Button
                         variant="outline-primary"
                         onClick={() => cambiarPagina(paginaActual - 1)}

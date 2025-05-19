@@ -112,6 +112,16 @@ export const getNameService = async (id) => {
     }
 }
 
+export const getServiceById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/transaction/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching steps:', error);
+    throw error;
+  }
+}
+
 
 //Pasos para los procesos (los pasos disponibles para el cliente)
 export const getSteps = async () => {
