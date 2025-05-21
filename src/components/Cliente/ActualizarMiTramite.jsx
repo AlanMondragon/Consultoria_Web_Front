@@ -20,40 +20,10 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
 
     const schema = yup.object().shape({
-        advance: yup.boolean().required('Campo obligatorio'),
-        dateCas: yup
-            .date()
-            .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-cas', 'Campo obligatorio', function (value) {
-                return !citaCas || !!value;
-            }),
-        dateCon: yup
-            .date()
-            .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-con', 'Campo obligatorio', function (value) {
-                return !citaCon || !!value;
-            }),
         dateSimulation: yup
             .date()
             .nullable()
-            .transform((curr, orig) => (orig === '' ? null : curr))
-            .test('required-if-simulation', 'Campo obligatorio', function (value) {
-                return !citaSimulacion || !!value;
-            }),
-        dateStart: yup.date().required('Campo obligatorio'),
-        emailAcces: yup.string().email('Correo inválido').required('Campo obligatorio'),
-        haveSimulation: yup.number().required('Campo obligatorio'),
-        paid: yup.number().when('advance', {
-            is: true,
-            then: () => yup.number().required('Campo obligatorio'),
-            otherwise: () => yup.number().notRequired().nullable(),
-        }),
-        paidAll: yup.number().required('Campo obligatorio'),
-        status: yup.number().required('Campo obligatorio'),
-        stepProgress: yup.number().required('Campo obligatorio'),
-        passwordAcces: yup.string().required('Campo obligatorio')
+            .required('Campo obligatorio')
     });
 
     const {
@@ -136,14 +106,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             };
 
             const payload = {
-                ...data,
-                dateCas: formatDate(data.dateCas),
-                dateCon: formatDate(data.dateCon),
-                dateSimulation: formatDate(data.dateSimulation),
-                dateStart: formatDate(data.dateStart),
-                advance: data.advance ? 1 : 0,
-                haveSimulation: Number(data.haveSimulation),
-                paid: data.advance ? data.paid : null,
+                dateSimulation: formatDate(data.dateSimulation)
             };
 
             await actualizarTC(cliente.idTransactProgress, payload);
@@ -168,48 +131,40 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             console.error(error);
         }
     };
-   async function eliminarCita(cliente) {
-    const result = await Swal.fire({
-        icon: 'warning',
-        title: '¿Estás seguro que quieres cancelar la cita?',
-        text: 'Solamente puedes cancelar la cita una vez',
-        showCancelButton: true,
-        confirmButtonText: 'Cancelar',
-        cancelButtonText: 'Aceptar',
-    });
 
-    if (result.isDismissed) {
-        try {
-            const response = await cancelarCita(cliente.idTransactProgress);
-            if (response.success === true) {
+    async function eliminarCita(cliente) {
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: '¿Estás seguro que quieres cancelar la cita?',
+            text: 'Solamente puedes cancelar la cita una vez',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar cita',
+            cancelButtonText: 'No',
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await cancelarCita(cliente.idTransactProgress); 
                 Swal.fire({
                     icon: 'success',
-                    title: 'Cancelación exitosa',
+                    title: 'Cita cancelada exitosamente',
                     confirmButtonText: 'Aceptar',
                 });
-
                 if (typeof onClienteRegistrado === 'function') {
-                    onClienteRegistrado(); // Recarga los datos actualizados del cliente
+                    onClienteRegistrado();
                 }
-            } else {
+                onHide();
+            } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error al cancelar',
-                    text: 'No se pudo cancelar la cita.',
+                    text: 'No se pudo cancelar la cita',
                 });
+                console.error(error);
             }
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error del servidor',
-                text: 'Ocurrió un problema al conectar con el servidor.',
-            });
-            console.error("Error al cancelar la cita:", error);
         }
-    } else {
-        console.log("Cancelación de cita abortada por el usuario");
     }
-}
+
 
 
 
@@ -283,26 +238,31 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                     </div>
                     <div className="form-group">
-                        <label>Cita simulation:</label>
                         <p>
                             {cliente?.dateSimulation
                                 ? "Ya cuentas con una cita agendada"
                                 : "No cuentas con cita agendada"}
                         </p>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={cliente?.dateSimulation ?? ''}
-                            disabled
-                        />
+                        <div className="form-group">
+                            <label>Cita simulation:</label>
+                            <input
+                                type="datetime-local"
+                                {...register('dateSimulation')}
+                                className={`modern-input ${errors.dateSimulation ? 'input-error' : ''}`}
+                            />
+                            <span className="error">{errors.dateSimulation?.message}</span>
+                        </div>
                         {cliente?.dateSimulation && (
                             <button
+                                type="button"
                                 className="btn btn-danger mt-2"
                                 onClick={() => eliminarCita(cliente)}
                             >
                                 Cancelar cita
                             </button>
+
                         )}
+
                     </div>
 
 
@@ -310,6 +270,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onHide}>Cerrar <MdClose /></Button>
+                    <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>Guardar <FaCheck /></Button>
                 </Modal.Footer>
             </form>
         </Modal>

@@ -157,7 +157,7 @@ export default function AdministradorServicios() {
   return (
     <div className={styles.container}>
       <div className='fixed-top'>
-        <Navbar title={"Servicios"} />
+        <Navbar title={"- Servicios"} />
       </div>
       <div className={styles.servicesSlider}>
         <h1 className={styles.title}>Servicios disponibles</h1>

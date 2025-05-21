@@ -105,7 +105,7 @@ export default function AdministradorPerfil() {
 
     return (
         <div style={{ marginTop: '80px' }}>
-            <Navbar title={'-Mi Perfil'} />
+            <Navbar title={'- Mi Perfil'} />
             <div className="profile-container">
                 <h1 className="profile-title">Mi Perfil</h1>
                 

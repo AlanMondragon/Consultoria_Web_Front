@@ -14,10 +14,10 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
     setLoading(true);
     setMessage('');
 
-    // Validación temprana de idProductoTransaccion
     if (idProductoTransaccion === undefined || idProductoTransaccion === null || isNaN(parseInt(idProductoTransaccion, 10))) {
       setMessage('Error: Identificador de transacción del producto no válido o no proporcionado.');
       console.error("Error: idProductoTransaccion no es válido:", idProductoTransaccion);
+      
       setLoading(false);
       onError && onError({ message: 'ID de transacción de producto inválido.' });
       return;

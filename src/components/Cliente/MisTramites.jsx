@@ -56,7 +56,9 @@ export default function AdministradorTramites() {
     try {
       const response = await tramitesPorId(usuario);
       if (response.success && Array.isArray(response.response.transactProgresses)) {
+        console.log("Datos obtenidos:", response.response.transactProgresses);
         setDatos(response.response.transactProgresses);
+
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -123,7 +125,7 @@ export default function AdministradorTramites() {
 
   return (
     <div style={{ marginTop: '100px' }}>
-      <Navbar title={"Mis Trámites"} />
+      <Navbar title={"- Mis Trámites"} />
 
       <div className="d-flex justify-content-between align-items-center p-3">
         <Form.Control

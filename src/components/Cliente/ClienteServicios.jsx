@@ -161,7 +161,7 @@ export default function ClienteServicios() {
   return (
     <div className={styles.container}>
       <div className="fixed-top">
-        <Navbar title="Servicios" />
+        <Navbar title="- Servicios" />
       </div>
 
       <div className={styles.servicesSlider}>

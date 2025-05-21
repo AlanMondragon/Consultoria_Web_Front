@@ -142,8 +142,6 @@ export default function AdministradorPagos() {
         const busquedaStr = busqueda.toLowerCase();
         const coincideBusqueda =
             d.user?.name?.toLowerCase().includes(busquedaStr) ||
-            d.user?.phone?.toLowerCase().includes(busquedaStr) ||
-            d.user?.email?.toLowerCase().includes(busquedaStr) ||
             d.transact?.name?.toLowerCase().includes(busquedaStr);
 
         const coincideFiltroEstado =

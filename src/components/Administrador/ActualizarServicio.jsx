@@ -99,7 +99,7 @@ export default function ActualizarServicio() {
   return (
     <div style={{ marginTop: '100px' }}>
       <div className='fixed-top'>
-        <Navbar title={"Actualizar Servicios"} />
+        <Navbar title={"- Actualizar Servicios"} />
       </div>
 
       <div className={styles['container-registrar-tramite']}>
