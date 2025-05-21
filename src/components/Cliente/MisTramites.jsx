@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import Navbar from '../NavbarUser.jsx';
 import { Table, Button, Form, Spinner, Image } from 'react-bootstrap';
 import { tramitesPorId, actualizarT } from './../../api/api.js';
-import '../../styles/Clientes.css';
+import styles from './../../styles/MisTramites.module.css';
 import ModalActualizarTramite from './ActualizarMiTramite.jsx';
 
 export default function AdministradorTramites() {
@@ -124,17 +124,16 @@ export default function AdministradorTramites() {
   }
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div className={styles.container}>
       <Navbar title={"- Mis Trámites"} />
 
-      <div className="d-flex justify-content-between align-items-center p-3">
+      <div className={styles.searchContainer}>
         <Form.Control
           type="text"
           placeholder="Buscar trámite o email..."
-          className="w-75"
+          className={styles.searchInput}
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{ borderRadius: '12px', borderWidth: '2px' }}
         />
         <Form.Select
           value={estadoSeleccionado}
@@ -158,11 +157,11 @@ export default function AdministradorTramites() {
       />
 
       {cargando ? (
-        <div className="text-center p-3">
+        <div className={styles.loadingContainer}>
           <Spinner animation="border" />
         </div>
       ) : (
-        <Table striped hover responsive className="p-3" style={{ minWidth: '1000px' }}>
+        <Table striped hover responsive className={styles.table}>
           <thead>
             <tr>
               <th>#</th>
@@ -182,7 +181,7 @@ export default function AdministradorTramites() {
                 <td>
                   <Image
                     src={cliente.transact.image}
-                    style={{ width: '60px', height: '60px', objectFit: 'cover' }}
+                    className={styles.tableImage}
                     rounded
                   />
                 </td>
@@ -200,17 +199,10 @@ export default function AdministradorTramites() {
                             cliente.status === 6 ? 'Revisar' : 'Desconocido'}
                 </td>
 
-
                 <td>
                   <Button
                     variant="success"
-                    className="d-flex align-items-center gap-2"
-                    style={{
-                      display: 'block',
-                      marginLeft: 'auto',
-                      boxShadow: '2px 2px 6px #00000050',
-                      borderRadius: '12px'
-                    }}
+                    className={styles.actionButton}
                     onClick={() => {
                       setClienteSeleccionado(cliente);
                       setShowModalA(true);
@@ -225,7 +217,7 @@ export default function AdministradorTramites() {
         </Table>
       )}
 
-      <div className="d-flex justify-content-center align-items-center my-3 gap-2">
+      <div className={styles.paginationContainer}>
         <Button
           variant="outline-primary"
           onClick={() => cambiarPagina(paginaActual - 1)}

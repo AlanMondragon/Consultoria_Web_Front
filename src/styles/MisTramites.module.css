@@ -1,0 +1,52 @@
+/* Main container */
+.container {
+  margin-top: 100px;
+}
+
+/* Search and filter section */
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.searchInput {
+  border-radius: 12px;
+  border-width: 2px;
+  width: 75%;
+}
+
+/* Table styles */
+.table {
+  min-width: 1000px;
+}
+
+.tableImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+/* Button styles */
+.actionButton {
+  display: block;
+  margin-left: auto;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.31);
+  border-radius: 12px;
+}
+
+/* Pagination container */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 0.5rem;
+}
+
+/* Loading container */
+.loadingContainer {
+  text-align: center;
+  padding: 1rem;
+}
