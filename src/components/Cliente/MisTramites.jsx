@@ -188,8 +188,8 @@ export default function AdministradorTramites() {
                 </td>
                 <td>{cliente.transact.description}</td>
                 <td>{cliente.dateStart}</td>
-                <td>{cliente.dateCas}</td>
-                <td>{cliente.dateCon}</td>
+                <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
+                <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
 
                 <td>
                   {cliente.status === 1 ? 'En proceso' :
