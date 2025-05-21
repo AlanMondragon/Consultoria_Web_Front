@@ -259,7 +259,7 @@ export default function ClienteServicios() {
         )}
       </Modal>
 
-      {/* Modal Pago Stripe - Versión Profesional */}
+      {/* Modal Pago Stripe */}
       <Modal
         show={paymentModalOpen}
         onHide={closePaymentModal}

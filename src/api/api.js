@@ -507,6 +507,8 @@ export const getAllPayments = async () => {
   return response.data;
 };
 
+//Pagos
+
 export const statusPayments = async (idPayment, datosActualizados) => {
   try{
     const response = await axios.put(`${API_URL}/payment/${idPayment}`, {
@@ -524,3 +526,15 @@ export const createPaymentIntent = async (data) => {
   const response = await axios.post(`${API_URL}/stripe/payment-intent`, data);
   return response.data;
 };
+
+// Crear proceso con pago
+export const createProcessWithPayment = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/progress/createTransacProgressWithPayment`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear proceso con pago:", error);
+    const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
+    throw new Error(errorMessage);
+  }
+}
