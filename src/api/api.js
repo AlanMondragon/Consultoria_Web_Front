@@ -331,7 +331,7 @@ export const clientePorId = async (id) => {
 export const tramitesPorId = async (id) => {
   try {
     console.log('ID de usuario enviado:', id);  // Para depuración
-    const response = await axios.get(`${API_URL}/progress/user/${id}`);
+    const response = await axios.get(`${API_URL}/progress/progressByUserIdWeb/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error al obtener las transacciones', error);
@@ -530,7 +530,7 @@ export const createPaymentIntent = async (data) => {
 // Crear proceso con pago
 export const createProcessWithPayment = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/progress/createTransacProgressWithPayment`, data);
+    const response = await axios.post(`${API_URL}/progress/CreateProgressWithPay`, data);
     return response.data;
   } catch (error) {
     console.error("Error al crear proceso con pago:", error);
