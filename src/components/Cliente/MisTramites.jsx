@@ -137,6 +137,7 @@ export default function AdministradorTramites() {
         />
         <Form.Select
           value={estadoSeleccionado}
+          className={styles.selectState}
           onChange={(e) => setEstadoSeleccionado(e.target.value)}
         >
           <option value="">Todos</option>
@@ -161,7 +162,7 @@ export default function AdministradorTramites() {
           <Spinner animation="border" />
         </div>
       ) : (
-        <Table striped hover responsive className={styles.table}>
+        <Table striped hover responsive className={styles.tablaDatos}>
           <thead>
             <tr>
               <th>#</th>

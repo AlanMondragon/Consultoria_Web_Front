@@ -1,52 +1,128 @@
-/* Main container */
+/* Container principal optimizado */
 .container {
-  margin-top: 100px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 1200px;
 }
 
-/* Search and filter section */
+/* Barra de búsqueda más eficiente */
 .searchContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .searchInput {
-  border-radius: 12px;
-  border-width: 2px;
   width: 75%;
-}
-
-/* Table styles */
-.table {
-  min-width: 1000px;
-}
-
-.tableImage {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-}
-
-/* Button styles */
-.actionButton {
-  display: block;
-  margin-left: auto;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.31);
+  padding: 0.6rem 1rem;
+  border: 2px solid #e2e8f0;
   border-radius: 12px;
+  font-size: 0.95rem;
+  margin-right: 2rem;
+  transition: border-color 0.3s;
 }
 
-/* Pagination container */
+.searchInput:focus {
+  border-color: #38b2ac;
+  outline: none;
+}
+
+.selectState{
+  width: 20%;
+  padding: 0.6rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s;
+  margin-bottom: 10px;
+}
+
+/* Tabla optimizada */
+.tablaDatos {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border : 1px solid #e3e6e9;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  background: white;
+}
+
+/* Encabezado más limpio */
+.tablaDatos thead th {
+  background-color: #29587e;
+  color: white;
+  font-weight: 600;
+  padding: 0.9rem;
+  text-align: center;
+  border: none;
+}
+
+/* Celdas mejoradas */
+.tablaDatos td {
+  padding: 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  color: #444;
+}
+
+/* Hover más sutil */
+.tablaDatos tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Imágenes */
+.tableImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Botón optimizado */
+.actionButton {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: #2d87d0;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: rgb(83, 174, 219);
+}
+
+/* Paginación simplificada */
 .paginationContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 1rem 0;
   gap: 0.5rem;
+  margin-top: 1.5rem;
 }
 
-/* Loading container */
-.loadingContainer {
-  text-align: center;
-  padding: 1rem;
+.paginationContainer button {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #6fabfb;
+  background: rgba(255, 255, 255, 0.063);
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6fabfb;
+  transition: all 0.2s;
+}
+
+.paginationContainer button:hover {
+  background: #cde6ff;
 }
