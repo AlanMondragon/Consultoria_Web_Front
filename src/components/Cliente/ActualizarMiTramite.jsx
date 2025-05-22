@@ -20,11 +20,13 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
 
     const schema = yup.object().shape({
-        dateSimulation: yup
-            .date()
-            .nullable()
-            .required('Campo obligatorio')
+    dateSimulation: yup
+        .date()
+        .nullable()
+        .required('Campo obligatorio')
+        .min(new Date(), 'La fecha debe ser posterior a la fecha actual')
     });
+
 
     const {
         register,
@@ -155,7 +157,20 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
         if (result.isConfirmed) {
             try {
-                await cancelarCita(cliente.idTransactProgress);
+                const fechaActual = new Date();
+                const fechaCita = new Date(cliente.dateSimulation);
+                console.log('Fecha actual:', fechaActual);
+                console.log('Fecha de la cita:', fechaCita);
+                if (fechaCita < fechaActual) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No se puede cancelar la cita',
+                        text: 'La cita ya ha pasado',
+                    });
+                    return;
+                }
+                const response = await cancelarCita(cliente.idTransactProgress);
+                if(response.success){
                 Swal.fire({
                     icon: 'success',
                     title: 'Cita cancelada exitosamente',
@@ -165,6 +180,13 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                     onClienteRegistrado();
                 }
                 onHide();
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al cancelar la cita',
+                    text: response.message,
+                });
+            }
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
