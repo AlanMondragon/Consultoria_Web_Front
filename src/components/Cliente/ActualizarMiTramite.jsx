@@ -106,7 +106,18 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             };
 
             const payload = {
-                dateSimulation: formatDate(data.dateSimulation)
+                advance: data.advance,
+                dateCas: formatDate(data.dateCas),
+                dateCon: formatDate(data.dateCon),
+                dateSimulation: formatDate(data.dateSimulation),
+                dateStart: data.dateStart,
+                emailAcces: data.emailAcces,
+                haveSimulation: data.haveSimulation,
+                paid: data.paid,
+                paidAll: data.paidAll,
+                status: data.status,
+                passwordAcces: data.passwordAcces,
+                stepProgress: data.stepProgress,
             };
 
             await actualizarTC(cliente.idTransactProgress, payload);
@@ -144,7 +155,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
         if (result.isConfirmed) {
             try {
-                await cancelarCita(cliente.idTransactProgress); 
+                await cancelarCita(cliente.idTransactProgress);
                 Swal.fire({
                     icon: 'success',
                     title: 'Cita cancelada exitosamente',
