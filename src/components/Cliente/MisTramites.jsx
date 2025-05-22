@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import Navbar from '../NavbarUser.jsx';
-import { Table, Button, Form, Spinner, Image } from 'react-bootstrap';
+import { Button, Form, Spinner, Image, Card, Badge } from 'react-bootstrap';
 import { tramitesPorId, actualizarT } from './../../api/api.js';
 import styles from './../../styles/MisTramites.module.css';
 import ModalActualizarTramite from './ActualizarMiTramite.jsx';
@@ -18,7 +18,7 @@ export default function AdministradorTramites() {
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
   const [usuario, setUsuario] = useState('');
-  const itemsPorPagina = 7;
+  const itemsPorPagina = 6; // Cambiado a 6 para mejor disposición en cards
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -123,6 +123,20 @@ export default function AdministradorTramites() {
     });
   }
 
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      1: { variant: 'primary', text: 'En proceso' },
+      2: { variant: 'warning', text: 'En espera' },
+      3: { variant: 'danger', text: 'Falta de pago' },
+      4: { variant: 'success', text: 'Terminado' },
+      5: { variant: 'secondary', text: 'Cancelado' },
+      6: { variant: 'info', text: 'Revisar' }
+    };
+    
+    const config = statusConfig[status] || { variant: 'secondary', text: 'Desconocido' };
+    return <Badge bg={config.variant} className={styles.statusBadge}>{config.text}</Badge>;
+  };
+
   return (
     <div className={styles.container}>
       <Navbar title={"- Mis Trámites"} />
@@ -138,6 +152,7 @@ export default function AdministradorTramites() {
         <Form.Select
           value={estadoSeleccionado}
           onChange={(e) => setEstadoSeleccionado(e.target.value)}
+          className={styles.filterSelect}
         >
           <option value="">Todos</option>
           <option value="1">En proceso</option>
@@ -158,48 +173,56 @@ export default function AdministradorTramites() {
 
       {cargando ? (
         <div className={styles.loadingContainer}>
-          <Spinner animation="border" />
+          <Spinner animation="border" size="lg" />
+          <p className="mt-3">Cargando trámites...</p>
         </div>
       ) : (
-        <Table striped hover responsive className={styles.table}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Imagen</th>
-              <th>Trámite</th>
-              <th>Inicio del trámite</th>
-              <th>Cita CAS</th>
-              <th>Cita CON</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datosPaginados.map((cliente, index) => (
-              <tr key={cliente.idTransactProgress}>
-                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-                <td>
-                  <Image
-                    src={cliente.transact.image}
-                    className={styles.tableImage}
-                    rounded
-                  />
-                </td>
-                <td>{cliente.transact.description}</td>
-                <td>{cliente.dateStart}</td>
-                <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
-                <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
+        <div className={styles.cardsContainer}>
+          {datosPaginados.length === 0 ? (
+            <div className={styles.noResults}>
+              <p>No se encontraron trámites que coincidan con tu búsqueda.</p>
+            </div>
+          ) : (
+            datosPaginados.map((cliente, index) => (
+              <Card key={cliente.idTransactProgress} className={styles.tramiteCard}>
+                <div className={styles.cardHeader}>
+                  {getStatusBadge(cliente.status)}
+                </div>
+                
+                <Card.Body className={styles.cardBody}>
+                  <div className={styles.cardContent}>
+                    <Card.Title className={styles.cardTitle}>
+                      {cliente.transact.description}
+                    </Card.Title>
 
-                <td>
-                  {cliente.status === 1 ? 'En proceso' :
-                    cliente.status === 2 ? 'En espera' :
-                      cliente.status === 3 ? 'Falta de pago' :
-                        cliente.status === 4 ? 'Terminado' :
-                          cliente.status === 5 ? 'Cancelado' :
-                            cliente.status === 6 ? 'Revisar' : 'Desconocido'}
-                </td>
-
-                <td>
+                    <div className={styles.cardImageContainer}>
+                    <Image
+                      src={cliente.transact.image}
+                      className={styles.cardImage}
+                      rounded
+                    />
+                  </div>
+                    
+                    <div className={styles.cardDetails}>
+                      <div className={styles.detailItem}>
+                        <strong>Inicio:</strong>
+                        <span>{cliente.dateStart}</span>
+                      </div>
+                      
+                      <div className={styles.detailItem}>
+                        <strong>Cita CAS:</strong>
+                        <span>{cliente.dateCas || "No aplica/En espera"}</span>
+                      </div>
+                      
+                      <div className={styles.detailItem}>
+                        <strong>Cita CON:</strong>
+                        <span>{cliente.dateCon || "No aplica/En espera"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card.Body>
+                
+                <Card.Footer className={styles.cardFooter}>
                   <Button
                     variant="success"
                     className={styles.actionButton}
@@ -208,42 +231,49 @@ export default function AdministradorTramites() {
                       setShowModalA(true);
                     }}
                   >
-                    Más info
+                    Ver más información
                   </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                </Card.Footer>
+              </Card>
+            ))
+          )}
+        </div>
       )}
 
-      <div className={styles.paginationContainer}>
-        <Button
-          variant="outline-primary"
-          onClick={() => cambiarPagina(paginaActual - 1)}
-          disabled={paginaActual === 1}
-        >
-          Anterior
-        </Button>
-
-        {[...Array(totalPaginas)].map((_, i) => (
+      {totalPaginas > 1 && (
+        <div className={styles.paginationContainer}>
           <Button
-            key={i}
-            variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
-            onClick={() => cambiarPagina(i + 1)}
+            variant="outline-primary"
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
+            className={styles.paginationButton}
           >
-            {i + 1}
+            ← Anterior
           </Button>
-        ))}
 
-        <Button
-          variant="outline-primary"
-          onClick={() => cambiarPagina(paginaActual + 1)}
-          disabled={paginaActual === totalPaginas}
-        >
-          Siguiente
-        </Button>
-      </div>
+          <div className={styles.pageNumbers}>
+            {[...Array(totalPaginas)].map((_, i) => (
+              <Button
+                key={i}
+                variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
+                onClick={() => cambiarPagina(i + 1)}
+                className={styles.pageNumber}
+              >
+                {i + 1}
+              </Button>
+            ))}
+          </div>
+
+          <Button
+            variant="outline-primary"
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+            className={styles.paginationButton}
+          >
+            Siguiente →
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
