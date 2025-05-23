@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
  */
 
 const API_URL = import.meta.env.VITE_API_URL;
-
+const API_URL_MAIL = import.meta.env.VITE_API_URL_MAIL
 console.log('API_URL:', API_URL); 
 
 export const Login = async (email, password) => {
@@ -538,3 +538,48 @@ export const createProcessWithPayment = async (data) => {
     throw new Error(errorMessage);
   }
 }
+
+export const olvidarContra = async (email) => {
+  try {
+    if (!email || !email.trim() || !email.includes('@')) {
+      Swal.fire('Advertencia', 'Ingresa un correo electrónico válido.', 'warning');
+      return;
+    }
+
+    const body = {
+      subject: "Ci",
+      message: "Hola master 2.0."
+    };
+
+    const response = await axios.post(
+      `${API_URL_MAIL}/send/${email.trim()}`,
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    console.log("Respuesta del servidor:", response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error("Error al mandar el correo:", error);
+    const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
+    throw new Error(errorMessage);
+  }
+};
+
+
+
+
+export const obtenerUsuarioPorCorreo = async (email) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/email/${email}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener usuario por correo', error);
+    throw error;
+  }
+};
