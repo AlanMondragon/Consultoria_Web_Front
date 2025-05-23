@@ -1,13 +1,165 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, cancelarCita } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
+
+// Componente personalizado para seleccionar fecha y hora disponibles
+const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedTime, setSelectedTime] = useState('');
+    const [availableHours, setAvailableHours] = useState([]);
+
+    useEffect(() => {
+        if (value) {
+            const date = new Date(value);
+            const dateStr = date.toISOString().split('T')[0];
+            const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            setSelectedDate(dateStr);
+            setSelectedTime(timeStr);
+        }
+    }, [value]);
+
+    // Generar horarios disponibles para una fecha específica
+    const generateAvailableHours = (selectedDateStr) => {
+        if (!selectedDateStr) {
+            setAvailableHours([]);
+            return;
+        }
+
+        const today = new Date();
+        const selectedDateObj = new Date(selectedDateStr);
+        const isToday = selectedDateObj.toDateString() === today.toDateString();
+        
+        // Horarios de trabajo (9:00 AM a 6:00 PM)
+        const startHour = isToday ? Math.max(9, today.getHours() + 1) : 9;
+        const endHour = 18;
+        
+        const allHours = [];
+        for (let hour = startHour; hour < endHour; hour++) {
+            for (let minute = 0; minute < 60; minute += 60) { // Solo horas completas
+                allHours.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+            }
+        }
+
+        // Filtrar horarios ocupados
+        const occupiedHours = fechasOcupadas
+            .filter(fechaOcupada => {
+                const ocupadaDate = new Date(fechaOcupada);
+                const isSameDate = ocupadaDate.toDateString() === selectedDateObj.toDateString();
+                return isSameDate;
+            })
+            .map(fechaOcupada => {
+                const date = new Date(fechaOcupada);
+                return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            });
+
+        // Debug: mostrar horarios ocupados para esta fecha
+        console.log(`Fecha seleccionada: ${selectedDateStr}`);
+        console.log('Horarios ocupados para esta fecha:', occupiedHours);
+        console.log('Todos los horarios posibles:', allHours);
+
+        // Horarios disponibles (excluyendo ocupados y la hora anterior/posterior por el margen de 1 hora)
+        const available = allHours.filter(hour => {
+            const [hourNum, minuteNum] = hour.split(':').map(Number);
+            
+            // Verificar si este horario está ocupado o muy cerca de uno ocupado
+            const isBlocked = occupiedHours.some(occupiedHour => {
+                const [occupiedHourNum, occupiedMinuteNum] = occupiedHour.split(':').map(Number);
+                
+                // Convertir a minutos para comparar más fácil
+                const selectedTimeInMinutes = hourNum * 60 + minuteNum;
+                const occupiedTimeInMinutes = occupiedHourNum * 60 + occupiedMinuteNum;
+                const diffInMinutes = Math.abs(selectedTimeInMinutes - occupiedTimeInMinutes);
+                
+                // Bloquear si:
+                // 1. Es exactamente la misma hora (diffInMinutes === 0)
+                // 2. Está dentro del rango de 1 hora (diffInMinutes < 60)
+                return diffInMinutes === 0 || diffInMinutes < 60;
+            });
+            
+            return !isBlocked;
+        });
+
+        setAvailableHours(available);
+    };
+
+    useEffect(() => {
+        generateAvailableHours(selectedDate);
+    }, [selectedDate, fechasOcupadas]);
+
+    const handleDateChange = (e) => {
+        const newDate = e.target.value;
+        setSelectedDate(newDate);
+        setSelectedTime(''); // Reset time when date changes
+        
+        if (newDate && selectedTime) {
+            const dateTime = `${newDate}T${selectedTime}`;
+            onChange(dateTime);
+        }
+    };
+
+    const handleTimeChange = (e) => {
+        const newTime = e.target.value;
+        setSelectedTime(newTime);
+        
+        if (selectedDate && newTime) {
+            const dateTime = `${selectedDate}T${newTime}`;
+            onChange(dateTime);
+        }
+    };
+
+    // Obtener fecha mínima (hoy)
+    const getMinDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
+    return (
+        <div>
+            <div className="row">
+                <div className="col-md-6">
+                    <label>Fecha:</label>
+                    <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        min={getMinDate()}
+                        className={`form-control ${error ? 'is-invalid' : ''}`}
+                    />
+                </div>
+                <div className="col-md-6">
+                    <label>Hora:</label>
+                    <select
+                        value={selectedTime}
+                        onChange={handleTimeChange}
+                        className={`form-control ${error ? 'is-invalid' : ''}`}
+                        disabled={!selectedDate}
+                    >
+                        <option value="">Selecciona una hora</option>
+                        {availableHours.map(hour => (
+                            <option key={hour} value={hour}>
+                                {hour}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            {selectedDate && availableHours.length === 0 && (
+                <div className="mt-2">
+                    <small className="text-warning">
+                        No hay horarios disponibles para esta fecha
+                    </small>
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
@@ -17,16 +169,19 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
     const [mensaje, setMensaje] = useState();
-
+    const [fechasOcupadas, setFechasOcupadas] = useState([]);
 
     const schema = yup.object().shape({
-    dateSimulation: yup
-        .date()
-        .nullable()
-        .required('Campo obligatorio')
-        .min(new Date(), 'La fecha debe ser posterior a la fecha actual')
+        dateSimulation: yup
+            .string()
+            .nullable()
+            .required('Debes seleccionar una fecha y hora')
+            .test('valid-datetime', 'Fecha y hora no válidas', (value) => {
+                if (!value) return false;
+                const date = new Date(value);
+                return date > new Date();
+            })
     });
-
 
     const {
         register,
@@ -34,6 +189,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         watch,
         setValue,
         reset,
+        control,
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: yupResolver(schema),
@@ -41,6 +197,35 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     });
 
     const advanceValue = watch('advance');
+
+    // Obtener fechas ocupadas del endpoint
+    useEffect(() => {
+        const obtenerFechasOcupadas = async () => {
+            try {
+                const response = await getAllDates();
+                if (response.success && response.response?.transactProgresses) {
+                    // Extraer solo las fechas de simulación y filtrar las que no sean null
+                    const fechas = response.response.transactProgresses
+                        .map(item => item.dateSimulation)
+                        .filter(fecha => fecha !== null && fecha !== undefined);
+                    
+                    setFechasOcupadas(fechas);
+                    console.log('Fechas ocupadas cargadas:', fechas);
+                }
+            } catch (error) {
+                console.error('Error al obtener fechas ocupadas:', error);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Advertencia',
+                    text: 'No se pudieron cargar las fechas ocupadas. Verifica manualmente los horarios.',
+                });
+            }
+        };
+
+        if (show) {
+            obtenerFechasOcupadas();
+        }
+    }, [show]);
 
     useEffect(() => {
         if (cliente) {
@@ -70,8 +255,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             });
         }
     }, [cliente, reset]);
-
-
 
     // Obtener nombre y descripción del paso actual
     useEffect(() => {
@@ -171,22 +354,22 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 }
                 const response = await cancelarCita(cliente.idTransactProgress);
                 if(response.success){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Cita cancelada exitosamente',
-                    confirmButtonText: 'Aceptar',
-                });
-                if (typeof onClienteRegistrado === 'function') {
-                    onClienteRegistrado();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cita cancelada exitosamente',
+                        confirmButtonText: 'Aceptar',
+                    });
+                    if (typeof onClienteRegistrado === 'function') {
+                        onClienteRegistrado();
+                    }
+                    onHide();
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al cancelar la cita',
+                        text: response.message,
+                    });
                 }
-                onHide();
-            }else{
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al cancelar la cita',
-                    text: response.message,
-                });
-            }
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
@@ -197,10 +380,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
     }
-
-
-
-
 
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
@@ -270,6 +449,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <label>Descripción del paso:</label>
                         <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                     </div>
+                    
                     <div className="form-group">
                         <p>
                             {cliente?.dateSimulation
@@ -277,14 +457,37 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                                 : "No cuentas con cita agendada"}
                         </p>
                         <div className="form-group">
-                            <label>Cita simulation:</label>
-                            <input
-                                type="datetime-local"
-                                {...register('dateSimulation')}
-                                className={`modern-input ${errors.dateSimulation ? 'input-error' : ''}`}
+                            <label>Cita de Simulación:</label>
+                            <Controller
+                                name="dateSimulation"
+                                control={control}
+                                render={({ field }) => (
+                                    <DateTimeSelector
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        fechasOcupadas={fechasOcupadas}
+                                        error={errors.dateSimulation}
+                                    />
+                                )}
                             />
-                            <span className="error">{errors.dateSimulation?.message}</span>
+                            {errors.dateSimulation && (
+                                <span className="text-danger">{errors.dateSimulation.message}</span>
+                            )}
+                            
+                            {/* Información sobre las citas ocupadas */}
+                            <div className="mt-2">
+                                <small className="text-info">
+                                    <strong>ℹ️ Información:</strong>
+                                    <br />
+                                    • Horario de atención: 9:00 AM - 6:00 PM
+                                    <br />
+                                    • Cada cita dura aproximadamente 1 hora
+                                    <br />
+                                    • {fechasOcupadas.length} horarios ya ocupados
+                                </small>
+                            </div>
                         </div>
+                        
                         {cliente?.dateSimulation && (
                             <button
                                 type="button"
@@ -293,12 +496,8 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             >
                                 Cancelar cita
                             </button>
-
                         )}
-
                     </div>
-
-
                 </Modal.Body>
 
                 <Modal.Footer>

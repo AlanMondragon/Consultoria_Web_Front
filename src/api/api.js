@@ -538,3 +538,16 @@ export const createProcessWithPayment = async (data) => {
     throw new Error(errorMessage);
   }
 }
+
+
+// Dates
+
+export const getAllDates = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/progress/simulation`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las fechas", error);
+    throw error;
+  }
+}
