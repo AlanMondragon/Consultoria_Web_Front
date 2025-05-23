@@ -227,7 +227,7 @@ export default function AdministradorPagos() {
                                 <div className={styles.cardFecha}><strong>Fecha:</strong>
                                 <p>{pago.dateStart} </p>
                                 </div>
-                                <div className={styles.cardTotal}><strong>Total:</strong>
+                                <div className={styles.cardTotal}><strong>Pagado:</strong>
                                  <p className={styles.cardTextCash}>${pago.total?.toFixed(2) || '0.00'}</p>
                                 </div>
                                 <div className={styles.cardTelefono}><strong>Teléfono:</strong> 
