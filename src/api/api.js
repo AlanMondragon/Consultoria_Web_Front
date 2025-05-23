@@ -547,8 +547,8 @@ export const olvidarContra = async (email) => {
     }
 
     const body = {
-      subject: "Ci",
-      message: "Hola master 2.0."
+      subject: "Recuperación de contraseña",
+      message: "Hola, aquí tienes tu código de recuperación de parte del equipo de Consultoría JAS: ",
     };
 
     const response = await axios.post(
@@ -583,3 +583,12 @@ export const obtenerUsuarioPorCorreo = async (email) => {
     throw error;
   }
 };
+export const getAllDates = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/progress/simulation`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las fechas", error);
+    throw error;
+  }
+}

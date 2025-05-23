@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, cancelarCita,getAllDates } from './../../api/api.js';
 
 // Componente personalizado para seleccionar fecha y hora disponibles
 const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
