@@ -1,232 +1,129 @@
-/* Container principal */
+/* Container principal optimizado */
 .container {
-  margin-top: 90px;
-  padding: 0 1rem;
-  min-width: 70%;
-  max-width: 1000px;
+  margin: 2rem auto;
+  margin-top: 100px;
+  padding: 1.5rem;
+  max-width: 1200px;
 }
 
-/* Buscador y filtros */
+/* Barra de búsqueda más eficiente */
 .searchContainer {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 0.50rem;
-  background: #f5f8fa;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.searchInput,
-.filterSelect {
-  border-radius: 12px;
-  border: 2px solid #1e6b92;
+  align-items: center;
+  margin-bottom: 1.5rem;
   padding: 0.75rem;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.searchInput { 
-  width: 80%; 
-}
-
-.filterSelect { 
-  width: 25%;
-  height: 100%; 
-  min-width: 150px;
-}
-
-.searchInput:focus,
-.filterSelect:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-/* Grid de cards - Layout horizontal una al lado de la otra */
-.cardsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.7rem;
-  padding: 1rem 0;
-  margin-bottom: 0.50rem;
-}
-
-/* Cards */
-.tramiteCard {
-  flex: 1;
-  min-width: 280px;
-  max-width: 350px;
-  border: 1px solid #bfc6cc;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 8px 19px rgba(1, 2, 1, 0.4);
-  transition: all 0.3s ease;
-  overflow: hidden;
-  background: #fff;
-  animation: fadeInUp 0.6s ease-in-out;
-  height: fit-content;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.tramiteCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(4, 1, 2, 0.6);
+.searchInput {
+  width: 75%;
+  padding: 0.6rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  margin-right: 2rem;
+  transition: border-color 0.3s;
 }
 
-/* Header de card */
-.cardHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+.searchInput:focus {
+  border-color: #38b2ac;
+  outline: none;
 }
 
-
-.statusBadge {
-  font-size: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 20px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.selectState{
+  width: 20%;
+  padding: 0.6rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s;
+  margin-bottom: 10px;
 }
 
-/* Body de card */
-.cardBody {
-  padding: 1.25rem;
-  text-align: center;
-}
-
-.cardImageContainer {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.cardImage {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border: 3px solid #f8f9fa;
-  border-radius: 50%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.cardTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #0d0f10;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
-
-.cardDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.detailItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  font-size: 0.875rem;
-}
-
-.detailItem strong {
-  color: #212529;
-  font-weight: 600;
-}
-
-.detailItem span {
-  color: #6c757d;
-  text-align: right;
-  max-width: 60%;
-  word-break: break-word;
-}
-
-/* Footer de card */
-.cardFooter {
-  background: #fff;
-  border-top: 1px solid #f8f9fa;
-  padding: 0.50rem;
-}
-
-.actionButton {
+/* Tabla optimizada */
+.tablaDatos {
   width: 100%;
+  min-width: 1000px;
+  border-collapse: separate;
+  border-spacing: 0;
   border-radius: 12px;
-  padding: 0.75rem;
-  font-weight: 600;
-  border: none;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  overflow: hidden;
+  border : 1px solid #e3e6e9;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  background: white;
+}
+
+/* Encabezado más limpio */
+.tablaDatos thead th {
+  background-color: #29587e;
   color: white;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  padding: 0.9rem;
+  text-align: center;
+  border: none;
+}
+
+/* Celdas mejoradas */
+.tablaDatos td {
+  padding: 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  color: #444;
+}
+
+/* Hover más sutil */
+.tablaDatos tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Imágenes */
+.tableImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Botón optimizado */
+.actionButton {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: #2d87d0;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .actionButton:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+  background-color: rgb(83, 174, 219);
 }
 
-/* Paginación */
+/* Paginación simplificada */
 .paginationContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin: 2rem 0;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-  flex-wrap: wrap;
-}
-
-.pageNumbers {
-  display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  margin-top: 1.5rem;
 }
 
-.paginationButton,
-.pageNumber {
+.paginationContainer button {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #6fabfb;
+  background: rgba(255, 255, 255, 0.063);
   border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  font-weight: 600;
-  border: 2px solid #007bff;
-  transition: all 0.3s ease;
-  min-width: 40px;
+  cursor: pointer;
+  color: #6fabfb;
+  transition: all 0.2s;
 }
 
-.paginationButton:hover,
-.pageNumber:hover {
-  transform: translateY(-2px);
-}
-
-/* Estados de carga y sin resultados */
-.loadingContainer,
-.noResults {
-  text-align: center;
-  padding: 3rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-  margin: 2rem 0;
-  color: #6c757d;
-  font-size: 1.1rem;
-  width: 100%;
-}
-
-/* Animación */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.paginationContainer button:hover {
+  background: #cde6ff;
 }
