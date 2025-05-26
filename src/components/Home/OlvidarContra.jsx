@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './../../styles/OlvidarContra.css';
+import styles from './../../styles/OlvidarContra.module.css'; // Importar el módulo CSS
 import Swal from 'sweetalert2';
 import { olvidarContra, actualizarContra, obtenerUsuarioPorCorreo } from './../../api/api.js';
 import { Icon } from '@iconify/react';
@@ -14,10 +14,19 @@ export default function OlvidarContra() {
   const [nuevaPassword, setNuevaPassword] = useState('');
 
   useEffect(() => {
-    document.body.classList.add('home-page');
+    // Aplicar fondo al body
+    document.body.style.backgroundColor = '#132E3C';
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+    document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
     localStorage.removeItem("token");
+    
+    // Limpiar estilos al desmontar
     return () => {
-      document.body.classList.remove('home-page');
+      document.body.style.backgroundColor = '';
+      document.body.style.margin = '';
+      document.body.style.padding = '';
+      document.body.style.fontFamily = '';
     };
   }, []);
 
@@ -43,7 +52,7 @@ export default function OlvidarContra() {
       const res = await olvidarContra(email.trim());
       console.log("Respuesta de olvidarContra:", res);
 
-      const code = res?.response?.code;  // Usa .data
+      const code = res?.response?.code;
       if (!code) {
         throw new Error("No se recibió el código del backend.");
       }
@@ -58,7 +67,6 @@ export default function OlvidarContra() {
     }
   };
 
-
   const handleActualizarPassword = async (e) => {
     e.preventDefault();
 
@@ -72,27 +80,21 @@ export default function OlvidarContra() {
       return;
     }
 
-    /*try {
-      await actualizarContra(userId, { password: nuevaPassword });
-      console.log("Respuesta de actualizarContra:", res);
-      Swal.fire('Éxito', 'Contraseña actualizada correctamente.', 'success');
+    try {
+      await actualizarContra(userId, nuevaPassword);
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Contraseña actualizada con éxito',
+      });
+      
+      // Resetear el formulario
       setEmail('');
       setCodigo(null);
       setUserId(null);
       setCodigoIngresado('');
       setNuevaPassword('');
       setPaso(1);
-    } catch (error) {
-      console.error(error);
-      Swal.fire('Error', 'No se pudo actualizar la contraseña.', 'error');
-    }*/
-    try {
-      await actualizarContra(userId, nuevaPassword );
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: 'Contraseña actualizada con éxito',
-      });
     } catch (error) {
       console.error("Error actualizando contraseña:", error);
       Swal.fire({
@@ -103,58 +105,79 @@ export default function OlvidarContra() {
     }
   };
 
-
   const handleBack = () => {
     window.history.back();
   };
 
   return (
-    <div className="body-login">
-      <div className="card-recovery">
-        <div className="top-bar">
-          <Icon icon="mdi:arrow-left" width="28" height="28" className="back-icon" onClick={handleBack} />
+    <div className={styles.homePage}>
+      <div className={styles.bodyLogin}>
+        <div className={styles.cardRecovery}>
+          <div className={styles.topBar}>
+            <Icon 
+              icon="mdi:arrow-left" 
+              width="28" 
+              height="28" 
+              className={styles.backIcon} 
+              onClick={handleBack} 
+            />
+          </div>
+          
+          <h2 className={styles.titleRecovery}>Recuperación de contraseña</h2>
+          
+          <img 
+            src={logo} 
+            alt="Logo Consultoría de Visado" 
+            className={styles.logoImgOlvidarContra} 
+          />
+
+          {paso === 1 && (
+            <form onSubmit={handleEnviarCodigo} className={styles.formRecovery}>
+              <p className={styles.description}>
+                Por favor, ingresa tu correo electrónico. Te enviaremos un código para restablecer tu contraseña.
+              </p>
+              <input
+                type="email"
+                name="email"
+                placeholder="Correo electrónico"
+                required
+                className={styles.inputRecovery}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button type="submit" className={styles.btnRecovery}>
+                Enviar
+              </button>
+            </form>
+          )}
+
+          {paso === 2 && (
+            <form onSubmit={handleActualizarPassword} className={styles.formRecovery}>
+              <p className={styles.description}>
+                Ingresa el código recibido y tu nueva contraseña.
+              </p>
+              <input
+                type="text"
+                placeholder="Código de verificación"
+                required
+                className={styles.inputRecovery}
+                value={codigoIngresado}
+                onChange={(e) => setCodigoIngresado(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                required
+                className={styles.inputRecovery}
+                value={nuevaPassword}
+                onChange={(e) => setNuevaPassword(e.target.value)}
+              />
+              <button type="submit" className={styles.btnRecovery}>
+                Actualizar contraseña
+              </button>
+            </form>
+          )}
         </div>
-        <h2 className="title-recovery">Recuperación de contraseña</h2>
-        <img src={logo} alt="Logo Consultoría de Visado" className="logo-img-olvidar-contra" />
-
-        {paso === 1 && (
-          <form onSubmit={handleEnviarCodigo} className="form-recovery">
-            <p className="description">Por favor, ingresa tu correo electrónico. Te enviaremos un código para restablecer tu contraseña.</p>
-            <input
-              type="email"
-              name="email"
-              placeholder="Correo electrónico"
-              required
-              className="input-recovery"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button type="submit" className="btn-recovery">Enviar</button>
-          </form>
-        )}
-
-        {paso === 2 && (
-          <form onSubmit={handleActualizarPassword} className="form-recovery">
-            <p className="description">Ingresa el código recibido y tu nueva contraseña.</p>
-            <input
-              type="text"
-              placeholder="Código de verificación"
-              required
-              className="input-recovery"
-              value={codigoIngresado}
-              onChange={(e) => setCodigoIngresado(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Nueva contraseña (mínimo 6 caracteres)"
-              required
-              className="input-recovery"
-              value={nuevaPassword}
-              onChange={(e) => setNuevaPassword(e.target.value)}
-            />
-            <button type="submit" className="btn-recovery">Actualizar contraseña</button>
-          </form>
-        )}
       </div>
     </div>
   );
