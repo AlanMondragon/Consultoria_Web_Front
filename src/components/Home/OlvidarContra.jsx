@@ -20,7 +20,7 @@ export default function OlvidarContra() {
     document.body.style.padding = '0';
     document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
     localStorage.removeItem("token");
-    
+
     // Limpiar estilos al desmontar
     return () => {
       document.body.style.backgroundColor = '';
@@ -32,34 +32,26 @@ export default function OlvidarContra() {
 
   const handleEnviarCodigo = async (e) => {
     e.preventDefault();
-
     if (!email.trim()) {
       Swal.fire('Error', 'Por favor ingresa un correo válido.', 'error');
       return;
     }
-
     try {
       const resUser = await obtenerUsuarioPorCorreo(email.trim());
       console.log("Respuesta de obtenerUsuarioPorCorreo:", resUser);
-
       const user = resUser?.response?.user;
       if (!user?.idUser) {
         throw new Error("Usuario no encontrado.");
       }
-
       setUserId(user.idUser);
-
       const res = await olvidarContra(email.trim());
       console.log("Respuesta de olvidarContra:", res);
-
       const code = res?.response?.code;
       if (!code) {
         throw new Error("No se recibió el código del backend.");
       }
-
       setCodigo(code);
       setPaso(2);
-
       Swal.fire('¡Correo enviado!', 'Revisa tu bandeja para el código.', 'success');
     } catch (error) {
       console.error("Error en recuperación de contraseña:", error);
@@ -69,17 +61,14 @@ export default function OlvidarContra() {
 
   const handleActualizarPassword = async (e) => {
     e.preventDefault();
-
     if (String(codigoIngresado).trim() !== String(codigo)) {
       Swal.fire('Error', 'El código ingresado es incorrecto.', 'error');
       return;
     }
-
     if (!nuevaPassword || nuevaPassword.length < 6) {
       Swal.fire('Advertencia', 'La contraseña debe tener al menos 6 caracteres.', 'warning');
       return;
     }
-
     try {
       await actualizarContra(userId, nuevaPassword);
       Swal.fire({
@@ -87,7 +76,7 @@ export default function OlvidarContra() {
         title: 'Éxito',
         text: 'Contraseña actualizada con éxito',
       });
-      
+
       // Resetear el formulario
       setEmail('');
       setCodigo(null);
@@ -114,28 +103,32 @@ export default function OlvidarContra() {
       <div className={styles.bodyLogin}>
         <div className={styles.cardRecovery}>
           <div className={styles.topBar}>
-            <Icon 
-              icon="mdi:arrow-left" 
-              width="28" 
-              height="28" 
-              className={styles.backIcon} 
-              onClick={handleBack} 
+            <Icon
+              icon="mdi:arrow-left"
+              width="28"
+              height="28"
+              className={styles.backIcon}
+              onClick={handleBack}
             />
           </div>
-          
+
           <h2 className={styles.titleRecovery}>Recuperación de contraseña</h2>
-          
-          <img 
-            src={logo} 
-            alt="Logo Consultoría de Visado" 
-            className={styles.logoImgOlvidarContra} 
-          />
 
           {paso === 1 && (
             <form onSubmit={handleEnviarCodigo} className={styles.formRecovery}>
               <p className={styles.description}>
                 Por favor, ingresa tu correo electrónico. Te enviaremos un código para restablecer tu contraseña.
               </p>
+
+              {/* ✅ Wrap image in container to center it */}
+              <div className={styles.logoContainer}>
+                <img
+                  src={logo}
+                  alt="Logo Consultoría de Visado"
+                  className={styles.logoImgOlvidarContra}
+                />
+              </div>
+
               <input
                 type="email"
                 name="email"
@@ -156,6 +149,15 @@ export default function OlvidarContra() {
               <p className={styles.description}>
                 Ingresa el código recibido y tu nueva contraseña.
               </p>
+
+              <div className={styles.logoContainer}>
+                <img
+                  src={logo}
+                  alt="Logo Consultoría de Visado"
+                  className={styles.logoImgOlvidarContra}
+                />
+              </div>
+
               <input
                 type="text"
                 placeholder="Código de verificación"
