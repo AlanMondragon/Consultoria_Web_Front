@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../img/logo.jpg';
 import { Login } from './../../api/api.js';
-import './../../styles/Home.css';
+import styles from './../../styles/Home.module.css'; // Importar el módulo CSS
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'
 import Swal from 'sweetalert2';
@@ -10,11 +10,17 @@ export default function Home() {
   const navigate = useNavigate();
   
   useEffect(() => {
-
-    document.body.classList.add('home-page');
+    // Aplicar fondo al body
+    document.body.style.backgroundColor = '#132E3C';
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
     localStorage.removeItem("token");
+    
+    // Limpiar estilos al desmontar
     return () => {
-      document.body.classList.remove('home-page');
+      document.body.style.backgroundColor = '';
+      document.body.style.margin = '';
+      document.body.style.padding = '';
     };
   }, []);
 
@@ -45,7 +51,6 @@ export default function Home() {
       // Decodificar el token
       const decoded = jwtDecode(data.token);
 
-  
       // Redirigir según rol
       if (decoded.role === "ADMIN") {
         Swal.fire({
@@ -74,53 +79,59 @@ export default function Home() {
         text: `${error.response.data.message}`,
         showConfirmButton: true,
       })
-        }
+    }
   };
 
-  //Olvide contraseña
+  // Olvide contraseña
   const handleForgotPassword = () => {
     navigate('/olvidar-contra')
   }
 
   return (
-    <div className='body-login'>
-      <div className="card-login">
-        <div className="card-left">
-          <img
-            src={logo}
-            alt="Logo Consultoría JAS"
-            className="logo-img"
-          />
-        </div>
-
-        <div className="vertical-line"></div>
-
-        <div className="card-right">
-          <h2 className='h2'>Bienvenido</h2>
-          <form onSubmit={handleLogin}>
-            <input
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-control"
-              placeholder="Ingresa tu correo"
-              required
+    <div className={styles.homePage}>
+      <div className={styles.bodyLogin}>
+        <div className={styles.cardLogin}>
+          <div className={styles.cardLeft}>
+            <img
+              src={logo}
+              alt="Logo Consultoría JAS"
+              className={styles.logoImg}
             />
-            <input
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-control"
-              placeholder="Ingresa tu contraseña"
-              required
-            />
-            <div className="mb-3">
-              <a onClick={handleForgotPassword} className="forgot-password" style={{background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline'}}>
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
-            <button type="submit" className="btn-login w-100">
-              Ingresar
-            </button>
-          </form>
+          </div>
+
+          <div className={styles.verticalLine}></div>
+
+          <div className={styles.cardRight}>
+            <h2 className={styles.title}>Bienvenido</h2>
+            <form onSubmit={handleLogin} className={styles.form}>
+              <input
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                className={styles.formControl}
+                placeholder="Ingresa tu correo"
+                required
+              />
+              <input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                className={styles.formControl}
+                placeholder="Ingresa tu contraseña"
+                required
+              />
+              <div className={styles.forgotPasswordContainer}>
+                <button 
+                  type="button"
+                  onClick={handleForgotPassword} 
+                  className={styles.forgotPassword}
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+              <button type="submit" className={styles.btnLogin}>
+                Ingresar
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

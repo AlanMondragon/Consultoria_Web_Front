@@ -1,0 +1,256 @@
+/* Home.module.css */
+
+/* Estilos globales para el componente */
+:global(body) {
+  margin: 0;
+  padding: 0;
+}
+
+.homePage {
+  background-color: #132E3C !important;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bodyLogin {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.cardLogin {
+  border-radius: 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 850px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  margin: 0 auto;
+}
+
+.verticalLine {
+  width: 1px;
+  background-color: #ddd;
+  flex-shrink: 0;
+}
+
+.cardLeft {
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.cardRight {
+  background-color: #fff;
+  padding: 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logoImg {
+  width: 250px;
+  height: auto;
+  border-radius: 25px;
+  max-width: 100%;
+}
+
+.title {
+  margin-bottom: 30px;
+  text-align: center;
+  color: #132E3C;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formControl {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  margin-bottom: 25px;
+  background: #fff;
+  color: #333;
+  padding: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.formControl:focus {
+  border-color: #08307a;
+}
+
+.formControl::placeholder {
+  color: #999;
+}
+
+.formControl::-webkit-input-placeholder {
+  color: #999;
+}
+
+.formControl::-moz-placeholder {
+  color: #999;
+}
+
+.formControl:-ms-input-placeholder {
+  color: #999;
+}
+
+.forgotPasswordContainer {
+  margin-bottom: 20px;
+}
+
+.forgotPassword {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.forgotPassword:hover {
+  color: #0056b3;
+}
+
+.btnLogin {
+  background-color: #08307a;
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 12px 30px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btnLogin:hover {
+  background-color: #1756cc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .homePage {
+    padding: 10px;
+  }
+
+  .cardLogin {
+    flex-direction: column;
+    margin: 20px auto;
+    gap: 0;
+  }
+
+  .verticalLine {
+    display: none;
+  }
+
+  .cardLeft {
+    padding: 30px 20px 20px 20px;
+  }
+
+  .cardRight {
+    padding: 20px 30px 30px 30px;
+  }
+
+  .logoImg {
+    width: 200px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+
+  .btnLogin {
+    font-size: 18px;
+    padding: 12px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .homePage {
+    padding: 5px;
+  }
+
+  .cardLogin {
+    margin: 10px auto;
+    border-radius: 20px;
+  }
+
+  .cardLeft,
+  .cardRight {
+    padding: 20px;
+  }
+
+  .logoImg {
+    width: 150px;
+  }
+
+  .title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .formControl {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .btnLogin {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .forgotPassword {
+    font-size: 13px;
+  }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 320px) {
+  .cardLeft,
+  .cardRight {
+    padding: 15px;
+  }
+
+  .logoImg {
+    width: 120px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .formControl {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .btnLogin {
+    font-size: 15px;
+    padding: 10px 15px;
+  }
+}

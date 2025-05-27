@@ -26,13 +26,11 @@ export default function NavbarAdmin({ title }) {
         setId6("/Perfil-sm");
         setId7("/Calendar-sm");
       } else {
-        setId1("/ServiciosAdmin");
-        setId2("/TramitesAdmin");
-        setId3("/ClientesAdmin");
-        setId4("/HomeAdmin");
-        setId5("/Pagos");
-        setId6("/Perfil");
-        setId7("/Calendar");
+        setId1("/ClienteServicios");
+        setId2("/MisTramites");
+        setId3("/ClienteHome");
+        setId4("/MiPerfil");
+        setId5("/Calendario");
       }
     };
 

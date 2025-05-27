@@ -6,7 +6,6 @@ import Navbar from '../NavbarUser';
 import tramites from '../../img/Tramites.png';
 import servicios from '../../img/Servicios.png';
 import calendario from '../../img/Calendario.png';
-// Importación correcta del CSS Module
 import styles from '../../styles/ContenedorHomeUser.module.css';
 
 export default function ClienteHome() {
@@ -35,14 +34,13 @@ export default function ClienteHome() {
       localStorage.removeItem("token");
       navigate("/");
     }
+
     // Aplica la clase al body para estilos globales si se necesita
     document.body.classList.add('home-admin-body');
     return () => {
       document.body.classList.remove('home-admin-body');
     };
-
   }, [navigate]);
-
 
   return (
     <div className={styles.clientContainer}>

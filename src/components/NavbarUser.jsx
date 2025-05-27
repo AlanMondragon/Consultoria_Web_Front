@@ -3,8 +3,8 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import Logo from '../img/logo.jpg';
-import '../styles/Navbar.css';
+import Logo from '../img/logo.png';
+import styles from '../styles/Navbar.module.css';
 import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
 import logoutImg from '../img/salida.gif'; // ajusta la ruta según tu estructura
@@ -34,14 +34,12 @@ export default function NavbarAdmin({ title }) {
         setId3("/ClienteHome-sm");
         setId4("/MiPerfil-sm");
         setId5("/Calendario-sm");
-
       } else {
         setId1("/ClienteServicios");
         setId2("/MisTramites");
         setId4("/MiPerfil");
         setId5("/Calendario");
         setId3("/ClienteHome")
-
       }
     };
 
@@ -54,6 +52,7 @@ export default function NavbarAdmin({ title }) {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
   function cerrarSesion() {
     Swal.fire({
       icon: 'warning',
@@ -66,17 +65,16 @@ export default function NavbarAdmin({ title }) {
         console.log('Cancelado');
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         window.location.href = '/';
-
       }
     });
   }
 
   return (
-    <Navbar fixed="top" expand="lg" className="encabezado-navbar">
-      <Container fluid className="contenedor-navbar">
+    <Navbar fixed="top" expand="lg" className={styles.encabezadoNavbar}>
+      <Container fluid className={styles.contenedorNavbar}>
 
         {/* Botón Hamburguesa */}
-        <Button variant="link" className="boton-menu" onClick={toggleMenu}>
+        <Button variant="link" className={styles.botonMenu} onClick={toggleMenu}>
           <span className="navbar-toggler-icon"></span>
         </Button>
 
@@ -102,17 +100,16 @@ export default function NavbarAdmin({ title }) {
 
       {/* Menú lateral desplegable */}
       {menuOpen && (
-        <div className="menu-lateral">
+        <div className={styles.menuLateral}>
           <Nav className="flex-column">
-            <Nav.Link href={id3} className="link-menu">Home</Nav.Link>
-            <Nav.Link href={id1} className="link-menu">Servicios</Nav.Link>
-            <Nav.Link href={id2} className="link-menu">Mis trámites</Nav.Link>
-            <Nav.Link href={id5} className="link-menu">Calendario</Nav.Link>
-            <Nav.Link href={id4} className="link-menu">Mi Perfil</Nav.Link>
+            <Nav.Link href={id3} className={styles.linkMenu}>Home</Nav.Link>
+            <Nav.Link href={id1} className={styles.linkMenu}>Servicios</Nav.Link>
+            <Nav.Link href={id2} className={styles.linkMenu}>Mis trámites</Nav.Link>
+            <Nav.Link href={id5} className={styles.linkMenu}>Calendario</Nav.Link>
+            <Nav.Link href={id4} className={styles.linkMenu}>Mi Perfil</Nav.Link>
           </Nav>
         </div>
       )}
     </Navbar>
-
   );
 }

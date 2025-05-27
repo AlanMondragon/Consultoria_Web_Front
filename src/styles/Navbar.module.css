@@ -1,15 +1,13 @@
 /* Navbar Principal */
-.encabezado-navbar {
+.encabezadoNavbar {
   width: 100%;
-  background-color: #376094;
-
+  background-color: #132E3C;
   margin: 0;
   padding: 5px 10px; /* top/bottom 20px, left/right 10px */
-
 }
 
 /* Contenedor interno */
-.contenedor-navbar {
+.contenedorNavbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,17 +16,55 @@
 }
 
 /* Botón Hamburguesa */
-.boton-menu {
+.botonMenu {
   color: white;
   font-size: 30px;
   background: none;
   border: none;
   padding: 25px 0 25px 0;
   margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FIX: Override Bootstrap's navbar-toggler-icon to make it white */
+.botonMenu :global(.navbar-toggler-icon) {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  filter: none !important;
+}
+
+/* Alternative global approach - this should definitely work */
+:global(.navbar-toggler-icon) {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  filter: none !important;
+}
+
+/* Alternative: If you prefer using custom hamburger lines */
+.botonMenuCustom {
+  color: white;
+  font-size: 30px;
+  background: none;
+  border: none;
+  padding: 25px 0 25px 0;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.hamburgerLine {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 2px 0;
+  border-radius: 2px;
 }
 
 /* Título centrado */
-.titulo-navbar {
+.tituloNavbar {
   flex-grow: 1;
   text-align: center;
   color: white;
@@ -38,7 +74,7 @@
 }
 
 /* Logo Redondo */
-.logo-navbar {
+.logoNavbar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -46,16 +82,14 @@
   margin-right: 10px;
 }
 
-
-
 /* Menú lateral */
-.menu-lateral {
+.menuLateral {
   position: absolute;
   top: 110px; 
   left: 0;
   width: 200px;
   height: calc(95vh - 50px);
-  background-color: #376094;
+  background-color: #132E3C;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -73,7 +107,7 @@
 }
 
 /* Contenedor de links */
-.menu-lateral .flex-column {
+.menuLateral .flex-column {
   height: 60%;
   display: flex;
   padding: 0;
@@ -81,7 +115,7 @@
 }
 
 /* Links del menú */
-.link-menu {
+.linkMenu {
   padding: 10px 0;
   margin: 30px 0;
   color: #fff;
@@ -92,7 +126,7 @@
   text-decoration: none;
 }
 
-.link-menu::before {
+.linkMenu::before {
   content: '';
   position: absolute;
   bottom: 0%;
@@ -105,7 +139,7 @@
   transition: transform 0.4s cubic-bezier(1, 0, 0, 1);
 }
 
-.link-menu:hover::before {
+.linkMenu:hover::before {
   transform-origin: left top;
   transform: scale(1, 1);
 }
