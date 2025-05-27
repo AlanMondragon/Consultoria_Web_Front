@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, cancelarCita,getAllDates } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
 
 const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
     const [selectedDate, setSelectedDate] = useState('');
@@ -33,14 +33,14 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         const today = new Date();
         const selectedDateObj = new Date(selectedDateStr);
         const isToday = selectedDateObj.toDateString() === today.toDateString();
-        
+
         // Horarios de trabajo (9:00 AM a 6:00 PM)
         const startHour = isToday ? Math.max(9, today.getHours() + 1) : 9;
         const endHour = 18;
-        
+
         const allHours = [];
         for (let hour = startHour; hour < endHour; hour++) {
-            for (let minute = 0; minute < 60; minute += 60) { 
+            for (let minute = 0; minute < 60; minute += 60) {
                 allHours.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
             }
         }
@@ -65,22 +65,22 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         // Horarios disponibles (excluyendo ocupados y la hora anterior/posterior por el margen de 1 hora)
         const available = allHours.filter(hour => {
             const [hourNum, minuteNum] = hour.split(':').map(Number);
-            
+
             // Verificar si este horario está ocupado o muy cerca de uno ocupado
             const isBlocked = occupiedHours.some(occupiedHour => {
                 const [occupiedHourNum, occupiedMinuteNum] = occupiedHour.split(':').map(Number);
-                
+
                 // Convertir a minutos para comparar más fácil
                 const selectedTimeInMinutes = hourNum * 60 + minuteNum;
                 const occupiedTimeInMinutes = occupiedHourNum * 60 + occupiedMinuteNum;
                 const diffInMinutes = Math.abs(selectedTimeInMinutes - occupiedTimeInMinutes);
-                
+
                 // Bloquear si:
                 // 1. Es exactamente la misma hora (diffInMinutes === 0)
                 // 2. Está dentro del rango de 1 hora (diffInMinutes < 60)
                 return diffInMinutes === 0 || diffInMinutes < 60;
             });
-            
+
             return !isBlocked;
         });
 
@@ -95,7 +95,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         const newDate = e.target.value;
         setSelectedDate(newDate);
         setSelectedTime(''); // Reset time when date changes
-        
+
         if (newDate && selectedTime) {
             const dateTime = `${newDate}T${selectedTime}`;
             onChange(dateTime);
@@ -105,7 +105,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     const handleTimeChange = (e) => {
         const newTime = e.target.value;
         setSelectedTime(newTime);
-        
+
         if (selectedDate && newTime) {
             const dateTime = `${selectedDate}T${newTime}`;
             onChange(dateTime);
@@ -119,7 +119,11 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     };
 
     return (
+
         <div>
+            <div className='fixed-top'>
+                <Navbar title={"- Servicios"} />
+            </div>
             <div className="row">
                 <div className="col-md-6">
                     <label>Fecha:</label>
@@ -206,7 +210,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                     const fechas = response.response.transactProgresses
                         .map(item => item.dateSimulation)
                         .filter(fecha => fecha !== null && fecha !== undefined);
-                    
+
                     setFechasOcupadas(fechas);
                     console.log('Fechas ocupadas cargadas:', fechas);
                 }
@@ -351,7 +355,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                     return;
                 }
                 const response = await cancelarCita(cliente.idTransactProgress);
-                if(response.success){
+                if (response.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Cita cancelada exitosamente',
@@ -361,7 +365,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         onClienteRegistrado();
                     }
                     onHide();
-                }else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error al cancelar la cita',
@@ -447,7 +451,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         <label>Descripción del paso:</label>
                         <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                     </div>
-                    
+
                     <div className="form-group">
                         <p>
                             {cliente?.dateSimulation
@@ -471,7 +475,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             {errors.dateSimulation && (
                                 <span className="text-danger">{errors.dateSimulation.message}</span>
                             )}
-                            
+
                             {/* Información sobre las citas ocupadas */}
                             <div className="mt-2">
                                 <small className="text-info">
@@ -485,7 +489,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                                 </small>
                             </div>
                         </div>
-                        
+
                         {cliente?.dateSimulation && (
                             <button
                                 type="button"

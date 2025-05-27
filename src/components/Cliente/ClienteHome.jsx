@@ -44,7 +44,9 @@ export default function ClienteHome() {
 
   return (
     <div className={styles.clientContainer}>
-      <Navbar />
+      <div className='fixed-top'>
+        <Navbar />
+      </div>
       <div className={styles.ContenedorG}>
         <div className={styles.tarjeta} onClick={() => navigate("/ClienteServicios")}>
           <img src={servicios} alt="Servicios" />

@@ -124,7 +124,9 @@ export default function AdministradorTramites() {
 
   return (
     <div className={styles.container}>
-      <Navbar title={"- Mis Trámites"} />
+      <div className='fixed-top'>
+        <Navbar title={"- Mis Tramites"} />
+      </div>
 
       <div className={styles.searchContainer}>
         <Form.Control

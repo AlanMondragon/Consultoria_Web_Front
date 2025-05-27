@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
-import Logo from '../img/logo.png';
-import styles from '../styles/Navbar.module.css';
 import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
-import logoutImg from '../img/salida.gif'; // ajusta la ruta según tu estructura
-
-
-
+import Logo from '../img/logo.png';
+import logoutImg from '../img/salida.gif';
+import '../styles/Sidebar.css';
 
 export default function NavbarAdmin({ title }) {
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebarCollapsed');
+    return saved ? JSON.parse(saved) : true;
+  });
+
   const [id1, setId1] = useState("");
   const [id2, setId2] = useState("");
   const [id3, setId3] = useState("");
   const [id4, setId4] = useState("");
   const [id5, setId5] = useState("");
+  const [id6, setId6] = useState("");
+  const [id7, setId7] = useState("");
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [iconKey, setIconKey] = useState(0);
-
-  const recargarIcono = () => {
-    setIconKey(prev => prev + 1); // Fuerza nuevo render al cambiar la key
-  };
-
+  // Manejo de rutas responsivas
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -35,7 +29,7 @@ export default function NavbarAdmin({ title }) {
         setId4("/MiPerfil-sm");
         setId5("/Calendario-sm");
       } else {
-        setId1("/ClienteServicios");
+         setId1("/ClienteServicios");
         setId2("/MisTramites");
         setId4("/MiPerfil");
         setId5("/Calendario");
@@ -45,13 +39,13 @@ export default function NavbarAdmin({ title }) {
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  // Guarda el estado del sidebar en localStorage
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+  }, [collapsed]);
 
   function cerrarSesion() {
     Swal.fire({
@@ -61,55 +55,42 @@ export default function NavbarAdmin({ title }) {
       confirmButtonText: 'Cancelar',
       cancelButtonText: 'Aceptar',
     }).then((result) => {
-      if (result.isConfirmed) {
-        console.log('Cancelado');
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
+      if (result.dismiss === Swal.DismissReason.cancel) {
         window.location.href = '/';
       }
     });
   }
 
   return (
-    <Navbar fixed="top" expand="lg" className={styles.encabezadoNavbar}>
-      <Container fluid className={styles.contenedorNavbar}>
-
-        {/* Botón Hamburguesa */}
-        <Button variant="link" className={styles.botonMenu} onClick={toggleMenu}>
-          <span className="navbar-toggler-icon"></span>
-        </Button>
-
-        {/* Título */}
-        <h1 className="titulo-navbar">Consultoría JAS {title}</h1>
-
-        {/* Logo + Botón cerrar sesión */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={Logo} alt="Logo" className="logo-navbar" />
-          <img
-            key={iconKey}
-            src={logoutImg}
-            width={100}
-            height={100}
-            alt="Cerrar sesión"
-            onClick={cerrarSesion}
-            onMouseMove={recargarIcono}
-            style={{ cursor: 'pointer' }}
-          />       
-           </div>
-
-      </Container>
-
-      {/* Menú lateral desplegable */}
-      {menuOpen && (
-        <div className={styles.menuLateral}>
-          <Nav className="flex-column">
-            <Nav.Link href={id3} className={styles.linkMenu}>Home</Nav.Link>
-            <Nav.Link href={id1} className={styles.linkMenu}>Servicios</Nav.Link>
-            <Nav.Link href={id2} className={styles.linkMenu}>Mis trámites</Nav.Link>
-            <Nav.Link href={id5} className={styles.linkMenu}>Calendario</Nav.Link>
-            <Nav.Link href={id4} className={styles.linkMenu}>Mi Perfil</Nav.Link>
-          </Nav>
+    <div className="layout">
+      {/* Navbar */}
+      <div className="navbar">
+        <div className="navbar-logo">
+          <img src={Logo} alt="logo" />
         </div>
-      )}
-    </Navbar>
+        <div className="navbar-title">
+          <h1>Consultoría JAS {title}</h1>
+        </div>
+        <div className="navbar-logout" onClick={cerrarSesion}>
+          <Icon icon="line-md:logout" className='icono' />
+        </div>
+      </div>
+
+      {/* Sidebar */}
+      <div className={`sidebar ${!collapsed ? 'collapsed' : ''}`}>
+        <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)}>
+          <Icon icon="mdi:menu" color="#fff" width="35" />
+        </button>
+
+        <nav className="sidebar-nav">
+          <a href={id3}><Icon icon="material-symbols:dashboard" className='icon' /> {collapsed && 'Dashboard'}</a>
+          <a href={id1}><Icon icon="mdi:shopping-outline" className='icon' /> {collapsed && 'Servicios'}</a>
+          <a href={id2}><Icon icon="carbon:document" className='icon' /> {collapsed && 'Mis Trámites'}</a>
+          <a href={id5}><Icon icon="mdi:calendar-month" className='icon' /> {collapsed && 'Calendario'}</a>
+          <a href={id4}><Icon icon="mdi:account" className='icon' /> {collapsed && 'Mi Perfil'}</a>
+          <a onClick={cerrarSesion}><Icon icon="line-md:logout" className='icon' /> {collapsed && 'Cerrar sesión'}</a>
+        </nav>
+      </div>
+    </div>
   );
 }

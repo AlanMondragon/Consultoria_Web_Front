@@ -153,10 +153,11 @@ export default function Calendario() {
 
     return (
         <div style={{ marginTop: '100px', backgroundColor: 'white', color: 'black', minHeight: '100vh' }}>
-            <Navbar title={"- Calendario"}
-            />
+            <div className='fixed-top'>
+                <Navbar title={"- Calendario"} />
+            </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', width: '1000px', margin: '0 auto' , padding: '50px'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', width: '1000px', margin: '0 auto', padding: '50px' }}>
                 <div style={{ flex: 3 }}>
                     <select
                         value={filtroTipo}
