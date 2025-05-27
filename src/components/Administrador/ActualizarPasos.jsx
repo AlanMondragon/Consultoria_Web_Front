@@ -44,7 +44,6 @@ export default function ActualizarPasos() {
         fetchNameService();
       }
     } catch (error) {
-      console.error("Error decoding token:", error);
       localStorage.removeItem("token");
       navigate("/");
     }
@@ -80,7 +79,6 @@ export default function ActualizarPasos() {
         });
       }
     } catch (error) {
-      console.error("Error al obtener pasos:", error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -97,7 +95,7 @@ export default function ActualizarPasos() {
       const response = await getNameService(idTransact);
       setName(response);
     } catch (error) {
-      console.error("Error al obtener el nombre del servicio:", error);
+      console.error(error);
     }
   };
 
@@ -209,7 +207,6 @@ export default function ActualizarPasos() {
         });
       }
     } catch (error) {
-      console.error("Error al procesar pasos:", error);
       setMessage('❌ Error al procesar los pasos.');
       Swal.fire({
         icon: 'error',

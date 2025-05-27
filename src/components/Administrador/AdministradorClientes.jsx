@@ -77,9 +77,7 @@ export default function AdministradorClientes() {
 
   const handleSwitchChange = async (idUser, nuevoEstado) => {
     try {
-      console.log("Cambiando el estado del cliente con id:", idUser, "a:", nuevoEstado);
       const result = await actualizarStatusCliente(idUser, nuevoEstado);
-      console.log("Resultado del cambio de estado:", result);
       mensaje(nuevoEstado);
       fetchServices();
     } catch (error) {
@@ -120,7 +118,9 @@ export default function AdministradorClientes() {
 
   return (
     <div style={{ marginTop: '100px' }}>
-      <Navbar title={"- Clientes"} />
+     <div className='fixed-top'>
+             <Navbar title={"- Clientes"} />
+           </div>
 
       <div className="d-flex justify-content-between align-items-center p-3">
         <Form.Control

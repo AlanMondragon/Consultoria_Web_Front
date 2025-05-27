@@ -68,13 +68,11 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             idTransact: parseInt(idProductoTransaccion, 10), // Asegúrate de que sea un número
           };
 
-          console.log("Guardando pago en base de datos:", paymentData);
 
           const response = await axios.post(`${API_URL}/payment`, paymentData);
           const responseCreated = await createProcessWithPayment(paymentData);
 
           if (response.data && response.data.success && responseCreated.data && responseCreated.data.success) {
-            console.log("Pago guardado con éxito en BD:", response.data);
           } else {
             console.error("Error al guardar en BD (respuesta del backend):", response.data?.message || "Error desconocido del backend.");
             setMessage(`Pago en Stripe exitoso, pero contacte a soporte si no ve su servicio activado (Error Ref: DB_SAVE)`);

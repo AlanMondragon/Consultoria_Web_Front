@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { olvidarContra, actualizarContra, obtenerUsuarioPorCorreo } from './../../api/api.js';
 import { Icon } from '@iconify/react';
 import logo from '../../img/logo.jpg';
+import { redirect } from 'react-router-dom';
 
 export default function OlvidarContra() {
   const [paso, setPaso] = useState(1);
@@ -12,6 +13,10 @@ export default function OlvidarContra() {
   const [userId, setUserId] = useState(null);
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
+  const [confirmarPassword, setConfirmarPassword] = useState('');
+  const [verPassword, setVerPassword] = useState(false);
+
+ 
 
   useEffect(() => {
     document.body.classList.add('home-page');
@@ -31,7 +36,6 @@ export default function OlvidarContra() {
 
     try {
       const resUser = await obtenerUsuarioPorCorreo(email.trim());
-      console.log("Respuesta de obtenerUsuarioPorCorreo:", resUser);
 
       const user = resUser?.response?.user;
       if (!user?.idUser) {
@@ -41,7 +45,6 @@ export default function OlvidarContra() {
       setUserId(user.idUser);
 
       const res = await olvidarContra(email.trim());
-      console.log("Respuesta de olvidarContra:", res);
 
       const code = res?.response?.code;  // Usa .data
       if (!code) {
@@ -51,10 +54,10 @@ export default function OlvidarContra() {
       setCodigo(code);
       setPaso(2);
 
-      Swal.fire('¡Correo enviado!', 'Revisa tu bandeja para el código.', 'success');
+      Swal.fire('¡Correo enviado!', 'Revisa tu bandeja para ver el código.', 'success');
     } catch (error) {
       console.error("Error en recuperación de contraseña:", error);
-      Swal.fire('Error', 'No pudimos enviar el correo o encontrar el usuario.', 'error');
+      Swal.fire('Error', 'El correo no existe en el sistema', 'error');
     }
   };
 
@@ -71,34 +74,28 @@ export default function OlvidarContra() {
       Swal.fire('Advertencia', 'La contraseña debe tener al menos 6 caracteres.', 'warning');
       return;
     }
-
-    /*try {
-      await actualizarContra(userId, { password: nuevaPassword });
-      console.log("Respuesta de actualizarContra:", res);
-      Swal.fire('Éxito', 'Contraseña actualizada correctamente.', 'success');
-      setEmail('');
-      setCodigo(null);
-      setUserId(null);
-      setCodigoIngresado('');
-      setNuevaPassword('');
-      setPaso(1);
-    } catch (error) {
-      console.error(error);
-      Swal.fire('Error', 'No se pudo actualizar la contraseña.', 'error');
-    }*/
+    
+     if (nuevaPassword !== confirmarPassword) {
+    Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+    return;
+  }
     try {
-      await actualizarContra(userId, nuevaPassword );
+      await actualizarContra(userId, nuevaPassword);
+      
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
         text: 'Contraseña actualizada con éxito',
-      });
+      }).then(() => {
+    window.location.href = '/';
+  });
+      
     } catch (error) {
       console.error("Error actualizando contraseña:", error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Ocurrió un error al actualizar la contraseña.',
+        text: 'Ocurrió un error al actualizar la contraseña, porfavor contacta a soporte.',
       });
     }
   };
@@ -136,6 +133,7 @@ export default function OlvidarContra() {
         {paso === 2 && (
           <form onSubmit={handleActualizarPassword} className="form-recovery">
             <p className="description">Ingresa el código recibido y tu nueva contraseña.</p>
+
             <input
               type="text"
               placeholder="Código de verificación"
@@ -144,17 +142,48 @@ export default function OlvidarContra() {
               value={codigoIngresado}
               onChange={(e) => setCodigoIngresado(e.target.value)}
             />
-            <input
-              type="password"
-              placeholder="Nueva contraseña (mínimo 6 caracteres)"
-              required
-              className="input-recovery"
-              value={nuevaPassword}
-              onChange={(e) => setNuevaPassword(e.target.value)}
-            />
+
+            <div className="password-field">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                required
+                className="input-recovery"
+                value={nuevaPassword}
+                onChange={(e) => setNuevaPassword(e.target.value)}
+              />
+              <Icon
+                icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
+                className="toggle-password-icon"
+                width="24"
+                height="24"
+                onClick={() => setVerPassword(!verPassword)}
+              />
+            </div>
+
+            <div className="password-field">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                placeholder="Confirmar nueva contraseña"
+                required
+                className="input-recovery"
+                value={confirmarPassword}
+                onChange={(e) => setConfirmarPassword(e.target.value)}
+              />
+              <Icon
+                icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
+                className="toggle-password-icon"
+                width="24"
+                height="24"
+                onClick={() => setVerPassword(!verPassword)}
+              />
+            </div>
+
             <button type="submit" className="btn-recovery">Actualizar contraseña</button>
           </form>
         )}
+
+
       </div>
     </div>
   );

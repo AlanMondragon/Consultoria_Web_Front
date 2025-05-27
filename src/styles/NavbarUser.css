@@ -1,10 +1,24 @@
+/* Variables CSS para consistencia */
+:root {
+  --navbar-bg: #376094;
+  --navbar-height: 110px;
+  --menu-width: 250px;
+  --menu-width-mobile: 280px;
+  --text-white: #fff;
+  --accent-blue: #6098FF;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --transition: all 0.3s ease;
+}
+
 /* Navbar Principal */
 .encabezado-navbar {
   width: 100%;
-  background-color: #2c5b91;
-  padding: 5px px; 
-  margin: 0;  
-  border-radius: 10px 10px 0 0;
+  background-color: var(--navbar-bg);
+  margin: 0;
+  padding: 8px 0;
+  height: var(--navbar-height);
+  box-shadow: var(--shadow);
+  z-index: 1050;
 }
 
 /* Contenedor interno */
@@ -12,106 +26,366 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px; /* Ajusta espacio lateral */
+  padding: 0 20px;
   width: 100%;
+  height: 100%;
 }
 
 /* Botón Hamburguesa */
 .boton-menu {
-  color: white;
-  font-size: 30px;
+  color: var(--text-white);
+  font-size: 24px;
   background: none;
   border: none;
-  padding: 25px 0 25px 0;
-  margin-right: 10px;
+  padding: 10px;
+  margin-right: 15px;
+  transition: var(--transition);
+  border-radius: 4px;
 }
 
-/* Título centrado */
+.boton-menu:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-white);
+}
+
+.boton-menu:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Animación del icono hamburguesa */
+.navbar-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  transition: var(--transition);
+}
+
+.navbar-toggler-icon.active {
+  transform: rotate(90deg);
+}
+
+/* Título responsivo */
 .titulo-navbar {
   flex-grow: 1;
   text-align: center;
-  color: white;
-  font-size: 40px;
+  color: var(--text-white);
   margin: 0;
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
-/* Logo Redondo */
+.titulo-principal {
+  font-size: 2.2rem;
+  line-height: 1.1;
+}
+
+.titulo-seccion {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Acciones del navbar */
+.acciones-navbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Logo */
 .logo-navbar {
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: var(--transition);
 }
 
-/* Botón cerrar sesión */
-.cerrarSesion {
-  background-color: #2f66ff;
-  color: white;
-  font-weight: bold;
+.logo-navbar:hover {
+  border-color: var(--text-white);
+}
+
+/* Botón logout */
+.boton-logout {
+  cursor: pointer;
+  transition: var(--transition);
   border-radius: 8px;
-  margin-left: 10px;
-  height: 40px;
+  width: 70px !important;
+  height: 70px !important;
+}
+
+.boton-logout:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Overlay para móvil */
+.menu-overlay {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - var(--navbar-height));
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  backdrop-filter: blur(2px);
 }
 
 /* Menú lateral */
 .menu-lateral {
-  position: absolute;
-  top: 110px; 
+  position: fixed;
+  top: var(--navbar-height);
   left: 0;
-  width: 200px;
-  height: calc(95vh - 50px);
-  background-color: #376094;
-  padding: 20px;
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
+  width: var(--menu-width);
+  height: calc(100vh - var(--navbar-height));
+  background-color: var(--navbar-bg);
+  padding: 30px 0;
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
   opacity: 0;
-  animation: slidein 0.8s ease-out forwards;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1041;
+  overflow-y: auto;
 }
 
-@keyframes slidein {
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.menu-lateral.active {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 /* Contenedor de links */
 .menu-lateral .flex-column {
-  height: 60%;
+  height: 100%;
   display: flex;
-  padding: 0;
-  justify-content: space-between;
+  flex-direction: column;
+  padding: 0 20px;
+  gap: 5px;
 }
 
 /* Links del menú */
 .link-menu {
-  padding: 10px 0;
-  margin: 30px 0;
-  color: #fff;
-  font-family: sans-serif;
+  padding: 15px 20px;
+  color: var(--text-white) !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   position: relative;
-  text-decoration: none;
+  text-decoration: none !important;
+  border-radius: 8px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.link-menu:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-white) !important;
+  transform: translateX(5px);
 }
 
 .link-menu::before {
   content: '';
   position: absolute;
-  bottom: 0%;
-  left: 0px;
-  width: 100%;
-  height: 1px;
-  background: #6098FF;
-  transform-origin: right top;
-  transform: scale(0, 1);
-  transition: transform 0.4s cubic-bezier(1, 0, 0, 1);
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--accent-blue);
+  transition: height 0.3s ease;
+  border-radius: 0 2px 2px 0;
 }
 
+.link-menu:hover::before {
+  height: 80%;
+}
 
+/* Iconos del menú */
+.menu-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+  transition: var(--transition);
+}
 
+.link-menu:hover .menu-icon {
+  opacity: 1;
+  color: var(--accent-blue);
+}
 
+/* RESPONSIVE DESIGN */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .titulo-principal {
+    font-size: 1.8rem;
+  }
+  
+  .titulo-seccion {
+    font-size: 0.9rem;
+  }
+  
+  .menu-lateral {
+    width: var(--menu-width-mobile);
+  }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+  .contenedor-navbar {
+    padding: 0 15px;
+  }
+  
+  .titulo-principal {
+    font-size: 1.4rem;
+  }
+  
+  .titulo-seccion {
+    font-size: 0.8rem;
+  }
+  
+  .logo-navbar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .boton-logout {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .menu-lateral {
+    width: var(--menu-width-mobile);
+  }
+  
+  .link-menu {
+    font-size: 0.85rem;
+    padding: 18px 20px;
+  }
+}
+
+/* Móviles medianos */
+@media (max-width: 576px) {
+  .contenedor-navbar {
+    padding: 0 10px;
+  }
+  
+  .titulo-navbar {
+    margin: 0 10px;
+  }
+  
+  .titulo-principal {
+    font-size: 1.2rem;
+  }
+  
+  .titulo-seccion {
+    font-size: 0.75rem;
+  }
+  
+  .logo-navbar {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .boton-logout {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  .menu-lateral {
+    width: 100vw;
+    padding: 20px 0;
+  }
+  
+  .menu-lateral .flex-column {
+    padding: 0 15px;
+  }
+  
+  .link-menu {
+    font-size: 0.9rem;
+    padding: 20px 25px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 400px) {
+  .titulo-principal {
+    font-size: 1rem;
+  }
+  
+  .titulo-seccion {
+    font-size: 0.7rem;
+  }
+  
+  .acciones-navbar {
+    gap: 5px;
+  }
+  
+  .logo-navbar {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .boton-logout {
+    width: 45px !important;
+    height: 45px !important;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modo oscuro (si es necesario) */
+@media (prefers-color-scheme: dark) {
+  .menu-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Estados de focus para accesibilidad */
+.link-menu:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Scroll suave para el menú en móviles */
+.menu-lateral {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-blue) transparent;
+}
+
+.menu-lateral::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-lateral::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu-lateral::-webkit-scrollbar-thumb {
+  background-color: var(--accent-blue);
+  border-radius: 3px;
+}

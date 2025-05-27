@@ -92,4 +92,13 @@ body.home-page {
   .btn-recovery:hover {
     background-color: #08307a;
   }
-  
+  .password-field {
+  position: relative;
+}
+
+.toggle-password-icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}

@@ -36,7 +36,6 @@ export default function ClienteServicios() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/");
-    console.log(stripeKey)
 
     try {
       const decoded = jwtDecode(token);

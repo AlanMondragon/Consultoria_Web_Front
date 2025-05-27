@@ -7,6 +7,9 @@ import Logo from '../img/logo.jpg';
 import '../styles/Navbar.css';
 import Swal from 'sweetalert2';
 import { Icon } from '@iconify/react';
+import logoutImg from '../img/salida.gif'; // ajusta la ruta según tu estructura
+
+
 
 
 export default function NavbarAdmin({ title }) {
@@ -78,13 +81,22 @@ export default function NavbarAdmin({ title }) {
         </Button>
 
         {/* Título */}
-        <h1 className="titulo-navbar">ConsultorÍa JAS {title}</h1>
+        <h1 className="titulo-navbar">Consultoría JAS {title}</h1>
 
         {/* Logo + Botón cerrar sesión */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img src={Logo} alt="Logo" className="logo-navbar" />
-          <Icon key={iconKey} icon="line-md:logout" width="50" height="50" color="black" onClick={cerrarSesion} onMouseMove={recargarIcono} style={{ cursor: 'pointer' }} />
-        </div>
+          <img
+            key={iconKey}
+            src={logoutImg}
+            width={100}
+            height={100}
+            alt="Cerrar sesión"
+            onClick={cerrarSesion}
+            onMouseMove={recargarIcono}
+            style={{ cursor: 'pointer' }}
+          />       
+           </div>
 
       </Container>
 

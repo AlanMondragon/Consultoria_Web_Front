@@ -56,7 +56,6 @@ export default function AdministradorTramites() {
     try {
       const response = await tramitesPorId(usuario);
       if (response.success && Array.isArray(response.response.transactProgresses)) {
-        console.log("Datos obtenidos:", response.response.transactProgresses);
         setDatos(response.response.transactProgresses);
 
       } else {

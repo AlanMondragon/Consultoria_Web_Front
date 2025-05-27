@@ -9,7 +9,6 @@ import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { actualizarTC, obtenerLosPasos, cancelarCita,getAllDates } from './../../api/api.js';
 
-// Componente personalizado para seleccionar fecha y hora disponibles
 const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
@@ -25,7 +24,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         }
     }, [value]);
 
-    // Generar horarios disponibles para una fecha específica
     const generateAvailableHours = (selectedDateStr) => {
         if (!selectedDateStr) {
             setAvailableHours([]);
@@ -42,7 +40,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         
         const allHours = [];
         for (let hour = startHour; hour < endHour; hour++) {
-            for (let minute = 0; minute < 60; minute += 60) { // Solo horas completas
+            for (let minute = 0; minute < 60; minute += 60) { 
                 allHours.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
             }
         }

@@ -59,27 +59,27 @@ export default function AdministradorTramites() {
 
 
 
-   const fetchServices = async () => {
-  try {
-    const response = await trasacciones();
+  const fetchServices = async () => {
+    try {
+      const response = await trasacciones();
 
-    if (response.success && Array.isArray(response.response.transactProgresses)) {
-      // Ordenar los datos por idTransactProgress de forma descendente
-      const sortedData = response.response.transactProgresses.sort((a, b) => {
-        return b.idTransactProgress - a.idTransactProgress;
-      });
-      setDatos(sortedData);
-    } else {
-      console.error("Formato de respuesta inesperado:", response);
+      if (response.success && Array.isArray(response.response.transactProgresses)) {
+        // Ordenar los datos por idTransactProgress de forma descendente
+        const sortedData = response.response.transactProgresses.sort((a, b) => {
+          return b.idTransactProgress - a.idTransactProgress;
+        });
+        setDatos(sortedData);
+      } else {
+        console.error("Formato de respuesta inesperado:", response);
+        setDatos([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener los tramites:", error);
       setDatos([]);
+    } finally {
+      setCargando(false);
     }
-  } catch (error) {
-    console.error("Error al obtener los tramites:", error);
-    setDatos([]);
-  } finally {
-    setCargando(false);
-  }
-};
+  };
 
 
   const handleStatusChange = async (idTransactProgress, nuevoEstado) => {
@@ -140,7 +140,10 @@ export default function AdministradorTramites() {
 
   return (
     <div style={{ marginTop: '100px' }}>
-      <Navbar title={"- Tramites"} />
+      <div className='fixed-top'>
+        <Navbar title={" - Tramites"} />
+      </div>
+
 
       <div className="d-flex justify-content-between align-items-center p-3">
         <Form.Control
@@ -244,7 +247,6 @@ export default function AdministradorTramites() {
                     }}
                     onClick={() => {
                       setClienteSeleccionado(cliente);
-                      console.log('Los datos', cliente)
                       setShowModalA(true);
                     }}
                   >

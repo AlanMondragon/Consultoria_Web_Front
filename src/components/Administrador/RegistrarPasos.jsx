@@ -20,7 +20,6 @@ export default function RegistrarPasos() {
 
   useEffect(() => {
     if (location.state?.serviceID) {
-      console.log('ID recibido en RegistrarPasos:', location.state.serviceID); // Verificar el ID recibido
       setSteps((prevSteps) => prevSteps.map((step) => ({
         ...step,
         id: location.state.serviceID,
@@ -69,7 +68,6 @@ export default function RegistrarPasos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('check idTransact', idTransact);
     try {
       const formattedSteps = steps.map((step) => ({
         name: step.name,
@@ -79,7 +77,6 @@ export default function RegistrarPasos() {
         needCalendar: step.needCalendar ? 1 : 0, // Convertir booleano a 0 o 1
       }));
 
-      console.log('Formatted Steps:', formattedSteps); // Verifica el formato de los pasos antes de enviarlos
 
       const response = await createSteps(formattedSteps);
       if (!response.some((res) => res.error)) {

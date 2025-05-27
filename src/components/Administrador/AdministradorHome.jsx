@@ -26,7 +26,6 @@ export default function AdministradorHome() {
 
     try {
       const decoded = jwtDecode(token);
-      console.log('El usuario es: ', decoded.idUser);
       if (decoded.role !== "ADMIN") {
         navigate("/");
       }
@@ -43,9 +42,11 @@ export default function AdministradorHome() {
   }, []);
 
 
-  return (
+  return (    
     <div className={styles.adminHomeContainer}>
-      <Navbar />
+      <div className='fixed-top'>
+              <Navbar/>
+            </div>
       <div className={styles.contenerCards}>
         <div className={styles.contenedorG}>
           {/* Primera fila: 3 tarjetas */}

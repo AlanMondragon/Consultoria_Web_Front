@@ -74,7 +74,6 @@ export default function TramiteMasInfo() {
 
   const handleStatusChange = async (idTransactProgress, nuevoEstado) => {
     try {
-      console.log("Cambiando el estado del tramite con id:", idTransactProgress, "a:", nuevoEstado);
       const result = await actualizarT(idTransactProgress, nuevoEstado);
       setNumero(nuevoEstado);
       mensaje(nuevoEstado);

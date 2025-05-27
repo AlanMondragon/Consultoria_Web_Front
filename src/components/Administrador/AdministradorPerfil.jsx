@@ -45,7 +45,6 @@ export default function AdministradorPerfil() {
         try {
             const decoded = jwtDecode(token);
             setUsuario(decoded.idUser);
-            console.log('EL USUARIO ES: ', decoded.idUser);
             if (decoded.role !== "ADMIN") {
                 Swal.fire({
                     icon: 'error',
@@ -105,7 +104,9 @@ export default function AdministradorPerfil() {
 
     return (
         <div style={{ marginTop: '80px' }}>
-            <Navbar title={'- Mi Perfil'} />
+           <div className='fixed-top'>
+                   <Navbar title={"- Perfil"} />
+                 </div>
             <div className="profile-container">
                 <h1 className="profile-title">Mi Perfil</h1>
                 

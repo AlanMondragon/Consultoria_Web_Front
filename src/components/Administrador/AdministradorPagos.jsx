@@ -53,7 +53,6 @@ export default function AdministradorPagos() {
 
     useEffect(() => {
         if (datos.length > 0) {
-            console.log("Datos cargados:", datos);
             const sinTramites = datos.filter(d => !d.transact || !d.transact.name);
             if (sinTramites.length > 0) {
                 console.warn("Pagos sin datos de trámite:", sinTramites);
@@ -68,7 +67,6 @@ export default function AdministradorPagos() {
 
             if (response.success && Array.isArray(response.response.payments)) {
                 const paymentsData = response.response.payments;
-                // Ordenamos los datos por idPayment de forma descendente
                 const sortedPayments = paymentsData.sort((a, b) => b.idPayment - a.idPayment);
                 const paymentsWithDetails = await Promise.all(
                     sortedPayments.map(async (payment) => {
@@ -165,7 +163,9 @@ export default function AdministradorPagos() {
 
     return (
         <div className={styles.pagosContainer}>
-            <Navbar title={"Pagos"} />
+           <div className='fixed-top'>
+                   <Navbar title={"- Pagos"} />
+                 </div>
 
             <div className={styles.searchContainer}>
                 <div className={styles.searchInput}>
