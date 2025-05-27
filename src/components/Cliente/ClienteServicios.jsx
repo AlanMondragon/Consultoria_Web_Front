@@ -134,6 +134,7 @@ export default function ClienteServicios() {
   const toggleZoom = () => setIsZoomed(!isZoomed);
 
   const openStepsModal = async (idTransact) => {
+    console.log("idTransact:", idTransact);
     await fetchStepsById(idTransact);
     setShowStepsModal(true);
   };
@@ -344,7 +345,40 @@ export default function ClienteServicios() {
           )}
         </Modal.Body>
       </Modal>
+      <Modal
+        show={showStepsModal}
+        onHide={() => setShowStepsModal(false)}
+        centered
+        dialogClassName={styles.modalSteps} // clase CSS para aplicar estilos personalizados
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Pasos del servicio</Modal.Title>
+        </Modal.Header>
 
+        <Modal.Body>
+          {steps.length > 0 ? (
+            <ul className={styles.stepsList}>
+              {steps.map((step, index) => (
+                <li key={index} className={styles.stepItem}>
+                  <strong>{step.name}</strong>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.loadingMessage}>No hay pasos disponibles para este servicio.</p>
+          )}
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            className={styles.btnSecondary}
+            onClick={() => setShowStepsModal(false)}
+          >
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
