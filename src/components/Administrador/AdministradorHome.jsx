@@ -41,12 +41,11 @@ export default function AdministradorHome() {
     };
   }, []);
 
-
   return (    
     <div className={styles.adminHomeContainer}>
       <div className='fixed-top'>
-              <Navbar/>
-            </div>
+        <Navbar/>
+      </div>
       <div className={styles.contenerCards}>
         <div className={styles.contenedorG}>
           {/* Primera fila: 3 tarjetas */}
@@ -66,23 +65,21 @@ export default function AdministradorHome() {
             <p>Gestión de servicios</p>
           </div>
 
-          {/* Segunda fila: 2 tarjetas centralizadas */}
-          <div className={styles.segundaFila}>
-            <div className={styles.tarjeta} onClick={() => navigate("/Calendar")}>
-              <img src={calendario} alt="Estadísticas" />
-              <h3>Calendario</h3>
-              <p>Citas CAS/CON y Simulación</p>
-            </div>
-            <div className={styles.tarjeta} onClick={() => navigate("/Pagos")}>
-              <img src={pagos} alt="Configuración" />
-              <h3>Pagos</h3>
-              <p>Gestión de pagos</p>
-            </div>
-            <div className={styles.tarjeta} onClick={() => navigate("/Perfil")}>
-              <img src={perfil} alt="Configuración" />
-              <h3>Mi Perfil</h3>
-              <p>Visualización de mi perfil</p>
-            </div>
+          {/* Segunda fila: 3 tarjetas */}
+          <div className={styles.tarjeta} onClick={() => navigate("/Calendar")}>
+            <img src={calendario} alt="Estadísticas" />
+            <h3>Calendario</h3>
+            <p>Citas CAS/CON y Simulación</p>
+          </div>
+          <div className={styles.tarjeta} onClick={() => navigate("/Pagos")}>
+            <img src={pagos} alt="Configuración" />
+            <h3>Pagos</h3>
+            <p>Gestión de pagos</p>
+          </div>
+          <div className={styles.tarjeta} onClick={() => navigate("/Perfil")}>
+            <img src={perfil} alt="Configuración" />
+            <h3>Mi Perfil</h3>
+            <p>Visualización de mi perfil</p>
           </div>
         </div>
       </div>

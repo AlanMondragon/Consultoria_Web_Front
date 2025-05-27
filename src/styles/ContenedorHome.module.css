@@ -1,16 +1,25 @@
-/* AdministradorHome.module.css */
+/* ContenedorHome.module.css */
 .adminHomeContainer {
-  margin-top: 100px;
+  margin-top: 70px;
+  padding: 0 20px;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .contenerCards {
-  background-color: #1d5e87;
-  width: 900px;
-  height: 550px;
+  background-color: #012b40;
+  width: 100%;
+  max-width: 900px;
+  min-height: 550px;
   border-radius: 40px;
   display: flex;
   justify-content: center; 
   align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .contenedorG {
@@ -18,18 +27,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
   gap: 30px;
-  max-width: 900px;
-  margin: 0 auto; 
+  width: 100%;
+  max-width: 800px;
   padding: 20px;
-}
-
-/* Alineación para las tarjetas en la segunda fila */
-.segundaFila {
-  grid-column: 1 / span 3; 
-  display: grid;
-  grid-template-columns: repeat(3, 220px); 
-  justify-content: center; 
-  gap: 30px;
+  box-sizing: border-box;
 }
 
 .tarjeta {
@@ -38,9 +39,13 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
   padding: 20px;
   text-align: center;
-  width: 220px; /* Ancho fijo de la tarjeta */
   cursor: pointer;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .tarjeta:hover {
@@ -53,34 +58,222 @@
   height: 80px;
   object-fit: contain;
   margin-bottom: 15px;
+  flex-shrink: 0;
 }
 
 .tarjeta h3 {
   margin: 10px 0;
   color: #333;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .tarjeta p {
   color: #666;
   font-size: 14px;
+  margin: 0;
+  text-align: center;
+  line-height: 1.4;
 }
 
-/* Para pantallas pequeñas */
-@media (max-width: 768px) {
-  .contenedorG {
-    grid-template-columns: 1fr; /* Las tarjetas de la primera fila se apilan */
+/* Tablet styles */
+@media (max-width: 1024px) {
+  .adminHomeContainer {
+    margin-top: 80px;
+    padding: 0 15px;
   }
   
-  .segundaFila {
-    grid-column: 1; /* Ocupa la única columna de .contenedorG */
-    /* Cambiamos a flex para apilar y centrar las tarjetas verticalmente */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* El 'gap' se aplicará entre los elementos flex */
+  .contenerCards {
+    max-width: 700px;
+    min-height: 500px;
+    border-radius: 30px;
+    padding: 15px;
+  }
+  
+  .contenedorG {
+    gap: 25px;
+    padding: 15px;
+  }
+  
+  .tarjeta {
+    min-height: 160px;
+    padding: 15px;
+  }
+  
+  .tarjeta img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 16px;
+  }
+  
+  .tarjeta p {
+    font-size: 13px;
+  }
+}
+
+/* Mobile landscape and small tablets */
+@media (max-width: 768px) {
+  .adminHomeContainer {
+    margin-top: 70px;
+    padding: 0 10px;
+  }
+  
+  .contenerCards {
+    max-width: 100%;
+    min-height: auto;
+    border-radius: 25px;
+    padding: 20px 10px;
+  }
+  
+  .contenedorG {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 10px;
+  }
+  
+  .tarjeta {
+    min-height: 140px;
+    padding: 15px 10px;
+  }
+  
+  .tarjeta img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 15px;
+    margin: 8px 0;
+  }
+  
+  .tarjeta p {
+    font-size: 12px;
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+  .adminHomeContainer {
+    margin-top: 60px;
+    padding: 0 5px;
+  }
+  
+  .contenerCards {
+    border-radius: 20px;
+    padding: 15px 5px;
+    margin: 0 5px;
+  }
+  
+  .contenedorG {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 5px;
+  }
+  
+  .tarjeta {
+    min-height: 120px;
+    padding: 15px;
+    margin: 0 auto;
+    max-width: 280px;
+    width: 100%;
+  }
+  
+  .tarjeta img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  .tarjeta p {
+    font-size: 11px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+  .adminHomeContainer {
+    margin-top: 50px;
+  }
+  
+  .contenerCards {
+    border-radius: 15px;
+    padding: 10px;
+    margin: 0;
+  }
+  
+  .contenedorG {
+    gap: 10px;
+    padding: 5px;
+  }
+  
+  .tarjeta {
+    min-height: 100px;
+    padding: 10px;
+    max-width: 250px;
+  }
+  
+  .tarjeta img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 13px;
+    margin: 3px 0;
+  }
+  
+  .tarjeta p {
+    font-size: 10px;
+  }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .adminHomeContainer {
+    margin-top: 50px;
+  }
+  
+  .contenerCards {
+    min-height: auto;
+    padding: 15px;
+  }
+  
+  .contenedorG {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .tarjeta {
+    min-height: 120px;
+    padding: 10px;
+  }
+  
+  .tarjeta img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 13px;
+  }
+  
+  .tarjeta p {
+    font-size: 11px;
   }
 }
 
 :global(.home-admin-body) {
-  background-color: #f5f5f5;
+  background-color: #dddddd;
+  margin: 0;
+  padding: 0;
 }
