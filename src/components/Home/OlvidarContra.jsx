@@ -16,8 +16,6 @@ export default function OlvidarContra() {
   const [confirmarPassword, setConfirmarPassword] = useState('');
   const [verPassword, setVerPassword] = useState(false);
 
- 
-
   useEffect(() => {
     // Aplicar fondo al body
     document.body.style.backgroundColor = '#132E3C';
@@ -76,10 +74,10 @@ export default function OlvidarContra() {
       return;
     }
     
-     if (nuevaPassword !== confirmarPassword) {
-    Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
-    return;
-  }
+    if (nuevaPassword !== confirmarPassword) {
+      Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      return;
+    }
     try {
       await actualizarContra(userId, nuevaPassword);
       
@@ -88,8 +86,8 @@ export default function OlvidarContra() {
         title: 'Éxito',
         text: 'Contraseña actualizada con éxito',
       }).then(() => {
-    window.location.href = '/';
-  });
+        window.location.href = '/';
+      });
       
     } catch (error) {
       console.error("Error actualizando contraseña:", error);
@@ -127,7 +125,6 @@ export default function OlvidarContra() {
                 Por favor, ingresa tu correo electrónico. Te enviaremos un código para restablecer tu contraseña.
               </p>
 
-              {/* ✅ Wrap image in container to center it */}
               <div className={styles.logoContainer}>
                 <img
                   src={logo}
@@ -151,60 +148,60 @@ export default function OlvidarContra() {
             </form>
           )}
 
-        {paso === 2 && (
-          <form onSubmit={handleActualizarPassword} className="form-recovery">
-            <p className="description">Ingresa el código recibido y tu nueva contraseña.</p>
+          {paso === 2 && (
+            <form onSubmit={handleActualizarPassword} className={styles.formRecovery}>
+              <p className={styles.description}>Ingresa el código recibido y tu nueva contraseña.</p>
 
-            <input
-              type="text"
-              placeholder="Código de verificación"
-              required
-              className="input-recovery"
-              value={codigoIngresado}
-              onChange={(e) => setCodigoIngresado(e.target.value)}
-            />
-
-            <div className="password-field">
               <input
-                type={verPassword ? 'text' : 'password'}
-                placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                type="text"
+                placeholder="Código de verificación"
                 required
-                className="input-recovery"
-                value={nuevaPassword}
-                onChange={(e) => setNuevaPassword(e.target.value)}
+                className={styles.inputRecovery}
+                value={codigoIngresado}
+                onChange={(e) => setCodigoIngresado(e.target.value)}
               />
-              <Icon
-                icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
-                className="toggle-password-icon"
-                width="24"
-                height="24"
-                onClick={() => setVerPassword(!verPassword)}
-              />
-            </div>
 
-            <div className="password-field">
-              <input
-                type={verPassword ? 'text' : 'password'}
-                placeholder="Confirmar nueva contraseña"
-                required
-                className="input-recovery"
-                value={confirmarPassword}
-                onChange={(e) => setConfirmarPassword(e.target.value)}
-              />
-              <Icon
-                icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
-                className="toggle-password-icon"
-                width="24"
-                height="24"
-                onClick={() => setVerPassword(!verPassword)}
-              />
-            </div>
+              <div className={styles.passwordField}>
+                <input
+                  type={verPassword ? 'text' : 'password'}
+                  placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                  required
+                  className={styles.inputRecovery}
+                  value={nuevaPassword}
+                  onChange={(e) => setNuevaPassword(e.target.value)}
+                />
+                <Icon
+                  icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
+                  className={styles.togglePasswordIcon}
+                  width="24"
+                  height="24"
+                  onClick={() => setVerPassword(!verPassword)}
+                />
+              </div>
 
-            <button type="submit" className="btn-recovery">Actualizar contraseña</button>
-          </form>
-        )}
+              <div className={styles.passwordField}>
+                <input
+                  type={verPassword ? 'text' : 'password'}
+                  placeholder="Confirmar nueva contraseña"
+                  required
+                  className={styles.inputRecovery}
+                  value={confirmarPassword}
+                  onChange={(e) => setConfirmarPassword(e.target.value)}
+                />
+                <Icon
+                  icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
+                  className={styles.togglePasswordIcon}
+                  width="24"
+                  height="24"
+                  onClick={() => setVerPassword(!verPassword)}
+                />
+              </div>
 
+              <button type="submit" className={styles.btnRecovery}>Actualizar contraseña</button>
+            </form>
+          )}
 
+        </div>
       </div>
     </div>
   );

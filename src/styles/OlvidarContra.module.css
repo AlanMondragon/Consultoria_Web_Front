@@ -135,6 +135,29 @@
   transform: translateY(0);
 }
 
+.passwordField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordField .inputRecovery {
+  padding-right: 45px; /* Espacio para el icono */
+}
+
+.togglePasswordIcon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.togglePasswordIcon:hover {
+  color: #0B3D91;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .bodyLogin {
