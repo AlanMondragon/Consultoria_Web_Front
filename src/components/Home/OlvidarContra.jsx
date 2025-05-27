@@ -207,5 +207,6 @@ export default function OlvidarContra() {
 
       </div>
     </div>
+    </div>
   );
 }

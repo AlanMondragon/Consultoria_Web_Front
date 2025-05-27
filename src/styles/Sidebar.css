@@ -1,20 +1,30 @@
 /* Navbar original */
 .navbar {
   background-color: #132E3C;
-  height: 100px;
+  height: 110px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
 }
+.icono{
+  width: 60px;
+  height: 60px;
+  color: #FFF;
+  margin-bottom: 20px;
+}
+
 
 .navbar-logo img {
-  height: 45px;
-}
+  height: 130px;
+  width: 130px;
+  
+
+} 
 
 .navbar-title h1 {
   color: white;
-  font-size: 20px;
+  font-size: 32px;
   margin: 0;
 }
 
@@ -50,12 +60,22 @@
   cursor: pointer;
   margin-bottom: 20px;
   align-self: flex-end;
+margin-left: 100px;
+
+
+  
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+}
+.icon{
+  width: 30px;
+  height: 30px;
+  color: #FFF;
 }
 
 .sidebar-nav a {
