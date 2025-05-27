@@ -24,6 +24,9 @@ export default function AdministradorServicios() {
   const [idService, setIdService] = useState(null);
 
   useEffect(() => {
+    // Aplicar el estilo de fondo al body cuando se monta el componente
+    document.body.className = styles.backgroundBody;
+    
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -48,6 +51,11 @@ export default function AdministradorServicios() {
       localStorage.removeItem("token");
       navigate("/");
     }
+
+    // Cleanup: remover la clase cuando el componente se desmonte
+    return () => {
+      document.body.className = '';
+    };
   }, [navigate]);
 
   const fetchServices = async () => {

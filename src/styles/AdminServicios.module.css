@@ -1,7 +1,12 @@
-/* AdminServicios.module.css */
+/* AdminServicios.module.css - Responsive Version */
 
 .container {
   margin-top: 80px;
+  padding: 0 15px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .backgroundBody {
@@ -11,17 +16,21 @@
 
 .servicesSlider {
   padding: 5px 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .title {
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-
 .serviceCard {
-  width: 300px; 
+  width: 100%;
+  max-width: 300px;
   min-height: 450px; 
   display: flex;
   flex-direction: column;
@@ -34,17 +43,15 @@
   background-color: #fff;
   text-align: center;
   transition: transform 0.3s ease;
-  max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 20px; 
+  margin: 0 auto 20px auto;
 }
 
 .serviceCard .btn-primary,
 .serviceCard .btn-secondary,
 .serviceCard .btn-info {
   margin-bottom: 5px;
-  width: 80%; /* Ancho consistente para los botones */
+  width: 80%;
+  min-width: 120px;
 }
 
 .serviceCard:hover {
@@ -61,7 +68,7 @@
 }
 
 .serviceCardTitle {
-  font-size: 18px;
+  font-size: clamp(16px, 2.5vw, 18px);
   font-weight: bold;
   margin-bottom: 5px;
   color: #000;
@@ -69,14 +76,15 @@
 
 .serviceCardDescription {
   color: #333;
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
   margin-bottom: 5px;
+  line-height: 1.4;
 }
 
 .price {
   color: #0099ff;
   font-weight: bold;
-  font-size: 16px;
+  font-size: clamp(14px, 2.5vw, 16px);
 }
 
 .cardButton {
@@ -88,6 +96,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 .cardButton:hover {
@@ -96,11 +105,10 @@
 
 /* Flechas personalizadas de Iconify */
 .slickArrow {
-  /* Eliminar cualquier estilo predeterminado */
   background: none !important;
   border: none !important;
   color: black !important;
-  z-index: 1000; /* Asegurar que las flechas estén visibles */
+  z-index: 1000;
 }
 
 /* Estilos para las flechas del carrusel */
@@ -119,20 +127,14 @@
 }
 
 .slickArrowPrev {
-  left: -40px; /* Ajusta la posición a la izquierda */
+  left: -40px;
 }
 
 .slickArrowNext {
-  right: -40px; /* Ajusta la posición a la derecha */
-}
-
-/* Ocultar el contenido predeterminado de las flechas */
-.slickPrev:before, .slickNext:before {
-  content: none !important;
+  right: -40px;
 }
 
 .slickPrev:before, .slickNext:before {
-  /* Eliminar contenido predeterminado de las flechas */
   content: none !important;
 }
 
@@ -145,26 +147,29 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: clamp(14px, 2.5vw, 16px);
   font-weight: bold;
   transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 200px;
 }
 
 .wideModal :global(.modal-dialog) {
-  max-width: 90vw !important;
+  max-width: min(90vw, 1200px) !important;
   width: 100%;
+  margin: 1.75rem auto;
 }
 
 .modalBodyContent {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
 .modalImage {
   width: 100%;
   height: auto;
+  max-height: 300px;
   border-radius: 10px;
   object-fit: cover;
 }
@@ -179,13 +184,18 @@
 .modalBody {
   max-height: 70vh;
   overflow-y: auto;
+  padding: 15px;
 }
 
 /* Estilos para el modal de pasos */
 .modalSteps :global(.modal-content) {
   border-radius: 12px;
-  border: none;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid #746e6e;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
 }
 
 .modalSteps :global(.modal-header) {
@@ -198,12 +208,14 @@
 .modalSteps :global(.modal-title) {
   font-weight: bold;
   color: #000;
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 3vw, 1.25rem);
 }
 
 .modalSteps :global(.modal-body) {
-  padding: 20px;
+  padding: 15px;
   background-color: #f0f0f0;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .modalSteps :global(.modal-footer) {
@@ -231,6 +243,7 @@
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 .stepItem:hover {
@@ -262,6 +275,9 @@
   padding: 8px 20px;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  font-size: clamp(12px, 2vw, 14px);
+  width: 100%;
+  max-width: 150px;
 }
 
 .btnSecondary:hover {
@@ -275,11 +291,17 @@
   border-radius: 5px;
   padding: 8px 20px;
   font-weight: bold;
+  font-size: clamp(12px, 2vw, 14px);
+  width: 100%;
+  max-width: 150px;
 }
 
 .btnInfo {
   background-color: #17a2b8;
   border-color: #117a8b;
+  font-size: clamp(12px, 2vw, 14px);
+  width: 100%;
+  max-width: 150px;
 }
 
 /* Mensaje de carga */
@@ -288,6 +310,7 @@
   color: #888;
   text-align: center;
   padding: 20px 0;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 /* Estilos para el zoom de imágenes */
@@ -319,6 +342,7 @@
 .costInfoLabel {
   color: #000;
   font-weight: bold;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 /* Button container */
@@ -326,8 +350,9 @@
   margin-top: 15px;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-
 
 /* Estilos para centrar el botón de agregar pasos en el modal */
 .noStepsContainer {
@@ -338,13 +363,6 @@
   padding: 10px 0;
 }
 
-.loadingMessage {
-  font-style: italic;
-  color: #555;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
 .btnAddSteps {
   display: block !important;
   margin: 0 auto !important;
@@ -353,41 +371,159 @@
   color: white !important;
   font-weight: 500 !important;
   padding: 8px 20px !important;
+  font-size: clamp(12px, 2vw, 14px) !important;
+  width: 100% !important;
+  max-width: 200px !important;
 }
 
-/* Estilos para el modal de pasos */
-.modalSteps :global(.modal-content) {
-  border-radius: 12px;
-  border: 1px solid #746e6e;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
-  max-height: 90vh; /* Limita la altura máxima del modal */
-  display: flex;
-  flex-direction: column;
+/* Media Queries para mayor control responsive */
+
+/* Tablets */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 20px;
+    width: 100%;
+  }
+  
+  .modalBodyContent {
+    flex-direction: row;
+  }
+  
+  .modalImage {
+    max-width: 40%;
+    max-height: 400px;
+  }
+  
+  .serviceCard {
+    max-width: 280px;
+  }
+  
+  .slickArrowPrev {
+    left: -30px;
+  }
+
+  .slickArrowNext {
+    right: -30px;
+  }
+  
+  .stepItem {
+    padding: 20px 20px 20px 60px;
+  }
+  
+  .stepItem::before {
+    left: 20px;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .buttonContainer {
+    flex-wrap: nowrap;
+  }
+  
+  .btnSecondary,
+  .btnPrimary,
+  .btnInfo {
+    width: auto;
+    min-width: 120px;
+  }
 }
 
-.modalSteps :global(.modal-header) {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-  border-radius: 10px 10px 0 0;
-  padding: 15px 20px;
+/* Desktop */
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 30px;
+    width: 100%;
+  }
+  
+  .serviceCard {
+    max-width: 300px;
+  }
+  
+  .slickArrowPrev {
+    left: -40px;
+  }
+
+  .slickArrowNext {
+    right: -40px;
+  }
+  
+  .modalSteps :global(.modal-content) {
+    margin: 1.75rem auto;
+  }
+  
+  .modalSteps :global(.modal-body) {
+    padding: 20px;
+  }
+  
+  .bottonAggregate {
+    width: auto;
+    min-width: 180px;
+  }
+  
+  .btnAddSteps {
+    width: auto !important;
+    min-width: 180px !important;
+  }
 }
 
-.modalSteps :global(.modal-title) {
-  font-weight: bold;
-  color: #000;
-  font-size: 1.25rem;
-}
-
-.modalSteps :global(.modal-body) {
-  padding: 20px;
-  background-color: #f0f0f0;
-  max-height: 60vh; /* Altura máxima del contenido */
-  overflow-y: auto; /* Habilita el scroll vertical */
-}
-
-.modalSteps :global(.modal-footer) {
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  border-radius: 0 0 10px 10px;
-  padding: 15px 20px;
+/* Mobile específico */
+@media (max-width: 767px) {
+  .container {
+    margin-top: 60px;
+    padding: 0 5px;
+    width: 100%;
+  }
+  
+  .serviceCard {
+    min-height: 400px;
+    padding: 12px;
+  }
+  
+  .serviceCardImage {
+    height: 120px;
+  }
+  
+  .slickArrowPrev,
+  .slickArrowNext {
+    display: none !important;
+  }
+  
+  .modalBody {
+    padding: 10px;
+  }
+  
+  .modalSteps :global(.modal-header),
+  .modalSteps :global(.modal-footer) {
+    padding: 10px 15px;
+  }
+  
+  .stepItem {
+    padding: 12px 12px 12px 45px;
+    margin-bottom: 10px;
+  }
+  
+  .stepItem::before {
+    left: 12px;
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btnSecondary,
+  .btnPrimary,
+  .btnInfo {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 10px;
+  }
+  
+  .wideModal :global(.modal-dialog) {
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem) !important;
+  }
 }
