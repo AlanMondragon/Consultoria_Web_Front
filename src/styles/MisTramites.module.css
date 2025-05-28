@@ -1,16 +1,46 @@
-/* Container principal optimizado */
-.container {
-  margin: 2rem auto;
-  margin-top: 100px;
-  padding: 1.5rem;
-  max-width: 1200px;
+/* Agregar estos estilos al body y html para eliminar el fondo negro */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #f8fafc; /* O el color de fondo que prefieras */
+  overflow-x: hidden; /* Evita scroll horizontal */
 }
 
-/* Barra de búsqueda más eficiente */
+/* Alternativa: aplicar al div principal de tu app */
+#root {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  width: 100%;
+}
+
+/* Container principal optimizado - RESPONSIVE */
+.container {
+  margin: 1rem auto;
+  margin-top: 80px;
+  padding: 1rem;
+  max-width: 100%;
+  min-height: calc(100vh - 80px);
+  background-color: #f8fafc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Media queries para móviles */
+@media (max-width: 768px) {
+  .container {
+    margin: 0.5rem;
+    margin-top: 70px;
+    padding: 0.5rem;
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* Barra de búsqueda RESPONSIVE */
 .searchContainer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 0.75rem;
   background: white;
@@ -18,14 +48,28 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
+@media (min-width: 768px) {
+  .searchContainer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
 .searchInput {
-  width: 75%;
+  width: 100%;
   padding: 0.6rem 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   font-size: 0.95rem;
-  margin-right: 2rem;
   transition: border-color 0.3s;
+}
+
+@media (min-width: 768px) {
+  .searchInput {
+    width: 75%;
+  }
 }
 
 .searchInput:focus {
@@ -33,8 +77,8 @@
   outline: none;
 }
 
-.selectState{
-  width: 20%;
+.selectState {
+  width: 100%;
   padding: 0.6rem 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
@@ -42,38 +86,68 @@
   background-color: white;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   transition: border-color 0.3s;
-  margin-bottom: 10px;
 }
 
-/* Tabla optimizada */
+@media (min-width: 768px) {
+  .selectState {
+    width: 20%;
+    margin-bottom: 10px;
+  }
+}
+
+/* Tabla COMPLETAMENTE RESPONSIVE */
 .tablaDatos {
   width: 100%;
-  min-width: 1000px;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 12px;
   overflow: hidden;
-  border : 1px solid #e3e6e9;
+  border: 1px solid #e3e6e9;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   background: white;
+  font-size: 0.8rem;
 }
 
-/* Encabezado más limpio */
+@media (min-width: 768px) {
+  .tablaDatos {
+    font-size: 1rem;
+    min-width: 1000px;
+  }
+}
+
+/* Encabezado responsive */
 .tablaDatos thead th {
-  background-color: #29587e;
+  background-color: #004c72;
   color: white;
   font-weight: 600;
-  padding: 0.9rem;
+  padding: 0.5rem 0.3rem;
   text-align: center;
   border: none;
+  font-size: 0.7rem;
 }
 
-/* Celdas mejoradas */
+@media (min-width: 768px) {
+  .tablaDatos thead th {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Celdas responsive */
 .tablaDatos td {
-  padding: 0.9rem;
+  padding: 0.5rem 0.3rem;
   text-align: center;
   border-bottom: 1px solid #f1f5f9;
   color: #444;
+  font-size: 0.7rem;
+  word-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .tablaDatos td {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Hover más sutil */
@@ -81,49 +155,141 @@
   background-color: #f8fafc;
 }
 
-/* Imágenes */
+/* Imágenes responsive */
 .tableImage {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #e2e8f0;
 }
 
-/* Botón optimizado */
+@media (min-width: 768px) {
+  .tableImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+  }
+}
+
+/* Botón responsive */
 .actionButton {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
   background-color: #2d87d0;
   color: white;
   border: none;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 768px) {
+  .actionButton {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
 }
 
 .actionButton:hover {
   background-color: rgb(83, 174, 219);
 }
 
-/* Paginación simplificada */
+/* Paginación responsive */
 .paginationContainer {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .paginationContainer {
+    gap: 0.5rem;
+  }
 }
 
 .paginationContainer button {
-  padding: 0.5rem 0.8rem;
+  padding: 0.4rem 0.6rem;
   border: 1px solid #6fabfb;
-  background: rgba(255, 255, 255, 0.063);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
   cursor: pointer;
   color: #6fabfb;
   transition: all 0.2s;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+  .paginationContainer button {
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
 }
 
 .paginationContainer button:hover {
   background: #cde6ff;
+}
+
+/* Container de carga */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  background-color: transparent;
+}
+
+/* Scroll horizontal solo cuando sea necesario */
+@media (max-width: 767px) {
+  .tablaDatos {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .tablaDatos thead,
+  .tablaDatos tbody,
+  .tablaDatos th,
+  .tablaDatos td,
+  .tablaDatos tr {
+    display: block;
+  }
+  
+  .tablaDatos thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  .tablaDatos tr {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: white;
+  }
+  
+  .tablaDatos td {
+    border: none;
+    position: relative;
+    padding-left: 50% !important;
+    text-align: left !important;
+    white-space: normal;
+  }
+  
+  .tablaDatos td:before {
+    content: attr(data-label) ": ";
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    text-align: left;
+    font-weight: bold;
+    color: #004c72;
+  }
 }

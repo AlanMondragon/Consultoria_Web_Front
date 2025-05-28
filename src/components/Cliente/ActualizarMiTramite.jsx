@@ -478,7 +478,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                                 <small className="text-info">
                                     <strong>ℹ️ Información:</strong>
                                     <br />
-                                    • Horario de atención: 9:00 AM - 6:00 PM
+                                    • Horario de atención: 9:00 AM - 12:00 AM
                                     <br />
                                     • Cada cita dura aproximadamente 1 hora
                                     <br />
