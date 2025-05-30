@@ -6,8 +6,9 @@ import { getAllProcess, getStepById } from './../../api/api.js';
 import Navbar from '../NavbarAdmin.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react';
-import ModalRegistrarTramite from './RegistrarTramite.jsx';
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import ServicePreviewModal from './ServicePreviewModal.jsx';
+import StepsModal from './StepsModal.jsx';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -16,11 +17,14 @@ import styles from './../../styles/AdminServicios.module.css';
 export default function AdministradorServicios() {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  
+  // Service Preview Modal states
+  const [previewModalIsOpen, setPreviewModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [isZoomed, setIsZoomed] = useState(false);
+  
+  // Steps Modal states
   const [showStepsModal, setShowStepsModal] = useState(false);
-  const [steps, setSteps] = useState([])
+  const [steps, setSteps] = useState([]);
   const [idService, setIdService] = useState(null);
 
   useEffect(() => {
@@ -63,7 +67,6 @@ export default function AdministradorServicios() {
       const response = await getAllProcess();
       if (response.success && Array.isArray(response.response.Transacts)) {
         setServices(response.response.Transacts);
-
       } else {
         console.error("Unexpected API response format:", response);
         setServices([]);
@@ -93,36 +96,47 @@ export default function AdministradorServicios() {
     } catch (error) {
       console.error("Error al obtener pasos:", error);
       setSteps([]);
-    };
+    }
   };
 
-  // Modal handlers
-  const openModal = async (service) => {
+  // Service Preview Modal handlers
+  const openPreviewModal = async (service) => {
     setSelectedService(service);
-    setModalIsOpen(true);
+    setPreviewModalIsOpen(true);
     setIdService(service.idTransact);
     await fetchStepsById(service.idTransact);
   };
 
-  // Update the closeModal function to reset steps and remove inputs
-  const closeModal = () => {
+  const closePreviewModal = () => {
     setSelectedService(null);
-    setModalIsOpen(false);
+    setPreviewModalIsOpen(false);
     setSteps([]); // Clear the steps list
   };
 
+  // Steps Modal handlers
   const openStepsModal = async (idTransact) => {
     try {
+      console.log('ID recibido en openStepsModal:', idTransact); // Debug
+      setIdService(idTransact); // Set ID first
       const response = await getStepById(idTransact);
       setSteps(response.response.StepsTransacts || []);
       setShowStepsModal(true);
-      setIdService(idTransact);
     } catch (error) {
       console.error('Error al obtener pasos:', error);
+      setSteps([]);
     }
   };
 
-  // Flechas personalizadas con Iconify
+  const closeStepsModal = () => {
+    setShowStepsModal(false);
+    // Don't clear idService here to maintain it for navigation
+  };
+
+  const clearSteps = () => {
+    setSteps([]);
+  };
+
+  // Custom arrows for slider
   const PrevArrow = ({ onClick }) => (
     <div className={styles.slickArrowPrev} onClick={onClick}>
       <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
@@ -163,16 +177,24 @@ export default function AdministradorServicios() {
       <div className='fixed-top'>
         <Navbar title={"- Servicios"} />
       </div>
+      
       <div className={styles.servicesSlider}>
         <h1 className={styles.title}>Servicios disponibles</h1>
         <Slider {...sliderSettings}>
           {services.map((service, index) => (
             <div key={index} className={styles.serviceCard}>
-              <img src={service.image} alt={service.name} className={styles.serviceCardImage} />
-              <h2 className={styles.serviceCardTitle}>{service.description}</h2>
-              <p className={styles.serviceCardDescription}>{truncateDescription(service.name, 150)}</p>
+              <img 
+                src={service.image} 
+                alt={service.name} 
+                className={styles.serviceCardImage} 
+              />
+              <h2 className={styles.serviceCardTitle}>{service.name}</h2>
+              <p className={styles.serviceCardDescription}>
+                {truncateDescription(service.description, 150)}
+              </p>
               <p className={styles.costInfoLabel}>Pago inicial:</p>
               <p className={styles.price}>MX${formatPrice(service.cashAdvance)}</p>
+              
               <Button
                 className='btn-primary'
                 style={{ backgroundColor: '#007bff', borderColor: '#0056b3' }}
@@ -180,6 +202,7 @@ export default function AdministradorServicios() {
               >
                 Editar
               </Button>
+              
               <Button
                 className='btn-secondary m-1'
                 style={{ backgroundColor: '#17a2b8', borderColor: '#117a8b' }}
@@ -187,10 +210,11 @@ export default function AdministradorServicios() {
               >
                 Ver pasos
               </Button>
+              
               <Button
                 className='btn-info'
                 style={{ backgroundColor: '#17a2b8', borderColor: '#117a8b' }}
-                onClick={() => openModal(service)}
+                onClick={() => openPreviewModal(service)}
               >
                 Vista previa
               </Button>
@@ -198,112 +222,32 @@ export default function AdministradorServicios() {
           ))}
         </Slider>
       </div>
+      
       <div>
-        <button className={styles.bottonAggregate} onClick={() => navigate("/RegistrarServicio")}>Agregar Servicio</button>
+        <button 
+          className={styles.bottonAggregate} 
+          onClick={() => navigate("/RegistrarServicio")}
+        >
+          Agregar Servicio
+        </button>
       </div>
-      <Modal show={modalIsOpen} onHide={closeModal} centered dialogClassName={styles.wideModal}>
-        {selectedService && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedService.description}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className={styles.modalBody}>
-              <div className={styles.modalBodyContent}>
-                <img src={selectedService.image} alt={selectedService.name} className={styles.modalImage} />
-                <div className={styles.modalInfo}>
-                  <p>{selectedService.name}</p>
-                  <p className={styles.costInfoLabel}>Pago inicial:</p>
-                  <p className={styles.price} style={{ color: "blue" }}>MX$ {selectedService.cashAdvance}.00</p>
-                  <p className={styles.costInfoLabel}>Informacion de costos:</p>
-                  <img
-                    src={selectedService.imageDetail}
-                    alt="Detalle"
-                    onClick={() => setIsZoomed(!isZoomed)}
-                    style={{
-                      width: '100%',
-                      marginTop: '10px',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </div>
-                {isZoomed && selectedService && (
-                  <div
-                    onClick={() => setIsZoomed(!isZoomed)}
-                    className={styles.imageZoomOverlay}
-                  >
-                    <img
-                      src={selectedService.imageDetail}
-                      alt="Ampliado"
-                      className={styles.zoomedImage}
-                    />
-                  </div>
-                )}
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="info" onClick={() => openStepsModal(selectedService.idTransact)}>Ver pasos</Button>
-              <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
-            </Modal.Footer>
-          </>
-        )}
-      </Modal>
-      <Modal
+
+      {/* Service Preview Modal */}
+      <ServicePreviewModal
+        show={previewModalIsOpen}
+        onHide={closePreviewModal}
+        service={selectedService}
+        onViewSteps={openStepsModal}
+      />
+
+      {/* Steps Modal */}
+      <StepsModal
         show={showStepsModal}
-        onHide={() => setShowStepsModal(false)}
-        centered
-        className={styles.modalSteps}
-      >
-        <Modal.Header closeButton className="modal-header">
-          <Modal.Title className="modal-title">Pasos del trámite</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="modal-body">
-          {steps.length > 0 ? (
-            <ol className={styles.stepsList} style={{ paddingLeft: '0' }}>
-              {steps.map((step, index) => (
-                <li
-                  key={index}
-                  className={styles.stepItem}
-                >
-                  {step.name}
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className={styles.noStepsContainer}>
-              <p className={styles.loadingMessage}>
-                No hay pasos disponibles para este trámite.
-                ¿Desea agregar pasos al trámite?
-              </p>
-              <Button
-                onClick={() => navigate("/RegistrarPasos", { state: { serviceID: idService } })}
-                className={`${styles.btnAddSteps} btn-info`}
-              >
-                Agregar pasos
-              </Button>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer className="modal-footer">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setShowStepsModal(false);
-              setSteps([]); // Clear the steps list
-            }}
-            className={styles.btnSecondary}
-          >
-            Cerrar
-          </Button>
-          {steps.length > 0 && (
-            <Button
-              variant="primary"
-              onClick={() => navigate("/ActualizarPasos", { state: { serviceID: idService, isEditMode: true } })}
-              className={styles.btnPrimary}
-            >
-              {'Actualizar'}
-            </Button>)}
-        </Modal.Footer>
-      </Modal>
+        onHide={closeStepsModal}
+        steps={steps}
+        serviceId={idService}
+        onClearSteps={clearSteps}
+      />
     </div>
   );
 }

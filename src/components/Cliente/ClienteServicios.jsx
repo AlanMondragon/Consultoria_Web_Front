@@ -196,10 +196,10 @@ export default function ClienteServicios() {
                 className={styles.serviceCardImage}
               />
               <h2 className={styles.serviceCardTitle}>
-                {service.description}
+                {service.name}
               </h2>
               <p className={styles.serviceCardDescription}>
-                {truncateDescription(service.name, 250)}
+                {truncateDescription(service.description, 250)}
               </p>
               <p className={styles.costInfoLabel}>Pago inicial:</p>
               <p className={styles.price}>MX${service.cashAdvance}.00</p>

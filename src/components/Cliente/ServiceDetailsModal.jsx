@@ -20,7 +20,7 @@ const ServiceDetailsModal = ({
       dialogClassName={styles.wideModal}
     >
       <Modal.Header closeButton>
-        <Modal.Title>{service.description}</Modal.Title>
+        <Modal.Title>{service.name}</Modal.Title>
       </Modal.Header>
       
       <Modal.Body className={styles.modalBody}>
@@ -31,7 +31,7 @@ const ServiceDetailsModal = ({
             className={styles.modalImage}
           />
           <div className={styles.modalInfo}>
-            <p>{service.name}</p>
+            <p>{service.description}</p>
             <p className={styles.costInfoLabel}>Pago inicial:</p>
             <p className={styles.price} style={{ color: "blue" }}>
               MX$ {service.cashAdvance}.00

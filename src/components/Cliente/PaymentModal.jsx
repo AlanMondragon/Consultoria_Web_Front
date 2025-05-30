@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -17,7 +17,45 @@ const PaymentModal = ({
   onSuccess, 
   onError 
 }) => {
+  const [selectedPaymentType, setSelectedPaymentType] = useState('adelanto');
+  
   if (!service) return null;
+
+  // Verificar si es Visa Americana
+  const isVisaAmericana = service.name?.toLowerCase().includes('visa americana') || 
+                         service.name?.toLowerCase().includes('american express') ||
+                         service.name?.toLowerCase().includes('visa us') ||
+                         service.name?.toLowerCase().includes('visa estadounidense') ||
+                         service.name?.toLowerCase().includes('visa americana');
+
+  // Opciones de pago para Visa Americana
+  const paymentOptions = {
+    adelanto: {
+      amount: 499, // Apartado/anticipo para reservar el servicio
+      description: 'Apartado (anticipo)',
+      processingTime: 'Reserva tu trámite',
+      timeType: 'deposit',
+      isDeposit: true
+    },
+    '4meses': {
+      amount: 7000, // Precio completo para servicio de 4 meses
+      description: 'Servicio completo (4 meses)',
+      processingTime: '4 meses de procesamiento',
+      timeType: 'normal'
+    },
+    '8meses': {
+      amount: 3500, // Precio completo para servicio de 8 meses
+      description: 'Servicio completo (8 meses)',
+      processingTime: '8 meses de procesamiento',
+      timeType: 'standard'
+    }
+  };
+
+  const currentPaymentOption = paymentOptions[selectedPaymentType];
+
+  const handlePaymentTypeChange = (e) => {
+    setSelectedPaymentType(e.target.value);
+  };
 
   return (
     <Modal
@@ -41,19 +79,74 @@ const PaymentModal = ({
             </svg>
           </div>
           <div>
-            <div className={styles.serviceTitle}>{service.description}</div>
+            <div className={styles.serviceTitle}>{service.name}</div>
             <div className={styles.serviceSubtitle}>Pago seguro con Stripe</div>
           </div>
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body className={styles.modalBody}>
+        
+        {/* Opciones de pago para Visa Americana */}
+        {isVisaAmericana && (
+          <div className={styles.paymentOptionsContainer} style={{ marginBottom: '20px' }}>
+            <h4 style={{ marginBottom: '15px', color: '#333', fontSize: '16px' }}>
+              Selecciona el tiempo de procesamiento:
+            </h4>
+            
+            {Object.entries(paymentOptions).map(([key, option]) => (
+              <div 
+                key={key} 
+                className={styles.paymentOption} 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  marginBottom: '10px',
+                  padding: '10px',
+                  border: selectedPaymentType === key ? '2px solid #007bff' : '1px solid #ddd',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  backgroundColor: selectedPaymentType === key ? '#f8f9fa' : 'white'
+                }}
+                onClick={() => setSelectedPaymentType(key)}
+              >
+                <input 
+                  type="radio" 
+                  name="paymentType" 
+                  value={key}
+                  checked={selectedPaymentType === key}
+                  onChange={handlePaymentTypeChange}
+                  style={{ marginRight: '10px' }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 'bold', color: '#333' }}>
+                    {option.description}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>
+                    💰 ${option.amount}.00 MXN
+                    {option.isDeposit && (
+                      <span style={{ color: '#007bff', fontWeight: 'bold' }}> (Apartado)</span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#888' }}>
+                    {option.isDeposit ? (
+                      <span>📋 {option.processingTime}</span>
+                    ) : (
+                      <span>⏱️ Tiempo: {option.processingTime}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Monto con diseño mejorado */}
         <div className={styles.paymentAmountContainer}>
           <div className={styles.paymentAmount}>
             <span className={styles.paymentAmountLabel}>Total a pagar</span>
             <span className={styles.paymentAmountValue}>
-              ${service.cashAdvance}.00 
+              ${isVisaAmericana ? currentPaymentOption.amount : service.cashAdvance}.00 
               <span className={styles.currency}>MXN</span>
             </span>
           </div>
@@ -68,7 +161,12 @@ const PaymentModal = ({
               >
                 <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
               </svg>
-              <span>Este es un pago inicial del servicio</span>
+              <span>
+                {isVisaAmericana 
+                  ? `${currentPaymentOption.description} - ${currentPaymentOption.isDeposit ? 'Pago de apartado' : 'Pago completo del servicio'}`
+                  : 'Este es un pago inicial del servicio'
+                }
+              </span>
             </div>
           </div>
         </div>
@@ -77,11 +175,12 @@ const PaymentModal = ({
         <div className={styles.stripeFormContainer}>
           <Elements stripe={stripePromise}>
             <CheckoutForm
-              amount={service.cashAdvance}
-              description={service.description}
+              amount={isVisaAmericana ? currentPaymentOption.amount : service.cashAdvance}
+              description={`${service.name} - ${isVisaAmericana ? currentPaymentOption.description : 'Pago inicial'}`}
               userEmail={userEmail}
               customer={userId}
               idProductoTransaccion={service.idTransact}
+              paymentType={isVisaAmericana ? selectedPaymentType : 'standard'}
               onSuccess={onSuccess}
               onError={onError}
             />
