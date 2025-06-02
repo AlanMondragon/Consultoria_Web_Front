@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import styles from './../../styles/ClienteServicios.module.css';
+import styles from './../../../styles/ClienteServicios.module.css';
 
 const StepsModal = ({ 
   show, 

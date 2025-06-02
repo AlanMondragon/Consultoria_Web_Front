@@ -9,9 +9,9 @@ import Slider from 'react-slick';
 import { Icon } from '@iconify/react';
 
 // Importar los modales separados
-import ServiceDetailsModal from './ServiceDetailsModal.jsx';
-import PaymentModal from './PaymentModal.jsx';
-import StepsModal from './StepsModal.jsx';
+import ServiceDetailsModal from './Modals/ServiceDetailsModal.jsx';
+import PaymentModal from './Modals/PaymentModal.jsx';
+import StepsModal from './Modals/StepsModal.jsx';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getStepById } from './../../api/api';
+import { getStepById } from '../../../api/api';
 
 export default function VerPasosTramite() {
   const location = useLocation();
