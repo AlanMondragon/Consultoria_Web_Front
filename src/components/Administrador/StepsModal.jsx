@@ -12,22 +12,36 @@ export default function StepsModal({
 }) {
   const navigate = useNavigate();
 
-  console.log('StepsModal - serviceId recibido:', serviceId); // Debug
+  // Debug at render time
+  React.useEffect(() => {
+    if (show) {
+      console.log('🎯 StepsModal renderizado con serviceId:', serviceId);
+      console.log('🎯 StepsModal renderizado con steps:', steps.length, 'items');
+    }
+  }, [show, serviceId, steps]);
 
   const handleClose = () => {
     onHide();
     if (onClearSteps) {
-      onClearSteps(); // Clear steps when closing
+      onClearSteps();
     }
   };
 
   const handleAddSteps = () => {
-    console.log('Navegando con serviceID:', serviceId); // Debug
+    if (!serviceId) {
+      console.error('❌ No hay serviceId disponible para agregar pasos');
+      return;
+    }
+    console.log('➕ Navegando para agregar pasos con serviceID:', serviceId);
     navigate("/RegistrarPasos", { state: { serviceID: serviceId } });
   };
 
   const handleUpdateSteps = () => {
-    console.log('Actualizando con serviceID:', serviceId); // Debug
+    if (!serviceId) {
+      console.error('❌ No hay serviceId disponible para actualizar pasos');
+      return;
+    }
+    console.log('✏️ Navegando para actualizar pasos con serviceID:', serviceId);
     navigate("/ActualizarPasos", { 
       state: { 
         serviceID: serviceId, 
@@ -60,15 +74,16 @@ export default function StepsModal({
           <div className={styles.noStepsContainer}>
             <p className={styles.loadingMessage}>
               No hay pasos disponibles para este trámite.
-              ¿Desea agregar pasos al trámite?
+              {serviceId ? '¿Desea agregar pasos al trámite?' : 'ID de servicio no disponible.'}
             </p>
-            <Button
-              onClick={handleAddSteps}
-              className={`${styles.btnAddSteps} btn-info`}
-              disabled={!serviceId} // Disable if no serviceId
-            >
-              Agregar pasos
-            </Button>
+            {serviceId && (
+              <Button
+                onClick={handleAddSteps}
+                className={`${styles.btnAddSteps} btn-info`}
+              >
+                Agregar pasos
+              </Button>
+            )}
           </div>
         )}
       </Modal.Body>
