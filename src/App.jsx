@@ -25,6 +25,7 @@ import AdministradorPagos from "./components/Administrador/AdministradorPagos.js
 import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
 import CombinedStepManager from "./components/Administrador/ActualizarPasos.jsx";
+import Page0 from "./components/Page0.jsx";
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -44,6 +45,8 @@ function App() {
         } />
 
         <Route path="/" element={<Home />} />
+        <Route path="/p" element={<Page0 />} />
+
         <Route path="/olvidar-contra" element={<OlvidarContra />} />
 
         {/* ADMIN */}

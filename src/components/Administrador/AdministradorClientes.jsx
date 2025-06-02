@@ -62,7 +62,7 @@ export default function AdministradorClientes() {
         setDatos(response.response.users);
         <ModalRegistrarTramite
           clientes={datos}
-  />
+        />
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -111,16 +111,16 @@ export default function AdministradorClientes() {
     });
   }
   <ModalRegistrarTramite
-          clientes={datos}
+    clientes={datos}
   />
 
 
 
   return (
     <div style={{ marginTop: '100px' }}>
-     <div className='fixed-top'>
-             <Navbar title={"- Clientes"} />
-           </div>
+      <div className='fixed-top'>
+        <Navbar title={"- Clientes"} />
+      </div>
 
       <div className="d-flex justify-content-between align-items-center p-3">
         <Form.Control
@@ -188,18 +188,18 @@ export default function AdministradorClientes() {
                     />
                   </div>
 
-                  
+
                 </td>
                 <td>
-                <Button
+                  <Button
                     variant="success"
                     className="d-flex align-items-center gap-2"
                     style={{
-                      display: 'block',  
-                      marginLeft: 'auto', 
+                      display: 'block',
+                      marginLeft: 'auto',
                       boxShadow: '2px 2px 6px #00000050',
                       borderRadius: '12px',
-                      marginTop: '10px'   
+                      marginTop: '10px'
                     }}
                     onClick={() => {
                       setClienteSeleccionado(cliente);
