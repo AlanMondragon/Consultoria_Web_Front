@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import { createProcessWithPayment } from './../api/api.js';
+import { createProcessWithPayment, payDS160 } from './../api/api.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError }) {
+export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
       const { data } = await axios.post(`${API_URL}/pay/payint`, {
         amount: amount * 100,
         currency: 'mxn',
-        description: description,
+        description: serviceName ? `${serviceName} - ${description}` : description,
         customerEmail: userEmail,
         customerId: customer
       });
@@ -59,7 +59,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         setMessage('¡Pago exitoso!');
         onSuccess && onSuccess(result.paymentIntent);
 
-        // Guardar el registro del pago en la base de datos
+        // Guardar el registro del pago en la base de datos y enviar correo DS-160 si aplica
         try {
           const paymentData = {
             total: amount, // Usa el monto original
@@ -68,19 +68,27 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             idTransact: parseInt(idProductoTransaccion, 10), // Asegúrate de que sea un número
           };
 
+          await axios.post(`${API_URL}/payment`, paymentData);
+          await createProcessWithPayment(paymentData);
 
-          const response = await axios.post(`${API_URL}/payment`, paymentData);
-          const responseCreated = await createProcessWithPayment(paymentData);
-
-          if (response.data && response.data.success && responseCreated.data && responseCreated.data.success) {
-          } else {
-            console.error("Error al guardar en BD (respuesta del backend):", response.data?.message || "Error desconocido del backend.");
-            setMessage(`Pago en Stripe exitoso, pero contacte a soporte si no ve su servicio activado (Error Ref: DB_SAVE)`);
+          // Enviar el correo DS-160 solo si el nombre real del servicio es DS-160 (validación por nombre)
+          const ds160Names = [
+            'ds-160',
+            'ds160',
+            'creación y generación de ds160',
+            'creacion y generacion de ds160'
+          ];
+          if (serviceName && ds160Names.some(name => serviceName.trim().toLowerCase() === name)) {
+            try {
+              await payDS160(userEmail);
+            } catch (mailError) {
+              console.error('Error al enviar correo de confirmación DS-160:', mailError);
+            }
           }
         } catch (dbError) {
           console.error("Error en la llamada para guardar el pago en la base de datos:", dbError);
           console.error("Detalles del error de red/axios:", dbError.response?.data || dbError.message);
-           setMessage(`Pago en Stripe exitoso, pero hubo un problema al guardar su registro. Por favor, contacte a soporte.`);
+          setMessage(`Pago en Stripe exitoso, pero hubo un problema al guardar su registro. Por favor, contacte a soporte.`);
         }
       }
     } catch (err) {
