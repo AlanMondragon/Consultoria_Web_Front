@@ -1,0 +1,729 @@
+/* Estilos de la barra de navegación */
+.modern-navbar {
+  background-color: #132E3C;
+  backdrop-filter: none;
+  transition: all 0.3s ease;
+  height: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modern-navbar.scrolled {
+  background-color: rgba(19, 46, 60, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navbar-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.navbar-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #60A5FA, #A78BFA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navbar-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+.nav-link {
+  color: #CBD5E1;
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  border: 1px solid transparent;
+}
+
+.nav-link.active {
+  color: #FFFFFF;
+  background-color: #3B82F6;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.cta-button {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Efectos hover */
+.modern-navbar .navbar-nav .nav-link:hover {
+  background-color: rgba(71, 85, 105, 0.5) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Estilos responsive para navbar */
+@media (max-width: 991.98px) {
+  .modern-navbar .navbar-collapse {
+    background: rgba(19, 46, 60, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin-top: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Estilos de secciones */
+.section-content {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #1E293B;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #475569;
+}
+
+/* Estilos específicos para secciones */
+.hero-section {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.services-section {
+  background-color: #132E3C;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-section {
+  width: 100%;
+  padding: 80px 0;
+  background: linear-gradient(135deg, #F8FAFC, #E2E8F0);
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.testimonials-section {
+  width: 100%;
+  padding: 80px 0;
+  background: linear-gradient(135deg, #FFFFFF, #F1F5F9);
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.faq-section {
+  width: 100%;
+  padding: 80px 0;
+  background: linear-gradient(135deg, #F8FAFC, #E2E8F0);
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Estilos para el footer */
+.footer {
+  width: 100%;
+  background-color: #132E3C;
+  padding: 40px 0;
+  color: #FFFFFF;
+}
+
+.footer-link {
+  color: #60A5FA;
+}
+
+/* Estilos para las tarjetas de servicios */
+.cardContainer {
+  padding: 10px;
+  perspective: 1000px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.cardImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.03);
+}
+
+.cardBody {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #132E3C;
+}
+
+.cardDescription {
+  color: #64748B;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.cardButton {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: 500;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: auto;
+}
+
+.cardButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Estilos para el slider */
+.slider-container {
+  position: relative;
+  padding-bottom: 50px; /* Espacio para las flechas */
+}
+
+.slider-arrows-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 10;
+}
+
+.slickArrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.slickArrow:hover {
+  transform: scale(1.1);
+}
+
+.slickArrowPrev {
+  /* Estilos específicos para flecha anterior si son necesarios */
+}
+
+.slickArrowNext {
+  /* Estilos específicos para flecha siguiente si son necesarios */
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .cardImage {
+    height: 160px;
+  }
+  
+  .cardBody {
+    padding: 10px;
+  }
+  
+  .cardTitle {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-title {
+    font-size: 20px;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+}
+/* Agrega esto a tus estilos */
+.cardButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.cardButton {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: white;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cardButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+  opacity: 0.9;
+}
+/* Para el navbar */
+.navbar-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Para las cards en mobile */
+@media (max-width: 768px) {
+  .cardButtons {
+    flex-direction: column;
+  }
+  
+  .cardButton {
+    width: 100%;
+  }
+}
+/* Estilos para la sección Sobre Nosotros */
+
+/* Animaciones */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-20px); 
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(20px); 
+  }
+}
+
+/* Sección principal */
+.nosotrosSection {
+  width: 100vw; /* ocupa todo el ancho de la pantalla */
+  margin-left: calc(-50vw + 50%); /* Añade esta línea */
+  padding: 100px 0;
+  background: #132E3C;
+  position: relative;
+  overflow: hidden; /* Ya está, lo cual es bueno */
+}
+
+
+/* Efectos de fondo */
+.backgroundEffect1 {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.backgroundEffect2 {
+  position: absolute;
+  bottom: 20%;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatReverse 4s ease-in-out infinite;
+}
+
+/* Header de la sección */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border-radius: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+}
+
+.sectionTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFFFFF, #CBD5E1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.sectionDivider {
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* Tarjetas principales */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardMision {
+  margin-bottom: 30px;
+}
+
+.cardVision {
+  margin-bottom: 0;
+}
+
+.cardValores {
+  height: 100%;
+}
+
+/* Efectos decorativos de las tarjetas */
+.cardEffect1 {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  border-radius: 50%;
+  transform: rotate(45deg);
+}
+
+.cardEffect2 {
+  position: absolute;
+  bottom: -50%;
+  left: -50%;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+  border-radius: 50%;
+  transform: rotate(-45deg);
+}
+
+.cardEffect3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Headers de las tarjetas */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.cardIconContainer {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.iconMision {
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.iconVision {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.iconValores {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.cardTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* Contenido de las tarjetas */
+.cardContent {
+  position: relative;
+  z-index: 2;
+}
+
+.cardText {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #CBD5E1;
+  margin: 0;
+}
+
+/* Sección de valores */
+.valoresContainer {
+  position: relative;
+  z-index: 2;
+}
+
+.valoresHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.valorItem {
+  margin-bottom: 25px;
+}
+
+.valorItem:last-child {
+  margin-bottom: 0;
+}
+
+.valorHeader {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.valorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.valorText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #94A3B8;
+  margin: 0;
+  padding-left: 20px;
+}
+
+/* Colores para cada valor */
+.colorTrabajoEquipo {
+  color: #3B82F6;
+}
+
+.colorTrabajoEquipo .valorDot {
+  background: #3B82F6;
+}
+
+.colorOrientacionLogro {
+  color: #8B5CF6;
+}
+
+.colorOrientacionLogro .valorDot {
+  background: #8B5CF6;
+}
+
+.colorInnovacion {
+  color: #10B981;
+}
+
+.colorInnovacion .valorDot {
+  background: #10B981;
+}
+
+.colorHonestidad {
+  color: #F59E0B;
+}
+
+.colorHonestidad .valorDot {
+  background: #F59E0B;
+}
+
+.colorConfianza {
+  color: #EF4444;
+}
+
+.colorConfianza .valorDot {
+  background: #EF4444;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .cardMision {
+    margin-bottom: 30px;
+  }
+  
+  .cardVision {
+    margin-bottom: 30px;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nosotrosSection {
+  
+    width: 1000px;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+  }
+  
+  .card {
+    padding: 30px;
+  }
+  
+  .backgroundEffect1,
+  .backgroundEffect2 {
+    width: 150px;
+    height: 150px;
+  }
+}

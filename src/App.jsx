@@ -44,8 +44,8 @@ function App() {
           </ProtectedRoute>
         } />
 
-        <Route path="/" element={<Home />} />
-        <Route path="/p" element={<Page0 />} />
+        <Route path="/Login" element={<Home />} />
+        <Route path="/" element={<Page0 />} />
 
         <Route path="/olvidar-contra" element={<OlvidarContra />} />
 

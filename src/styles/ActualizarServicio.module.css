@@ -242,3 +242,54 @@ input:checked + .slider:before {
 .button-submit-service {
   composes: buttonSubmitService;
 }
+/* Botón de iniciar sesión alineado a la derecha */
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+/* Estilo del botón de inicio de sesión */
+.loginButton {
+  background-color: #007bff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.loginButton:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos generales para la tarjeta */
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Estilo del botón dentro de la tarjeta */
+.cardButton {
+  margin-top: 1rem;
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cardButton:hover {
+  background-color: #218838;
+}

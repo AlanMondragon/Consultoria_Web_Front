@@ -59,7 +59,9 @@ export const forgetPassword = async (email, token) => {
 export const getAllProcess = async () => { 
     try {
         const response = await axios.get(`${API_URL}/transaction/web`);
+        console.log('Response from getAllProcess:', response.data);
         return response.data;
+     
     } catch (error) {
         console.error('Error fetching processes:', error);
         throw error;
