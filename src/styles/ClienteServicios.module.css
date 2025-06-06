@@ -15,11 +15,12 @@
 }
 
 .serviceCard {
-  width: 300px; 
-  height: 500px; 
+  width: 100%;
+  max-width: 340px;
+  min-width: 220px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -28,7 +29,6 @@
   background-color: #fff;
   text-align: center;
   transition: transform 0.3s ease;
-  max-width: 90%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
@@ -162,13 +162,16 @@
 /* Estilos para el modal de pasos */
 .modalSteps :global(.modal-content) {
   border-radius: 12px;
-  border: none;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid #746e6e;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
+  max-height: 90vh; /* Limita la altura máxima del modal */
+  display: flex;
+  flex-direction: column;
 }
 
 .modalSteps :global(.modal-header) {
   background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #a4a7a9;
   border-radius: 10px 10px 0 0;
   padding: 15px 20px;
 }
@@ -182,6 +185,8 @@
 .modalSteps :global(.modal-body) {
   padding: 20px;
   background-color: #f0f0f0;
+  max-height: 60vh; /* Altura máxima del contenido */
+  overflow-y: auto; /* Habilita el scroll vertical */
 }
 
 .modalSteps :global(.modal-footer) {
@@ -507,4 +512,167 @@
 .modal-content {
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .serviceCard {
+    width: 90vw;
+    max-width: 400px;
+    height: 420px;
+    padding: 10px;
+  }
+  .servicesSlider {
+    padding: 5px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin-top: 70px;
+  }
+  .serviceCard {
+    width: 95vw;
+    max-width: 350px;
+    height: 380px;
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+  .serviceCardImage {
+    height: 120px;
+  }
+  .serviceCardTitle {
+    font-size: 16px;
+  }
+  .serviceCardDescription {
+    font-size: 13px;
+  }
+  .price {
+    font-size: 15px;
+  }
+  .cardButton, .cardButtonPay {
+    font-size: 14px;
+    padding: 8px 10px;
+    width: 95%;
+  }
+  .slickArrowPrev {
+    left: -20px;
+  }
+  .slickArrowNext {
+    right: -20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin-top: 60px;
+  }
+  .servicesSlider {
+    width: 100vw;
+    max-width: 100vw;
+    padding: 0;
+    margin-left: -8px; /* Corrige posible padding del body */
+  }
+  .title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  .serviceCard {
+    width: 92vw;
+    max-width: 92vw;
+    min-width: 0;
+    height: auto;
+    min-height: unset;
+    padding: 8px 4px 10px 4px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .serviceCardImage {
+    height: 48px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+  }
+  .serviceCardTitle {
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  .serviceCardDescription {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  .price {
+    font-size: 12px;
+  }
+  .cardButton, .cardButtonPay {
+    font-size: 12px;
+    padding: 6px 2px;
+    width: 97%;
+    margin-bottom: 2px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 430px) {
+  .container {
+    margin-top: 50px;
+  }
+  .serviceCard {
+    width: 96vw;
+    max-width: 96vw;
+    min-width: 0;
+    min-height: unset;
+    padding: 6px 2px 8px 2px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+  }
+  .serviceCardImage {
+    height: 36px;
+    margin-bottom: 2px;
+    border-radius: 7px;
+  }
+  .serviceCardTitle {
+    font-size: 11.5px;
+    margin-bottom: 1px;
+  }
+  .serviceCardDescription {
+    font-size: 9.5px;
+    margin-bottom: 1px;
+  }
+  .price {
+    font-size: 10.5px;
+  }
+  .cardButton, .cardButtonPay {
+    font-size: 10.5px;
+    padding: 5px 1px;
+    width: 98%;
+    margin-bottom: 1px;
+    border-radius: 7px;
+  }
+}
+
+@media (max-width: 375px) {
+  .serviceCard {
+    min-height: unset;
+    padding: 2px 1px 4px 1px;
+  }
+  .serviceCardImage {
+    height: 24px;
+  }
+  .serviceCardTitle {
+    font-size: 9.5px;
+  }
+  .serviceCardDescription {
+    font-size: 8px;
+  }
+  .price {
+    font-size: 9px;
+  }
+  .cardButton, .cardButtonPay {
+    font-size: 9px;
+    padding: 4px 1px;
+  }
 }

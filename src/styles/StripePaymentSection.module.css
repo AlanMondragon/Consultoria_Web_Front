@@ -1,0 +1,46 @@
+.modalContainer {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.agendarCitaBox {
+  margin: 24px 0;
+  padding: 32px 24px 24px 24px;
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.agendarCitaTitle {
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 22px;
+  color: #1976d2;
+  text-align: center;
+  width: 100%;
+}
+
+.alerta {
+  color: red;
+  margin-top: 10px;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+}
+
+.extraFee {
+  color: #d35400;
+  margin-top: 10px;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+}
