@@ -1,4 +1,3 @@
-
 // components/Icons.jsx
 import React from 'react';
 
@@ -76,5 +75,11 @@ export const LoadingSpinner = () => (
         repeatCount="indefinite"
       />
     </circle>
+  </svg>
+);
+
+export const CalendarIcon = ({ color = "currentColor" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={color} viewBox="0 0 24 24" style={{ marginLeft: '4px' }}>
+    <path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 18H5V8h14v12zm0-14v2H5V6h14z"/>
   </svg>
 );

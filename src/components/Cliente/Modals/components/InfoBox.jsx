@@ -39,4 +39,4 @@ const InfoBox = ({
   </div>
 );
 
-export default InfoBox; // ✅ Exportación por defecto correcta
+export default InfoBox;

@@ -586,7 +586,7 @@ export const payDS160 = async (email) => {
     };
 
     const response = await axios.post(
-      `${API_URL_MAIL}/send/${email.trim()}`,
+      `${API_URL_MAIL}/send/web/${email.trim()}`,
       data,
       {
         headers: {

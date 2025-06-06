@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import { createProcessWithPayment, payDS160 } from './../api/api.js';
+import { createProcessWithPayment, payDS160, actualizarTC } from './../api/api.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName }) {
+export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName, disabled = false, selectedDate, service, idTransactProgress }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -71,6 +71,19 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
           await axios.post(`${API_URL}/payment`, paymentData);
           await createProcessWithPayment(paymentData);
 
+          // --- AGENDAR CITA EN EL CAMPO CORRECTO ---
+          if (selectedDate && service && idTransactProgress) {
+            let payload = {};
+            if (service.cas) {
+              payload.dateCas = selectedDate.replace('T', ' ');
+            } else if (service.con) {
+              payload.dateCon = selectedDate.replace('T', ' ');
+            } else {
+              payload.dateSimulation = selectedDate.replace('T', ' ');
+            }
+            await actualizarTC(idTransactProgress, payload);
+          }
+
           // Enviar el correo DS-160 solo si el nombre real del servicio es DS-160 (validación por nombre)
           const ds160Names = [
             'ds-160',
@@ -112,6 +125,9 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         <h4>{description}</h4>
         <p>Monto a pagar: <strong>MX${amount}</strong></p>
         <p>Cliente: {userEmail}</p>
+        {selectedDate && (
+          <p>Fecha seleccionada: <strong>{selectedDate.replace('T', ' ')}</strong></p>
+        )}
       </div>
 
       <div className="card-element-container" style={{ padding: '10px', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '20px' }}>
@@ -132,15 +148,15 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
 
       <button
         type="submit"
-        disabled={!stripe || loading}
+        disabled={!stripe || loading || disabled}
         style={{
-          backgroundColor: '#007bff',
+          backgroundColor: disabled ? '#cccccc' : '#007bff',
           color: 'white',
           padding: '10px 15px',
           border: 'none',
           borderRadius: '4px',
           fontSize: '16px',
-          cursor: loading ? 'not-allowed' : 'pointer',
+          cursor: loading || disabled ? 'not-allowed' : 'pointer',
           width: '100%'
         }}
       >
