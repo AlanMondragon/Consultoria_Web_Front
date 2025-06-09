@@ -8,6 +8,7 @@ import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
+import NavbarAdmin from '../NavbarUser.jsx';
 
 const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
     const [selectedDate, setSelectedDate] = useState('');
@@ -122,7 +123,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
 
         <div>
             <div className='fixed-top'>
-                <Navbar title={"- Servicios"} />
+                <NavbarAdmin title={"- Servicios"} />
             </div>
             <div className="row">
                 <div className="col-md-6">
