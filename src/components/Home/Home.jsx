@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../../img/logo.jpg';
+import logo from '../../img/logo_letras_negras.jpg';
 import { Login } from './../../api/api.js';
 import styles from './../../styles/Home.module.css'; // Importar el módulo CSS
 import { useNavigate } from 'react-router-dom';
