@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Container, Button, Row, Col } from "react-bootstrap";
+import { Navbar, Nav, Container, Button, Row, Col, Table } from "react-bootstrap";
 import { Home, Briefcase, Users, MessageSquare, HelpCircle, Mail, Phone, Info, LogInIcon } from "lucide-react";
 import Logo from "./../img/logo.png";
 import Fondo from "./../img/fondo.jpg";
@@ -11,9 +11,7 @@ import StepsModal from './Cliente/Modals/StepsModal.jsx';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styles from './../styles/ServiciosCards.module.css';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
 
 export default function Page0() {
@@ -26,18 +24,44 @@ export default function Page0() {
   const [stepsModalOpen, setStepsModalOpen] = useState(false);
   const [steps, setSteps] = useState([]);
   const [stepsLoading, setStepsLoading] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+
+  const [faqActiveIndex, setFaqActiveIndex] = useState(null);
 
   useEffect(() => {
     fetchServices();
   }, []);
-  delete L.Icon.Default.prototype._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: '/marker-icon-2x.png',
-    iconUrl: '/marker-icon.png',
-    shadowUrl: '/marker-shadow.png',
-  });
 
-  const position = [19.4326, -99.1332]; // Lat, Lng
+  const faqData = [
+    {
+      question: "¿Cuánto tiempo tarda el proceso de visa?",
+      answer: "El tiempo de procesamiento varía según el tipo de visa y el país de destino. Generalmente, las visas de turista pueden tardar entre 15-30 días, mientras que las visas de trabajo o estudio pueden tomar de 1-3 meses. Te mantendremos informado durante todo el proceso."
+    },
+    {
+      question: "¿Qué documentos necesito para solicitar una visa?",
+      answer: "Los documentos requeridos dependen del tipo de visa y país de destino. Generalmente incluyen: pasaporte vigente, fotografías, formularios completados, comprobantes financieros, carta de invitación (si aplica), y documentos específicos según el propósito del viaje. Te proporcionaremos una lista detallada personalizada."
+    },
+    {
+      question: "¿Ofrecen garantía de aprobación?",
+      answer: "Si bien tenemos una alta tasa de éxito, no podemos garantizar la aprobación al 100% ya que la decisión final es de las autoridades consulares. Sin embargo, nos comprometemos a preparar tu solicitud de la mejor manera posible y te acompañamos en todo el proceso."
+    },
+    {
+      question: "¿Cuáles son sus tarifas y métodos de pago?",
+      answer: "Nuestras tarifas varían según el tipo de servicio y complejidad del caso. Ofrecemos precios competitivos y transparentes. Aceptamos pagos en efectivo, transferencias bancarias y tarjetas de crédito. Solicita una cotización gratuita para conocer el costo específico de tu trámite."
+    },
+    {
+      question: "¿Qué pasa si mi visa es rechazada?",
+      answer: "En caso de rechazo, analizamos las razones y te asesoramos sobre las opciones disponibles, que pueden incluir una nueva solicitud con documentación adicional o una apelación si es posible. Nuestro equipo te apoyará para mejorar las posibilidades de éxito en futuros intentos."
+    },
+    {
+      question: "¿Atienden casos de emergencia o urgentes?",
+      answer: "Sí, ofrecemos servicios de procesamiento urgente cuando es posible. Evaluamos cada caso individualmente y te informamos sobre las opciones de servicio rápido disponibles, aunque esto puede implicar costos adicionales por los trámites expresos."
+    }
+  ];
+
+  const handleFaqToggle = (index) => {
+    setFaqActiveIndex(faqActiveIndex === index ? null : index);
+  };
   const fetchServices = async () => {
     try {
       const response = await getAllProcess();
@@ -74,16 +98,66 @@ export default function Page0() {
     text?.length > max ? `${text.slice(0, max)}...` : text || '';
 
   const PrevArrow = ({ onClick }) => (
-    <div className={styles.slickArrowPrev} onClick={onClick}>
-      <Icon icon="mdi:arrow-left-circle" width="30" height="30" color="black" />
-    </div>
+    <button
+      type="button"
+      className={styles.slickArrowPrev}
+      onClick={onClick}
+      aria-label="Anterior"
+      style={{
+        background: 'rgba(59, 130, 246, 0.7)',
+        border: 'none',
+        borderRadius: '50%',
+        width: 48,
+        height: 48,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(59,130,246,0.15)',
+        transition: 'background 0.2s, transform 0.2s',
+        position: 'absolute',
+        zIndex: 2,
+        left: -24,
+        top: 'calc(50% - 24px)',
+        cursor: 'pointer'
+      }}
+      onMouseOver={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 1)'}
+      onMouseOut={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.7)'}
+    >
+      <Icon icon="mdi:chevron-left" width="50" height="50" color="#fff" />
+    </button>
   );
 
   const NextArrow = ({ onClick }) => (
-    <div className={styles.slickArrowNext} onClick={onClick}>
-      <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
-    </div>
+    <button
+      type="button"
+      className={styles.slickArrowNext}
+      onClick={onClick}
+      aria-label="Siguiente"
+      style={{
+        background: 'rgba(59, 130, 246, 0.7)',
+        border: 'none',
+        borderRadius: '50%',
+        width: 48,
+        height: 48,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(59,130,246,0.15)',
+        transition: 'background 0.2s, transform 0.2s',
+        position: 'absolute',
+        zIndex: 2,
+        right: -24,
+        top: 'calc(50% - 24px)',
+        cursor: 'pointer'
+      }}
+      onMouseOver={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 1)'}
+      onMouseOut={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.7)'}
+    >
+      <Icon icon="mdi:chevron-right" width="50" height="50" color="#fff" />
+    </button>
   );
+
+
 
   const sliderSettings = {
     dots: false,
@@ -132,33 +206,57 @@ export default function Page0() {
   };
 
   useEffect(() => {
+
     const handleScroll = () => {
+
       const scrollPosition = window.scrollY + 150;
 
+
+
       for (let i = navSections.length - 1; i >= 0; i--) {
+
         const section = navSections[i];
+
         const element = document.getElementById(section.id);
+
         if (element && element.offsetTop <= scrollPosition) {
+
           setActiveSection(section.id);
+
           break;
+
         }
+
       }
+
     };
 
+
+
     window.addEventListener('scroll', handleScroll);
+
     return () => window.removeEventListener('scroll', handleScroll);
+
   }, []);
 
+
+
   useEffect(() => {
+
     const handleScroll = () => {
+
       setIsScrolled(window.scrollY > 20);
+
     };
+
     window.addEventListener('scroll', handleScroll);
+
     return () => window.removeEventListener('scroll', handleScroll);
+
   }, []);
 
   const navSections = [
-    { id: 'inicio', label: 'Inicio', icon: Home, href: '#' },
+    { id: 'inicio', label: 'Inicio', icon: Home, href: '/#' },
     { id: 'servicios', label: 'Servicios', icon: Briefcase, href: '#servicios' },
     { id: 'nosotros', label: 'Nosotros', icon: Users, href: '#nosotros' },
     { id: 'testimonios', label: 'Testimonios', icon: MessageSquare, href: '#testimonios' },
@@ -170,15 +268,19 @@ export default function Page0() {
     setActiveSection(sectionId);
   };
 
+  // --- MODIFICA ESTA CONSTANTE ---
   const navbarStyle = {
     backgroundColor: isScrolled ? 'rgba(19, 46, 60, 0.95)' : '#132E3C',
     backdropFilter: isScrolled ? 'blur(10px)' : 'none',
-    transition: 'all 0.3s ease',
+    // Modifica la transición para incluir 'top'
+    transition: 'top 0.4s ease-in-out, background-color 0.3s ease',
     height: '120px',
     boxShadow: isScrolled ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 4px 12px rgba(0, 0, 0, 0.2)',
-    borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
+    borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+    // Añade la propiedad 'top' que cambiará dinámicamente
+    top: showNavbar ? '0' : '-120px'
   };
-
+  // --- FIN DEL CÓDIGO A MODIFICAR ---
   const brandStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -274,7 +376,7 @@ export default function Page0() {
             </div>
             <div className="d-none d-md-block">
               <h1 style={titleStyle}>Consultoría JAS</h1>
-              <p style={subtitleStyle}>Subsidiaria TRAMIVISA</p>
+              <p style={subtitleStyle}>JOHNRIC</p>
             </div>
           </Navbar.Brand>
 
@@ -336,39 +438,18 @@ export default function Page0() {
       <div style={{ height: '85px' }}></div>
 
       {/* Sección Inicio */}
-      <section id="inicio" style={{
-        backgroundImage: `url(${Fondo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        width: '100vw',
-        marginLeft: 'calc(-50vw + 50%)',
-        padding: '80px 0',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 1
-        }}></div>
+      <section id="inicio" className={styles.inicio}>
+        <div className={styles.overlay}></div>
 
         <Container style={{
           position: 'relative',
           zIndex: 2
         }}>
           <div className="text-center text-white">
-            <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '20px' }}>
+            <h1 className={styles.titulo} >
               Consultoría JAS
             </h1>
-            <p style={{ fontSize: '1.5rem', maxWidth: '800px', margin: '0 auto 40px' }}>
+            <p className={styles.descripcion}>
               Somos una empresa especializada en trámites migratorios, comprometida con brindar un servicio de calidad, transparente y orientado a las necesidades de cada cliente. Nos destacamos por nuestro profesionalismo, atención personalizada y enfoque en la satisfacción del usuario, guiados por valores como la honestidad, la confianza, el trabajo en equipo y la innovación.
             </p>
           </div>
@@ -376,21 +457,8 @@ export default function Page0() {
       </section>
 
       {/* Sección Servicios */}
-      <section id="servicios" style={{
-        backgroundColor: '#132E3C',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        width: '100vw',
-        marginLeft: 'calc(-50vw + 50%)',
-        padding: '80px 0',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <Container style={{ marginTop: '60px', marginBottom: '60px' }}>
+      <section id="servicios" className={styles.seccion}>
+        <Container >
           <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '20px', color: '#FFFFFF', textAlign: 'center' }}>
             Nuestros Servicios
           </h1>
@@ -572,117 +640,83 @@ export default function Page0() {
         </Container>
       </section>
       {/* Sección Testimonios */}
-      <section id="testimonios" style={{
-        width: '100vw', // Cambiado de 100%
-        marginLeft: 'calc(-50vw + 50%)', // Añadido
-        overflowX: 'hidden', // Añadido para ser específico, o usar 'hidden'
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #FFFFFF, #F1F5F9)',
-        borderBottom: '1px solid #E2E8F0'
-      }}>
-        <Container>
-          <div className="section-content">
-            <div className="section-icon">
-              <Users size={40} color="#FFFFFF" />
+      <section id="testimonios" className={styles.testimoniosSection}>
+        <div className={styles.testimoniosContainer}>
+          <div className={styles.testimoniosHeader}>
+            <div className={styles.sectionIcon}>
+              <MessageSquare size={40} color="#60A5FA" />
             </div>
-            <h2 className="section-title">Testimonios</h2>
-            <p className="section-description">
-              Nuestros clientes comparten sus experiencias positivas con nuestros servicios, destacando la eficiencia y profesionalismo de nuestro equipo.
+            <h2 className={styles.testimoniosTitle}>Testimonios</h2>
+            <p className={styles.testimoniosDescription}>
+              Nuestros clientes comparten sus experiencias positivas con nuestros servicios,
+              destacando la eficiencia y profesionalismo de nuestro equipo.
             </p>
-            <iframe
-              src="https://drive.google.com/file/d/1yqEprSPRX7USlNl2mBriQMN22Z5ZTYPx/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px', width: '300px', height: '300px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/17BUblslsO4d0iNXUFrZJjt_g4C3G-Sya/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1fMGEVv1H7XodRR9sbFXpWZobYcETVQOA/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/123Iyc3EM6oJ6BqGm0mZAei9gtCo_GzzM/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/11KCqJy3G2FrMsxFm5QnRghLQETZAZ3GR/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1eoeiepTjQrM5pfCSPrQUcJAE6zsgHiwf/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1UmFZwj7_LolAA1rCYpJnp9HtmdiQbcRw/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1VXZBF5XIqoq8Jo44iXTRav3sc3UiwnfM/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1ZSTDl2Ia-CqNKD13BUVorwQmufuBij_-/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1QXlAypI-58YVcJiPgBEiI4HDqLJjBPhj/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-            <iframe
-              src="https://drive.google.com/file/d/1ORluy_SDTlyh2DfMj_6mYsy9FtWD5CZu/preview"
-              width="300"
-              height="300"
-              style={{ border: 'none', borderRadius: '10px' }}
-            ></iframe>
-
-
-
-
           </div>
-        </Container>
+
+          <div className={styles.testimoniosGrid}>
+            {[
+              "1yqEprSPRX7USlNl2mBriQMN22Z5ZTYPx",
+              "17BUblslsO4d0iNXUFrZJjt_g4C3G-Sya",
+              "1fMGEVv1H7XodRR9sbFXpWZobYcETVQOA",
+              "123Iyc3EM6oJ6BqGm0mZAei9gtCo_GzzM",
+              "11KCqJy3G2FrMsxFm5QnRghLQETZAZ3GR",
+              "1eoeiepTjQrM5pfCSPrQUcJAE6zsgHiwf",
+              "1UmFZwj7_LolAA1rCYpJnp9HtmdiQbcRw",
+              "1VXZBF5XIqoq8Jo44iXTRav3sc3UiwnfM",
+              "1ZSTDl2Ia-CqNKD13BUVorwQmufuBij_-",
+              "1QXlAypI-58YVcJiPgBEiI4HDqLJjBPhj",
+              "1ORluy_SDTlyh2DfMj_6mYsy9FtWD5CZu"
+            ].map((videoId, index) => (
+              <div key={index} className={`${styles.testimonioCard} ${styles.fadeInUp}`}>
+                <iframe
+                  src={`https://drive.google.com/file/d/${videoId}/preview`}
+                  className={styles.testimonioImagenFrame}
+                  allow="autoplay"
+                  title={`Testimonio ${index + 1}`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* Sección FAQ */}
-      <section id="faq" style={{
-        width: '100vw', // Cambiado de 100%
-        marginLeft: 'calc(-50vw + 50%)', // Añadido
-        overflowX: 'hidden', // Añadido
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #F8FAFC, #E2E8F0)',
-        borderBottom: '1px solid #E2E8F0'
-      }}>
-        <Container>
-          <div className="section-content">
-            <div className="section-icon">
-              <HelpCircle size={40} color="#FFFFFF" />
+
+
+      <section id="faq" className={styles.testimoniosSection}>
+        <div className={styles.faqContainer}>
+          <div className={styles.faqHeader}>
+            <div className={styles.sectionIcon}>
+              <HelpCircle size={40} color="#3B82F6" />
             </div>
-            <h2 className="section-title">Preguntas Frecuentes</h2>
-            <p className="section-description">
-              Resolvemos tus dudas más comunes sobre nuestros servicios y procesos, para que tengas toda la información que necesitas.
+            <h2 className={styles.testimoniosTitle}>Preguntas Frecuentes</h2>
+            <p className={styles.testimoniosDescription}>
+              Resolvemos tus dudas más comunes sobre nuestros servicios y procesos,
+              para que tengas toda la información que necesitas.
             </p>
           </div>
-        </Container>
+
+          <div className={styles.faqList}>
+            {faqData.map((faq, index) => (
+              <div key={index} className={`${styles.faqItem} ${styles.fadeInUp}`}>
+                <button
+                  className={`${styles.faqQuestion} ${faqActiveIndex === index ? 'active' : ''}`}
+                  onClick={() => handleFaqToggle(index)}
+                >
+                  <span>{faq.question}</span>
+                  <Icon
+                    icon="mdi:chevron-down"
+                    className={`${styles.faqIcon} ${faqActiveIndex === index ? styles.active : ''}`}
+                  />
+                </button>
+                <div className={`${styles.faqAnswer} ${faqActiveIndex === index ? styles.active : ''}`}>
+                  <div className={styles.faqAnswerContent}>
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <footer id="contacto" style={{
@@ -761,10 +795,10 @@ export default function Page0() {
                 <div style={{ marginBottom: '25px' }}>
                   {[
                     '(777) 983-57-82 Telefono fijo Jiutepec',
-                    '(777) 301-34-99 Whatsapp Cuernavaca',
                     '(777) 219-36-13 Whatsapp Jiutepec',
-                    '(777) 093-57-82 ',
-                    '(777) 992-80-09 Telefono fijo Cuernavaca'
+                    '(777) 992-80-09 Telefono fijo Cuernavaca',
+                    '(777) 301-34-99 Whatsapp Cuernavaca',
+
                   ].map((phone, index) => (
                     <div key={index} style={{
                       display: 'flex',
@@ -836,7 +870,7 @@ export default function Page0() {
                     border: '2px solid rgba(96, 165, 250, 0.3)'
                   }}>
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d60389.81164789231!2d-99.186185!3d18.91531!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce757ede2dd21b%3A0x4d0abb154f9665db!2sPlaza%20Novum!5e0!3m2!1ses!2sus!4v1749227136992!5m2!1ses!2sus"
+                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d235.8978879221942!2d-99.18634366883958!3d18.915178042630195!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce756057cc2e47%3A0x1aba5bfb8855eb3e!2sCONSULTOR%C3%8DA%20JAS!5e0!3m2!1ses!2sus!4v1749487537955!5m2!1ses!2sus"
                       width="100%"
                       height="300"
                       style={{ border: 0 }}
@@ -997,7 +1031,43 @@ export default function Page0() {
                       </div>
                     </a>
                     <div>
-                      <img src={Logo}></img>
+                      <Table striped bordered hover variant="dark" responsive>
+                        <thead>
+                          <tr>
+                            <th>Día</th>
+                            <th colSpan={2}>Horario de oficinas </th>
+                            <th>Horario Online </th>
+
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Lunes </td>
+                            <td colSpan={2}>9:00 am - 4:00 pm</td>
+                          </tr>
+                          <tr>
+                            <td>Martes</td>
+                            <td colSpan={2}>8:00 am - 4:00 pm</td>
+                          </tr>
+                          <tr>
+                            <td>Miércoles</td>
+                            <td colSpan={2}>8:00 am - 4:00 pm</td>
+                          </tr>
+                          <tr>
+                            <td>Jueves</td>
+                            <td colSpan={2}>8:00 am - 4:00 pm</td>
+                          </tr>
+                          <tr>
+                            <td>Viernes</td>
+                            <td colSpan={2}>8:00 am - 4:00 pm</td>
+                          </tr>
+                          <tr>
+                            <td>Sábado</td>
+                            <td colSpan={2}>8:00 am - 12:00 pm</td>
+                          </tr>
+                        </tbody>
+                      </Table>
                     </div>
                   </div>
                 </div>
