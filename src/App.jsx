@@ -17,6 +17,7 @@ import ClienteServicios from "./components/Cliente/ClienteServicios";
 import MisTramites from "./components/Cliente/MisTramites";
 import Calendario from "./components/Cliente/Calendario.jsx";
 import CalendarioAdmin from "./components/Administrador/CalendarioAdmin.jsx";
+import ClienteHomeMobile from "./components/Cliente/ClienteHomeMobile.jsx";
 
 import NoAutorizado from "./components/NoAutorizado";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -123,10 +124,14 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* USER */}
-        <Route path="/ClienteHome" element={
+        {/* USER */}        <Route path="/ClienteHome" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <ClienteHome />
+          </ProtectedRoute>
+        } />
+        <Route path="/ClienteHome-sm" element={
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <ClienteHomeMobile />
           </ProtectedRoute>
         } />
         <Route path="/MiPerfil" element={

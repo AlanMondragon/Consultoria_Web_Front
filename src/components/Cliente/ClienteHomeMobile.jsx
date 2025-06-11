@@ -6,9 +6,9 @@ import Navbar from '../NavbarUser';
 import tramites from '../../img/Tramites.png';
 import servicios from '../../img/Servicios.png';
 import calendario from '../../img/Calendario.png';
-import styles from '../../styles/ContenedorHomeUser.module.css';
+import styles from '../../styles/ContenedorHomeUserMobile.module.css';
 
-export default function ClienteHome() {
+export default function ClienteHomeMobile() {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -17,8 +17,8 @@ export default function ClienteHome() {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      if (mobile) {
-        navigate('/ClienteHome-sm');
+      if (!mobile) {
+        navigate('/ClienteHome');
       }
     };
 
@@ -51,7 +51,6 @@ export default function ClienteHome() {
       navigate("/");
     }
 
-    // Aplica la clase al body para estilos globales si se necesita
     document.body.classList.add('home-admin-body');
     return () => {
       document.body.classList.remove('home-admin-body');

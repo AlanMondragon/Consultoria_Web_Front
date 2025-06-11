@@ -21,7 +21,6 @@ export default function NavbarAdmin({ title }) {
   const [id5, setId5] = useState("");
   const [id6, setId6] = useState("");
   const [id7, setId7] = useState("");
-
   // Manejo de rutas responsivas
   useEffect(() => {
     const handleResize = () => {
