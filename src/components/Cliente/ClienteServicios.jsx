@@ -12,10 +12,12 @@ import { Icon } from '@iconify/react';
 import ServiceDetailsModal from './Modals/ServiceDetailsModal.jsx';
 import PaymentModal from './Modals/PaymentModal.jsx';
 import StepsModal from './Modals/StepsModal.jsx';
+import ServiceCard from './ServiceCard.jsx';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styles from './../../styles/ClienteServicios.module.css';
+import cardStyles from './../../styles/servicios/client/ServiceCard.module.css';
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ export default function ClienteServicios() {
   const [services, setServices] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
   
   // Estados para modal de detalles
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -64,6 +67,12 @@ export default function ClienteServicios() {
       navigate("/");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchServices = async () => {
     try {
@@ -124,8 +133,9 @@ export default function ClienteServicios() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } }
+      { breakpoint: 1200, settings: { slidesToShow: 2 } },
+      { breakpoint: 900, settings: { slidesToShow: 1, centerMode: true, centerPadding: '0px' } },
+      { breakpoint: 600, settings: { slidesToShow: 1, centerMode: true, centerPadding: '0px', arrows: false, dots: true } }
     ]
   };
 
@@ -187,39 +197,50 @@ export default function ClienteServicios() {
 
       <div className={styles.servicesSlider}>
         <h1 className={styles.title}>Servicios disponibles</h1>
-        <Slider {...sliderSettings}>
-          {services.map((service, index) => (
-            <div key={index} className={styles.serviceCard}>
-              <img
-                src={service.image}
-                alt={service.name}
-                className={styles.serviceCardImage}
+        {isMobile ? (
+          <div className={styles.mobileContainer}>
+            {services.map((service, index) => (
+              <ServiceCard
+                key={index}
+                service={service}
+                onShowDetails={handleOpenDetailsModal}
+                onPay={handleOpenPaymentModal}
               />
-              <h2 className={styles.serviceCardTitle}>
-                {service.name}
-              </h2>
-              <p className={styles.serviceCardDescription}>
-                {truncateDescription(service.description, 150)}
-              </p>
-              <p className={styles.costInfoLabel}>Pago inicial:</p>
-              <p className={styles.price}>MX${service.cashAdvance}.00</p>
-              
-              <button
-                className={styles.cardButton}
-                onClick={() => handleOpenDetailsModal(service)}
-              >
-                Mostrar Más
-              </button>
-              
-              <button
-                className={styles.cardButtonPay}
-                onClick={() => handleOpenPaymentModal(service)}
-              >
-                Pagar MX${service.cashAdvance}
-              </button>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </div>
+        ) : (
+          <Slider {...sliderSettings}>
+            {services.map((service, index) => (
+              <div key={index} className={cardStyles.serviceCard}>
+                <img
+                  src={service.image}
+                  alt={service.name}
+                  className={cardStyles.serviceCardImage}
+                />
+                <h2 className={cardStyles.serviceCardTitle}>
+                  {service.name}
+                </h2>
+                <p className={cardStyles.serviceCardDescription}>
+                  {truncateDescription(service.description, 150)}
+                </p>
+                <p className={styles.costInfoLabel}>Pago inicial:</p>
+                <p className={cardStyles.price}>MX${service.cashAdvance}.00</p>
+                <button
+                  className={cardStyles.cardButton}
+                  onClick={() => handleOpenDetailsModal(service)}
+                >
+                  Mostrar Más
+                </button>
+                <button
+                  className={cardStyles.cardButtonPay}
+                  onClick={() => handleOpenPaymentModal(service)}
+                >
+                  Pagar MX${service.cashAdvance}
+                </button>
+              </div>
+            ))}
+          </Slider>
+        )}
       </div>
 
       {/* Modal de Detalles del Servicio */}

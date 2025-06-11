@@ -2,16 +2,30 @@
 
 .container {
   margin-top: 80px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .servicesSlider {
-  padding: 5px 10px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title {
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
+  font-size: 1.5rem;
+  width: 100%;
 }
 
 .serviceCard {
@@ -514,6 +528,16 @@
   flex-direction: column;
 }
 
+.mobileContainer {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @media (max-width: 1024px) {
   .serviceCard {
     width: 90vw;
@@ -523,6 +547,19 @@
   }
   .servicesSlider {
     padding: 5px 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    margin-top: 70px;
+    padding: 0;
+  }
+  
+  .servicesSlider {
+    width: 100%;
+    padding: 8px;
+    margin: 0 auto;
   }
 }
 
@@ -565,16 +602,22 @@
 @media (max-width: 600px) {
   .container {
     margin-top: 60px;
+    padding: 0;
   }
   .servicesSlider {
     width: 100vw;
     max-width: 100vw;
     padding: 0;
-    margin-left: -8px; /* Corrige posible padding del body */
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .title {
     font-size: 1.1rem;
     margin-bottom: 10px;
+    text-align: center;
   }
   .serviceCard {
     width: 92vw;
@@ -609,10 +652,8 @@
   }
   .cardButton, .cardButtonPay {
     font-size: 12px;
-    padding: 6px 2px;
+    padding: 8px 2px;
     width: 97%;
-    margin-bottom: 2px;
-    border-radius: 8px;
   }
 }
 
@@ -674,5 +715,27 @@
   .cardButton, .cardButtonPay {
     font-size: 9px;
     padding: 4px 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    margin-top: 60px;
+    padding: 0;
+  }
+  
+  .servicesSlider {
+    padding: 0;
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+    margin: 8px 0 12px 0;
+    padding: 0 16px;
+  }
+  
+  .mobileContainer {
+    padding: 0 8px;
   }
 }

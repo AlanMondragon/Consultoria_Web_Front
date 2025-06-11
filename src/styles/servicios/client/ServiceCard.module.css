@@ -1,0 +1,117 @@
+/* Estilos para la tarjeta de servicio y botones */
+.serviceCard {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 1, 1, 0.2);
+  background-color: #fff;
+  text-align: center;
+  transition: transform 0.3s ease;
+  margin: 0 auto 16px auto;
+  box-sizing: border-box;
+}
+
+.serviceCard:hover {
+  transform: scale(0.94);
+}
+
+.serviceCardImage {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.serviceCardTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #000;
+  width: 100%;
+}
+
+.serviceCardDescription {
+  color: #333;
+  font-size: 13px;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  width: 100%;
+}
+
+.price {
+  color: #4dbf0f;
+  font-weight: bold;
+  font-size: 15px;
+  margin: 4px 0;
+  width: 100%;
+}
+
+.cardButton, .cardButtonPay {
+  width: 92%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 4px;
+}
+
+.cardButton {
+  background-color: #007bff;
+}
+
+.cardButtonPay {
+  background-color: #29afa4;
+}
+
+.cardButton:hover {
+  background-color: #01207b;
+}
+
+.cardButtonPay:hover {
+  background-color: #155153;
+}
+
+@media (max-width: 480px) {
+  .serviceCard {
+    width: calc(100% - 16px);
+    margin: 0 8px 12px 8px;
+    padding: 10px;
+  }
+  
+  .serviceCardImage {
+    height: 100px;
+    margin-bottom: 6px;
+  }
+  
+  .serviceCardTitle {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  
+  .serviceCardDescription {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  
+  .price {
+    font-size: 13px;
+    margin: 3px 0;
+  }
+  
+  .cardButton, .cardButtonPay {
+    width: 100%;
+    padding: 7px;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+}
