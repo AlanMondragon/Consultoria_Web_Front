@@ -43,6 +43,13 @@ function App() {
             </Elements>
           </ProtectedRoute>
         } />
+        <Route path="/ClienteServicios-sm" element={
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <Elements stripe={stripePromise}>
+              <ClienteServicios />
+            </Elements>
+          </ProtectedRoute>
+        } />
 
         <Route path="/Login" element={<Home />} />
         <Route path="/" element={<Page0 />} />

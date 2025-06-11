@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap';
 import { usePaymentOptions } from './../hooks/UsePaymentOption';
 import DS160Section from './components/DS160Section';
 import StripePaymentSection from './components/StripePaymentSection';
-import styles from './../../../styles/ClienteServicios.module.css';
+import paymentStyles from '../../../styles/servicios/client/PaymentModal.module.css';
 import { LockIcon } from 'lucide-react';
 
 const PaymentModal = ({ 
@@ -34,17 +34,17 @@ const PaymentModal = ({
       show={show}
       onHide={onHide}
       centered
-      className={styles.paymentModal}
+      className={paymentStyles.paymentModal}
       dialogClassName="my-custom-dialog"
     >
-      <Modal.Header closeButton className={styles.modalHeader}>
-        <Modal.Title className={styles.paymentModalTitle}>
-          <div className={styles.serviceIcon}>
+      <Modal.Header closeButton className={paymentStyles.modalHeader}>
+        <Modal.Title className={paymentStyles.paymentModalTitle}>
+          <div className={paymentStyles.serviceIcon}>
             <LockIcon />
           </div>
           <div>
-            <div className={styles.serviceTitle}>{service.name}</div>
-            <div className={styles.serviceSubtitle}>
+            <div className={paymentStyles.serviceTitle}>{service.name}</div>
+            <div className={paymentStyles.serviceSubtitle}>
               {isDs160 
                 ? 'Formulario DS-160 - Enlace de pago por correo'
                 : isVisaAmericana 
@@ -56,7 +56,7 @@ const PaymentModal = ({
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body className={styles.modalBody}>
+      <Modal.Body className={paymentStyles.modalBody}>
         {isDs160 ? (
           <DS160Section
             userEmail={userEmail}

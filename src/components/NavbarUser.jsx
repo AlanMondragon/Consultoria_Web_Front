@@ -11,6 +11,9 @@ export default function NavbarAdmin({ title }) {
     return saved ? JSON.parse(saved) : true;
   });
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [id1, setId1] = useState("");
   const [id2, setId2] = useState("");
   const [id3, setId3] = useState("");
@@ -22,18 +25,23 @@ export default function NavbarAdmin({ title }) {
   // Manejo de rutas responsivas
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      
+      if (mobile) {
         setId1("/ClienteServicios-sm");
         setId2("/MisTramites-sm");
         setId3("/ClienteHome-sm");
         setId4("/MiPerfil-sm");
         setId5("/Calendario-sm");
+        setSidebarOpen(false); // Cerrar sidebar en mobile al redimensionar
       } else {
-         setId1("/ClienteServicios");
+        setId1("/ClienteServicios");
         setId2("/MisTramites");
         setId4("/MiPerfil");
         setId5("/Calendario");
-        setId3("/ClienteHome")
+        setId3("/ClienteHome");
+        setSidebarOpen(false);
       }
     };
 
@@ -42,10 +50,12 @@ export default function NavbarAdmin({ title }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Guarda el estado del sidebar en localStorage
+  // Guarda el estado del sidebar en localStorage (solo para desktop)
   useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
-  }, [collapsed]);
+    if (!isMobile) {
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(collapsed));
+    }
+  }, [collapsed, isMobile]);
 
   function cerrarSesion() {
     Swal.fire({
@@ -61,34 +71,85 @@ export default function NavbarAdmin({ title }) {
     });
   }
 
+  const handleMenuToggle = () => {
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      setCollapsed(!collapsed);
+    }
+  };
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
   return (
     <div className="layout">
+      {/* Overlay para móvil */}
+      {isMobile && sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Navbar */}
       <div className="navbar">
-        <div className="navbar-logo">
-          <img src={Logo} alt="logo" />
+        <div className="navbar-left">
+          <button className="mobile-menu-btn" onClick={handleMenuToggle}>
+            <Icon icon="mdi:menu" />
+          </button>
+          <div className="navbar-logo">
+            <img src={Logo} alt="logo" />
+          </div>
         </div>
+        
         <div className="navbar-title">
           <h1>Consultoría JAS {title}</h1>
         </div>
+        
         <div className="navbar-logout" onClick={cerrarSesion}>
           <Icon icon="line-md:logout" className='icono' />
         </div>
       </div>
 
       {/* Sidebar */}
-      <div className={`sidebar ${!collapsed ? 'collapsed' : ''}`}>
-        <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)}>
-          <Icon icon="mdi:menu" color="#fff" width="35" />
-        </button>
+      <div className={`sidebar ${
+        isMobile 
+          ? (sidebarOpen ? 'mobile-open' : 'mobile-closed')
+          : (collapsed ? '' : 'collapsed')
+      }`}>
+        
+        {!isMobile && (
+          <button className="collapse-btn" onClick={handleMenuToggle}>
+            <Icon icon="mdi:menu" color="#fff" width="35" />
+          </button>
+        )}
 
         <nav className="sidebar-nav">
-          <a href={id3}><Icon icon="material-symbols:dashboard" className='icon' /> {collapsed && 'Dashboard'}</a>
-          <a href={id1}><Icon icon="mdi:shopping-outline" className='icon' /> {collapsed && 'Servicios'}</a>
-          <a href={id2}><Icon icon="carbon:document" className='icon' /> {collapsed && 'Mis Trámites'}</a>
-          <a href={id5}><Icon icon="mdi:calendar-month" className='icon' /> {collapsed && 'Calendario'}</a>
-          <a href={id4}><Icon icon="mdi:account" className='icon' /> {collapsed && 'Mi Perfil'}</a>
-          <a onClick={cerrarSesion}><Icon icon="line-md:logout" className='icon' /> {collapsed && 'Cerrar sesión'}</a>
+          <a href={id3} onClick={handleLinkClick}>
+            <Icon icon="material-symbols:dashboard" className='icon' /> 
+            <span className="nav-text">Dashboard</span>
+          </a>
+          <a href={id1} onClick={handleLinkClick}>
+            <Icon icon="mdi:shopping-outline" className='icon' /> 
+            <span className="nav-text">Servicios</span>
+          </a>
+          <a href={id2} onClick={handleLinkClick}>
+            <Icon icon="carbon:document" className='icon' /> 
+            <span className="nav-text">Mis Trámites</span>
+          </a>
+          <a href={id5} onClick={handleLinkClick}>
+            <Icon icon="mdi:calendar-month" className='icon' /> 
+            <span className="nav-text">Calendario</span>
+          </a>
+          <a href={id4} onClick={handleLinkClick}>
+            <Icon icon="mdi:account" className='icon' /> 
+            <span className="nav-text">Mi Perfil</span>
+          </a>
+          <a onClick={() => { handleLinkClick(); cerrarSesion(); }}>
+            <Icon icon="line-md:logout" className='icon' /> 
+            <span className="nav-text">Cerrar sesión</span>
+          </a>
         </nav>
       </div>
     </div>
