@@ -121,10 +121,9 @@ export default function ClienteServicios() {
       <Icon icon="mdi:arrow-right-circle" width="30" height="30" color="black" />
     </div>
   );
-
   const sliderSettings = {
     dots: false,
-    infinite: true,
+    infinite: services.length > 3,
     speed: 700,
     slidesToShow: 3,
     slidesToScroll: 1,
@@ -133,9 +132,9 @@ export default function ClienteServicios() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 2 } },
-      { breakpoint: 900, settings: { slidesToShow: 1, centerMode: true, centerPadding: '0px' } },
-      { breakpoint: 600, settings: { slidesToShow: 1, centerMode: true, centerPadding: '0px', arrows: false, dots: true } }
+      { breakpoint: 1200, settings: { slidesToShow: 3, infinite: services.length > 3 } },
+      { breakpoint: 900, settings: { slidesToShow: 1, infinite: services.length > 1, centerMode: true, centerPadding: '0px' } },
+      { breakpoint: 600, settings: { slidesToShow: 1, infinite: services.length > 1, centerMode: true, centerPadding: '0px', arrows: false, dots: true } }
     ]
   };
 
@@ -209,37 +208,20 @@ export default function ClienteServicios() {
             ))}
           </div>
         ) : (
-          <Slider {...sliderSettings}>
-            {services.map((service, index) => (
-              <div key={index} className={cardStyles.serviceCard}>
-                <img
-                  src={service.image}
-                  alt={service.name}
-                  className={cardStyles.serviceCardImage}
-                />
-                <h2 className={cardStyles.serviceCardTitle}>
-                  {service.name}
-                </h2>
-                <p className={cardStyles.serviceCardDescription}>
-                  {truncateDescription(service.description, 150)}
-                </p>
-                <p className={styles.costInfoLabel}>Pago inicial:</p>
-                <p className={cardStyles.price}>MX${service.cashAdvance}.00</p>
-                <button
-                  className={cardStyles.cardButton}
-                  onClick={() => handleOpenDetailsModal(service)}
-                >
-                  Mostrar Más
-                </button>
-                <button
-                  className={cardStyles.cardButtonPay}
-                  onClick={() => handleOpenPaymentModal(service)}
-                >
-                  Pagar MX${service.cashAdvance}
-                </button>
-              </div>
-            ))}
-          </Slider>
+          <div className={styles.desktopSlider}>
+            <Slider {...sliderSettings}>
+              {services.map((service, index) => (
+                <div key={index} className={styles.sliderItem}>
+                  <ServiceCard
+                    key={index}
+                    service={service}
+                    onShowDetails={handleOpenDetailsModal}
+                    onPay={handleOpenPaymentModal}
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
         )}
       </div>
 
