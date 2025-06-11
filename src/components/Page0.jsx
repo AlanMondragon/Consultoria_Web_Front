@@ -1037,8 +1037,6 @@ export default function Page0() {
                             <th>Día</th>
                             <th colSpan={2}>Horario de oficinas </th>
                             <th>Horario Online </th>
-
-
                           </tr>
                         </thead>
                         <tbody>
