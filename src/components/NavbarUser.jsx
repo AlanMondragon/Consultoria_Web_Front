@@ -127,7 +127,7 @@ export default function NavbarAdmin({ title }) {
         <nav className="sidebar-nav">
           <a href={id3} onClick={handleLinkClick}>
             <Icon icon="material-symbols:dashboard" className='icon' /> 
-            <span className="nav-text">Dashboard</span>
+            <span className="nav-text">Inicio</span>
           </a>
           <a href={id1} onClick={handleLinkClick}>
             <Icon icon="mdi:shopping-outline" className='icon' /> 
