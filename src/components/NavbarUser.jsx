@@ -21,7 +21,6 @@ export default function NavbarAdmin({ title }) {
   const [id5, setId5] = useState("");
   const [id6, setId6] = useState("");
   const [id7, setId7] = useState("");
-
   // Manejo de rutas responsivas
   useEffect(() => {
     const handleResize = () => {
@@ -128,7 +127,7 @@ export default function NavbarAdmin({ title }) {
         <nav className="sidebar-nav">
           <a href={id3} onClick={handleLinkClick}>
             <Icon icon="material-symbols:dashboard" className='icon' /> 
-            <span className="nav-text">Dashboard</span>
+            <span className="nav-text">Inicio</span>
           </a>
           <a href={id1} onClick={handleLinkClick}>
             <Icon icon="mdi:shopping-outline" className='icon' /> 
