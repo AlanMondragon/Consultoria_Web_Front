@@ -124,11 +124,11 @@ export default function ClienteServicios() {
   const sliderSettings = {
     dots: false,
     infinite: services.length > 3,
-    speed: 700,
+    speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 2000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [

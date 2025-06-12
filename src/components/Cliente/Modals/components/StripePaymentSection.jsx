@@ -79,10 +79,9 @@ const StripePaymentSection = ({
                 </div>
               )}
             </div>
-          )}
-          <Elements stripe={stripePromise}>
+          )}          <Elements stripe={stripePromise}>
             <CheckoutForm
-              amount={service.cashAdvance + extraFee}
+              amount={(currentPaymentOption?.amount || 0) + extraFee}
               description={"Pago DS-160"}
               idProductoTransaccion={service?.idTransact}
               userEmail={userEmail}

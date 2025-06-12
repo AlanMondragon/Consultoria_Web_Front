@@ -172,6 +172,8 @@ export default function AdministradorTramites() {
               <th>Inicio del trámite</th>
               <th>Cita CAS</th>
               <th>Cita CON</th>
+              <th>Pago</th>
+              <th>Restante</th>
               <th>Estado</th>
               <th>Acción</th>
             </tr>
@@ -191,6 +193,8 @@ export default function AdministradorTramites() {
                 <td>{cliente.dateStart}</td>
                 <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
                 <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
+                <td>{cliente.paid}</td>
+                <td>{cliente.paidAll - cliente.paid == 0 && "Pagado"}</td>
 
                 <td>
                   {cliente.status === 1 ? 'En proceso' :
