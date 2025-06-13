@@ -1,10 +1,13 @@
 /* Agregar estos estilos al body y html para eliminar el fondo negro */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #f8fafc; /* O el color de fondo que prefieras */
-  overflow-x: hidden; /* Evita scroll horizontal */
+  background-color: #f8fafc;
+  /* O el color de fondo que prefieras */
+  overflow-x: hidden;
+  /* Evita scroll horizontal */
 }
 
 /* Alternativa: aplicar al div principal de tu app */
@@ -252,7 +255,7 @@ html, body {
     overflow-x: auto;
     white-space: nowrap;
   }
-  
+
   .tablaDatos thead,
   .tablaDatos tbody,
   .tablaDatos th,
@@ -260,13 +263,13 @@ html, body {
   .tablaDatos tr {
     display: block;
   }
-  
+
   .tablaDatos thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
-  
+
   .tablaDatos tr {
     border: 1px solid #ccc;
     margin-bottom: 10px;
@@ -274,7 +277,7 @@ html, body {
     border-radius: 8px;
     background: white;
   }
-  
+
   .tablaDatos td {
     border: none;
     position: relative;
@@ -282,7 +285,7 @@ html, body {
     text-align: left !important;
     white-space: normal;
   }
-  
+
   .tablaDatos td:before {
     content: attr(data-label) ": ";
     position: absolute;
@@ -293,3 +296,4 @@ html, body {
     color: #004c72;
   }
 }
+

@@ -122,9 +122,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     return (
 
         <div>
-            <div className='fixed-top'>
-                <NavbarAdmin title={"- Servicios"} />
-            </div>
             <div className="row">
                 <div className="col-md-6">
                     <label>Fecha:</label>

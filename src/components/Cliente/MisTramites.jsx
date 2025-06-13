@@ -192,9 +192,11 @@ export default function AdministradorTramites() {
                 <td>{cliente.transact.description}</td>
                 <td>{cliente.dateStart}</td>
                 <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
-                <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
-                <td>{cliente.paid}</td>
-                <td>{cliente.paidAll - cliente.paid == 0 && "Pagado"}</td>
+                <td >{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>     
+                <td style={{ color: '#38b2ac', fontWeight: 'bold' }}>${cliente.paid}</td>
+                <td style={{ color: (cliente.paidAll - cliente.paid) === 0 ? '#11a553' : '#e53e3e', fontWeight: 'bold' }}>
+                  {(cliente.paidAll - cliente.paid) === 0 ? "Pagado" : `$${cliente.paidAll - cliente.paid}`}
+                </td>
 
                 <td>
                   {cliente.status === 1 ? 'En proceso' :
