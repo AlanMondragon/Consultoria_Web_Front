@@ -17,7 +17,6 @@ import ServiceCard from './ServiceCard.jsx';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styles from './../../styles/ClienteServicios.module.css';
-import cardStyles from './../../styles/servicios/client/ServiceCard.module.css';
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
