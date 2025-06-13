@@ -10,6 +10,7 @@ import ModalActualizarTramite from './ActualizarMiTramite.jsx';
 
 export default function AdministradorTramites() {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [busqueda, setBusqueda] = useState("");
   const [datos, setDatos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -51,6 +52,21 @@ export default function AdministradorTramites() {
       fetchServices();
     }
   }, [usuario]);
+
+  // Efecto para manejar el cambio de tamaño de pantalla
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        navigate('/MisTramites-sm');
+      }
+    };
+
+    handleResize(); // Checar tamaño inicial
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [navigate]);
 
   const fetchServices = async () => {
     try {
