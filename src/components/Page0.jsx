@@ -384,13 +384,13 @@ export default function Page0() {
             <Button
               style={ctaButtonStyle}
               className="cta-button me-3"
-              onClick={() => window.location.href = '#contacto'}
+              onClick={() => window.location.href = 'tel:+527779835782'}
             >
               <Phone size={16} />
               Cotizar
             </Button>
-
           </div>
+
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -762,7 +762,7 @@ export default function Page0() {
                 margin: '0 auto',
                 lineHeight: '1.6'
               }}>
-                Tu socio estratégico en consultoría especializada y procesos de visado
+                Tu socio de confianza en consultoría especializada y procesos de visado
               </p>
             </Col>
           </Row>
@@ -913,7 +913,7 @@ export default function Page0() {
                     { icon: 'logos:facebook', url: 'https://www.facebook.com/AsesoriaEspecializadaConsultoriaJAS', name: 'Facebook' },
                     { icon: 'skill-icons:instagram', url: 'https://www.instagram.com/somosconsultoriajas', name: 'Instagram' },
                     { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajas', name: 'TikTok Principal' },
-                    { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajhonric', name: 'TikTok Jhonric' },
+                    { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajhonric', name: 'TikTok Secundario' },
                     { icon: 'logos:whatsapp-icon', url: 'https://wa.me/message/KXGI4YPWAQ3GC1', name: 'WhatsApp' },
                     { icon: 'bi:threads-fill', url: 'https://www.threads.net/@somosconsultoriajas', name: 'Threads' }
                   ].map((social, index) => (
@@ -1030,42 +1030,74 @@ export default function Page0() {
                         </div>
                       </div>
                     </a>
-                    <div>
-                      <Table striped bordered hover variant="dark" responsive>
-                        <thead>
-                          <tr>
-                            <th>Día</th>
-                            <th colSpan={2}>Horario de oficinas </th>
-                            <th>Horario Online </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Lunes </td>
-                            <td colSpan={2}>9:00 am - 4:00 pm</td>
-                          </tr>
-                          <tr>
-                            <td>Martes</td>
-                            <td colSpan={2}>8:00 am - 4:00 pm</td>
-                          </tr>
-                          <tr>
-                            <td>Miércoles</td>
-                            <td colSpan={2}>8:00 am - 4:00 pm</td>
-                          </tr>
-                          <tr>
-                            <td>Jueves</td>
-                            <td colSpan={2}>8:00 am - 4:00 pm</td>
-                          </tr>
-                          <tr>
-                            <td>Viernes</td>
-                            <td colSpan={2}>8:00 am - 4:00 pm</td>
-                          </tr>
-                          <tr>
-                            <td>Sábado</td>
-                            <td colSpan={2}>8:00 am - 12:00 pm</td>
-                          </tr>
-                        </tbody>
-                      </Table>
+                    {/* Tabla de horarios con estilos CSS módulo */}
+                    <div className={styles.scheduleContainer}>
+                      <h6 className={styles.scheduleTitle}>
+                        <Icon icon="material-symbols:schedule" width="20" height="20" />
+                        Horarios de Atención
+                      </h6>
+
+                      <div className={styles.tableWrapper}>
+                        <table className={styles.scheduleTable}>
+                          <thead>
+                            <tr className={styles.tableHeader}>
+                              <th className={styles.headerCellLeft}>
+                                Día
+                              </th>
+                              <th className={styles.headerCellCenter}>
+                                Horario de Oficinas
+                              </th>
+                              <th className={styles.headerCellCenter}>
+                                Horario Online
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { dia: 'Lunes', oficina: '9:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Martes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Miércoles', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Jueves', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Viernes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Sábado', oficina: '8:00 am - 12:00 pm', online: 'Cerrado' }
+                            ].map((horario, index) => (
+                              <tr key={index} className={styles.tableRow}>
+                                <td className={styles.dayCell}>
+                                  <div className={horario.dia === 'Sábado' ? styles.dayIndicatorSpecial : styles.dayIndicatorActive}></div>
+                                  {horario.dia}
+                                </td>
+                                <td className={styles.timeCell}>
+                                  <div className={styles.officeBadge}>
+                                    <Icon icon="material-symbols:business" width="16" height="16" style={{ color: '#60A5FA' }} />
+                                    {horario.oficina}
+                                  </div>
+                                </td>
+                                <td className={styles.timeCell}>
+                                  {horario.online !== 'Cerrado' ? (
+                                    <div className={styles.onlineBadge}>
+                                      <Icon icon="material-symbols:wifi" width="16" height="16" />
+                                      {horario.online}
+                                    </div>
+                                  ) : (
+                                    <div className={styles.closedBadge}>
+                                      <Icon icon="material-symbols:close" width="16" height="16" />
+                                      Cerrado
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Nota adicional */}
+                      <div className={styles.infoNote}>
+                        <Icon icon="material-symbols:info" width="20" height="20" className={styles.infoIcon} />
+                        <p className={styles.infoText}>
+                          Los horarios pueden variar en días festivos. Contáctanos para confirmar disponibilidad.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1076,19 +1108,8 @@ export default function Page0() {
           {/* Footer Bottom */}
           <Row className="mt-5">
             <Col className="text-center">
-              <div style={{
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                paddingTop: '30px',
-                background: 'rgba(255, 255, 255, 0.02)',
-                borderRadius: '15px',
-                padding: '20px'
-              }}>
-                <p style={{
-                  margin: '0',
-                  fontSize: '0.9rem',
-                  color: '#94A3B8',
-                  fontWeight: '400'
-                }}>
+              <div className={styles.foote}>
+                <p className={styles.texto}>
                   &copy; {new Date().getFullYear()} <span style={{ color: '#60A5FA', fontWeight: '600' }}>Consultoría JAS</span>.
                   Todos los derechos reservados.
                 </p>
@@ -1105,6 +1126,8 @@ export default function Page0() {
           onHide={handleCloseDetailsModal}
           service={selectedService}
           steps={steps}
+          onShowSteps={handleOpenStepsModal}
+
           loading={stepsLoading}
           zoomed={isZoomed}
           onZoomToggle={handleToggleZoom}
