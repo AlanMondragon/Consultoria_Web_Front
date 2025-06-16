@@ -14,6 +14,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
     const [availableHours, setAvailableHours] = useState([]);
+    const [allHours, setAllHours] = useState([]);
 
     useEffect(() => {
         if (value) {
@@ -25,68 +26,53 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         }
     }, [value]);
 
-    const generateAvailableHours = (selectedDateStr) => {
-        if (!selectedDateStr) {
-            setAvailableHours([]);
-            return;
-        }
+    const generateAllPossibleHours = (selectedDateStr) => {
+        if (!selectedDateStr) return [];
 
         const today = new Date();
         const selectedDateObj = new Date(selectedDateStr);
         const isToday = selectedDateObj.toDateString() === today.toDateString();
 
-        // Horarios de trabajo (9:00 AM a 6:00 PM)
+        // Horarios de trabajo (9:00 AM a 12:00 AM - Medianoche)
         const startHour = isToday ? Math.max(9, today.getHours() + 1) : 9;
-        const endHour = 18;
+        const endHour = 24;
 
-        const allHours = [];
+        const hours = [];
         for (let hour = startHour; hour < endHour; hour++) {
             for (let minute = 0; minute < 60; minute += 60) {
-                allHours.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+                hours.push(`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
             }
         }
+        return hours;
+    };
 
-        // Filtrar horarios ocupados
-        const occupiedHours = fechasOcupadas
-            .filter(fechaOcupada => {
-                const ocupadaDate = new Date(fechaOcupada);
-                const isSameDate = ocupadaDate.toDateString() === selectedDateObj.toDateString();
-                return isSameDate;
-            })
-            .map(fechaOcupada => {
-                const date = new Date(fechaOcupada);
-                return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-            });
+    // MODIFICADO: Lógica de generación de horas disponibles simplificada para mayor claridad y robustez.
+    const generateAvailableHours = (selectedDateStr) => {
+        if (!selectedDateStr) {
+            setAvailableHours([]);
+            setAllHours([]);
+            return;
+        }
 
-        // Debug: mostrar horarios ocupados para esta fecha
-        console.log(`Fecha seleccionada: ${selectedDateStr}`);
-        console.log('Horarios ocupados para esta fecha:', occupiedHours);
-        console.log('Todos los horarios posibles:', allHours);
+        const possibleHours = generateAllPossibleHours(selectedDateStr);
+        setAllHours(possibleHours); // Guarda todas las horas para mostrarlas en el dropdown
 
-        // Horarios disponibles (excluyendo ocupados y la hora anterior/posterior por el margen de 1 hora)
-        const available = allHours.filter(hour => {
-            const [hourNum, minuteNum] = hour.split(':').map(Number);
+        const selectedDateObj = new Date(selectedDateStr);
 
-            // Verificar si este horario está ocupado o muy cerca de uno ocupado
-            const isBlocked = occupiedHours.some(occupiedHour => {
-                const [occupiedHourNum, occupiedMinuteNum] = occupiedHour.split(':').map(Number);
+        // Crea un Set (conjunto) de horas ocupadas para una búsqueda más eficiente.
+        const occupiedTimes = new Set(
+            fechasOcupadas
+                .map(f => new Date(f)) // Convierte string a objeto Date
+                .filter(d => d.toDateString() === selectedDateObj.toDateString()) // Filtra solo las del día seleccionado
+                .map(d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`) // Formatea a "HH:mm"
+        );
 
-                // Convertir a minutos para comparar más fácil
-                const selectedTimeInMinutes = hourNum * 60 + minuteNum;
-                const occupiedTimeInMinutes = occupiedHourNum * 60 + occupiedMinuteNum;
-                const diffInMinutes = Math.abs(selectedTimeInMinutes - occupiedTimeInMinutes);
-
-                // Bloquear si:
-                // 1. Es exactamente la misma hora (diffInMinutes === 0)
-                // 2. Está dentro del rango de 1 hora (diffInMinutes < 60)
-                return diffInMinutes === 0 || diffInMinutes < 60;
-            });
-
-            return !isBlocked;
-        });
+        // Filtra las horas posibles, quedándose solo con las que NO están en el set de horas ocupadas.
+        const available = possibleHours.filter(hour => !occupiedTimes.has(hour));
 
         setAvailableHours(available);
     };
+
 
     useEffect(() => {
         generateAvailableHours(selectedDate);
@@ -95,12 +81,9 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     const handleDateChange = (e) => {
         const newDate = e.target.value;
         setSelectedDate(newDate);
-        setSelectedTime(''); // Reset time when date changes
+        setSelectedTime('');
 
-        if (newDate && selectedTime) {
-            const dateTime = `${newDate}T${selectedTime}`;
-            onChange(dateTime);
-        }
+        // La llamada a onChange se hace en handleTimeChange para asegurar que ambos valores están presentes
     };
 
     const handleTimeChange = (e) => {
@@ -113,14 +96,19 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         }
     };
 
-    // Obtener fecha mínima (hoy)
     const getMinDate = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
     };
 
-    return (
+    // Función que verifica si una hora específica está en la lista de horas disponibles.
+    const isHourAvailable = (hour) => {
+        return availableHours.includes(hour);
+    };
 
+    const allHoursOccupied = selectedDate && allHours.length > 0 && availableHours.length === 0;
+
+    return (
         <div>
             <div className="row">
                 <div className="col-md-6">
@@ -139,21 +127,31 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
                         value={selectedTime}
                         onChange={handleTimeChange}
                         className={`form-control ${error ? 'is-invalid' : ''}`}
-                        disabled={!selectedDate}
+                        disabled={!selectedDate || allHoursOccupied}
                     >
                         <option value="">Selecciona una hora</option>
-                        {availableHours.map(hour => (
-                            <option key={hour} value={hour}>
-                                {hour}
+                        {allHours.map(hour => (
+                            <option
+                                key={hour}
+                                value={hour}
+                                // Aquí está la lógica clave: se deshabilita la opción si la hora no está disponible.
+                                disabled={!isHourAvailable(hour)}
+                                style={{
+                                    // El estilo visual ayuda a diferenciar las horas disponibles de las que no.
+                                    color: isHourAvailable(hour) ? 'inherit' : '#999',
+                                    backgroundColor: isHourAvailable(hour) ? 'white' : '#f2f2f2'
+                                }}
+                            >
+                                {hour} {!isHourAvailable(hour) && ' (Ocupado)'}
                             </option>
                         ))}
                     </select>
                 </div>
             </div>
-            {selectedDate && availableHours.length === 0 && (
+            {allHoursOccupied && (
                 <div className="mt-2">
-                    <small className="text-warning">
-                        No hay horarios disponibles para esta fecha
+                    <small className="text-danger">
+                        No hay horarios disponibles para esta fecha.
                     </small>
                 </div>
             )}
@@ -161,7 +159,9 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
     );
 };
 
+
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
+    // ... (El resto del componente ActualizarMiTramite no necesita cambios y permanece igual)
     const citaCas = cliente?.transact?.cas === true;
     const citaCon = cliente?.transact?.con === true;
     const citaSimulacion = cliente?.transact?.simulation === true;
@@ -278,6 +278,54 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }, [cliente]);
 
     const onSubmit = async (data) => {
+        // VALIDACIONES ADICIONALES DEL SEGUNDO CÓDIGO
+        if (data.dateSimulation) {
+            const nuevaFecha = new Date(data.dateSimulation);
+
+            // Filtrar todas las fechas ya ocupadas en la base de datos para el mismo día, excluyendo la cita actual si la estás actualizando
+            const ocupadasMismaFecha = fechasOcupadas
+                .filter(f => {
+                    if (!f) return false;
+                    const ocupada = new Date(f);
+                    return ocupada.toDateString() === nuevaFecha.toDateString() &&
+                        ocupada.getTime() !== new Date(cliente.dateSimulation || '').getTime();
+                })
+                .map(f => new Date(f));
+
+            // Comprobar si hay una hora libre (1 hora de separación con cada cita existente de ese día)
+            const cumpleSeparacion = ocupadasMismaFecha.every(ocupada => {
+                const diffMinutos = Math.abs((nuevaFecha - ocupada) / 60000);
+                return diffMinutos >= 60; // al menos 1 hora de diferencia
+            });
+
+            if (!cumpleSeparacion) {
+                // Verificar si no hay ninguna posible hora para ese día
+                const startHour = 9;
+                const endHour = 24;
+                let hayPosibleHora = false;
+
+                for (let hour = startHour; hour < endHour; hour++) {
+                    const posibleHora = new Date(nuevaFecha);
+                    posibleHora.setHours(hour, 0, 0, 0);
+                    const esValida = ocupadasMismaFecha.every(ocupada => {
+                        const diffMinutos = Math.abs((posibleHora - ocupada) / 60000);
+                        return diffMinutos >= 60;
+                    });
+                    if (esValida) {
+                        hayPosibleHora = true;
+                        break;
+                    }
+                }
+
+                if (!hayPosibleHora) {
+                    Swal.fire('Fecha no disponible', 'No hay horarios disponibles para esta fecha', 'error');
+                } else {
+                    Swal.fire('Hora no disponible', 'La hora seleccionada ya está ocupada. Por favor, elige otra.', 'error');
+                }
+                return; // No continuar con la actualización
+            }
+        }
+
         try {
             const formatDate = (date) => {
                 if (!date) return null;

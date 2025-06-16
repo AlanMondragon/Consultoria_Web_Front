@@ -60,8 +60,8 @@ export default function ActualizarServicio() {
     const imageDetailFile = formData.get('imageDetail');
 
     const serviceData = {
-      name: formData.get('name'),
-      description: formData.get('description'),
+      name: formData.get('description'),
+      description: formData.get('name'),
       image: imageFile && imageFile.size > 0 ? await convertToBase64(imageFile) : service?.image,
       imageDetail: imageDetailFile && imageDetailFile.size > 0 ? await convertToBase64(imageDetailFile) : service?.imageDetail,
       simulation: formData.get('simulation') === 'on',

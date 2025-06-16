@@ -87,7 +87,7 @@ export default function NavbarAdmin({ title }) {
         </button>
 
         <nav className="sidebar-nav">
-          <a href={id4}><Icon icon="material-symbols:dashboard" className='icon' /> {collapsed && 'Dashboard'}</a>
+          <a href={id4}><Icon icon="material-symbols:dashboard" className='icon' /> {collapsed && 'Inicio'}</a>
           <a href={id1}><Icon icon="mdi:shopping-outline" className='icon' /> {collapsed && 'Servicios'}</a>
           <a href={id2}><Icon icon="carbon:document" className='icon' /> {collapsed && 'Trámites'}</a>
           <a href={id3}><Icon icon="mdi:account-group" className='icon' /> {collapsed && 'Clientes'}</a>
