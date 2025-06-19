@@ -19,7 +19,7 @@ const stripePromise = loadStripe(stripeKey);
 const token = localStorage.getItem("token");
 const decoded = jwtDecode(token);
 
-const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 1000, clienteInfo, pendingDateTime }) => {
+const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clienteInfo, pendingDateTime }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handlePaymentSuccess = (paymentResult) => {
@@ -72,7 +72,7 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 1000, cli
                 <Elements stripe={stripePromise}>
                     <CheckoutForm
                         amount={amount}
-                        description={`Cobro Extra - Cita después de las 17:00`}
+                        description={`Cobro Extra - Cita después de las 21:00`}
                         idProductoTransaccion={clienteInfo?.idTransact || clienteInfo?.tramite_id}
                         userEmail={decoded.sub || 'nohaycorreo@gmail.com'}
                         customer={decoded.idUser || 'N/A'}
@@ -204,9 +204,8 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         if (selectedDate && newTime) {
             const dateTime = `${selectedDate}T${newTime}`;
 
-            // Verificar si la hora es >= 17:00
             const hourNumber = parseInt(newTime.split(':')[0]);
-            if (hourNumber >= 17) {
+            if (hourNumber >= 21) {
                 // Mostrar alerta y manejar cobro extra
                 Swal.fire({
                     icon: 'warning',
@@ -282,7 +281,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                         <option value="">Selecciona una hora</option>
                         {allHours.map(hour => {
                             const hourNumber = parseInt(hour.split(':')[0]);
-                            const isExtraCharge = hourNumber >= 17;
+                            const isExtraCharge = hourNumber >= 21;
                             return (
                                 <option
                                     key={hour}
@@ -296,7 +295,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                                 >
                                     {hour}
                                     {!isHourAvailable(hour) && ' (Ocupado)'}
-                                    {isExtraCharge && isHourAvailable(hour) && ' (+$1,000)'}
+                                    {isExtraCharge && isHourAvailable(hour) && ' (+$99 MXN)'}
                                 </option>
                             );
                         })}
@@ -320,7 +319,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                     <br />
                     • Cada cita dura aproximadamente 1 hora
                     <br />
-                    • <span className="text-warning"><strong>Citas después de las 17:00 tienen un costo extra de $1,000 MXN</strong></span>
+                    • <span className="text-warning"><strong>Citas después de las 21:00 tienen un costo extra de $99 MXN</strong></span>
                     <br />
                     {selectedDate && (
                         <small className="text-info">
@@ -518,7 +517,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
 
     const onSubmit = async (data) => {
-        // Verificar si hay una hora >= 17:00 pendiente de pago
         if (data.dateSimulation && isPaymentRequired) {
             const selectedHour = new Date(data.dateSimulation).getHours();
             if (selectedHour >= 21) {
@@ -818,7 +816,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 show={showStripeModal}
               onHide={() => setShowStripeModal(false)}
                 onPaymentSuccess={handlePaymentSuccess}
-                amount={1000}
+                amount={99}
                 clienteInfo={extraChargeClientInfo}
                 pendingDateTime={pendingDateTime}
             />
