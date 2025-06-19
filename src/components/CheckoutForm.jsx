@@ -18,7 +18,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
     if (idProductoTransaccion === undefined || idProductoTransaccion === null || isNaN(parseInt(idProductoTransaccion, 10))) {
       setMessage('Error: Identificador de transacción del producto no válido o no proporcionado.');
       console.error("Error: idProductoTransaccion no es válido:", idProductoTransaccion);
-      
+
       setLoading(false);
       onError && onError({ message: 'ID de transacción de producto inválido.' });
       return;
@@ -67,6 +67,13 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             idUser: parseInt(customer),
             idTransact: parseInt(idProductoTransaccion, 10), // Asegúrate de que sea un número
           };
+          console.log('Intentando crear PaymentIntent con:', {
+            amount: amount * 100,
+            currency: 'mxn',
+            description: serviceName ? `${serviceName} - ${description}` : description,
+            customerEmail: userEmail,
+            customerId: customer
+          });
 
           await axios.post(`${API_URL}/payment`, paymentData);
           await createProcessWithPayment(paymentData);
@@ -105,6 +112,8 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         }
       }
     } catch (err) {
+        console.error("Error creando PaymentIntent:", err.response?.data || err.message);
+
       console.error("Error en proceso de pago (Stripe):", err);
       let errorMessage = 'Error al procesar el pago.';
       if (err.response && err.response.data && err.response.data.message) {

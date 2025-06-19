@@ -2,15 +2,101 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import * as yup from 'yup';
+import { jwtDecode } from 'jwt-decode';
+
 import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaCreditCard } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
-import NavbarAdmin from '../NavbarUser.jsx';
+import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates, servicios } from './../../api/api.js';
+import CheckoutForm from '../Pagos.jsx';
 
-const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error }) => {
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = loadStripe(stripeKey);
+const token = localStorage.getItem("token");
+const decoded = jwtDecode(token);
+
+const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 1000, clienteInfo, pendingDateTime }) => {
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handlePaymentSuccess = (paymentResult) => {
+        console.log('Pago exitoso:', paymentResult);
+        setIsProcessing(false);
+        onHide();
+        if (onPaymentSuccess) {
+            onPaymentSuccess(paymentResult, pendingDateTime); // Pasamos la fecha/hora pendiente
+        }
+    };
+    const handlePaymentCancel = () => {
+        // Limpia el estado relacionado con el pago extra si aplica
+        setShowStripeModal(false);
+        setPendingDateTime(null);
+        setIsPaymentRequired(false);
+        setExtraChargeClientInfo(null);
+    };
+
+
+    const handlePaymentError = (error) => {
+        console.error('Error en el pago:', error);
+        setIsProcessing(false);
+        // NO cerramos el modal en caso de error para que el usuario pueda intentar de nuevo
+    };
+
+    return (
+        <Modal show={show} onHide={onHide} size="lg" centered>
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    <FaCreditCard className="me-2" />
+                    Cobro Extra - Cita después de las 21:00
+                </Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+                <div className="alert alert-info">
+                    <strong>Cobro adicional:</strong> $1,000 MXN por cita programada después de las 21:00 horas.
+                </div>
+
+                <div className="alert alert-warning mt-3 mb-3">
+                    <strong>Total a pagar:</strong> $1,000.00 MXN
+                </div>
+
+                {pendingDateTime && (
+                    <div className="alert alert-secondary">
+                        <strong>Fecha y hora seleccionada:</strong> {new Date(pendingDateTime).toLocaleString('es-MX')}
+                    </div>
+                )}
+
+                <Elements stripe={stripePromise}>
+                    <CheckoutForm
+                        amount={amount}
+                        description={`Cobro Extra - Cita después de las 17:00`}
+                        idProductoTransaccion={clienteInfo?.idTransact || clienteInfo?.tramite_id}
+                        userEmail={decoded.sub || 'nohaycorreo@gmail.com'}
+                        customer={decoded.idUser || 'N/A'}
+                        onSuccess={handlePaymentSuccess}
+                        onError={handlePaymentError}
+                        serviceName={`Cobro Extra - Cliente: ${decoded.sub || 'N/A'}`}
+                        disabled={isProcessing}
+                        selectedDate={pendingDateTime}
+                        service="hora_extra"
+                        idTransactProgress={clienteInfo?.idTransactProgress || 'N/A'}
+                    />
+                </Elements>
+            </Modal.Body>
+
+            <Modal.Footer>
+                <Button variant="secondary" onClick={onHide} disabled={isProcessing}>
+                    Cancelar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+};
+
+const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
     const [availableHours, setAvailableHours] = useState([]);
@@ -30,10 +116,9 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         if (!selectedDateStr) return [];
 
         const today = new Date();
-        const selectedDateObj = new Date(selectedDateStr);
+        const selectedDateObj = new Date(selectedDateStr + 'T00:00:00');
         const isToday = selectedDateObj.toDateString() === today.toDateString();
 
-        // Horarios de trabajo (9:00 AM a 12:00 AM - Medianoche)
         const startHour = isToday ? Math.max(9, today.getHours() + 1) : 9;
         const endHour = 24;
 
@@ -46,7 +131,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         return hours;
     };
 
-    // MODIFICADO: Lógica de generación de horas disponibles simplificada para mayor claridad y robustez.
     const generateAvailableHours = (selectedDateStr) => {
         if (!selectedDateStr) {
             setAvailableHours([]);
@@ -55,24 +139,28 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         }
 
         const possibleHours = generateAllPossibleHours(selectedDateStr);
-        setAllHours(possibleHours); // Guarda todas las horas para mostrarlas en el dropdown
+        setAllHours(possibleHours);
 
-        const selectedDateObj = new Date(selectedDateStr);
+        const selectedDateObj = new Date(selectedDateStr + 'T00:00:00');
+        const selectedDateString = selectedDateObj.toDateString();
 
-        // Crea un Set (conjunto) de horas ocupadas para una búsqueda más eficiente.
-        const occupiedTimes = new Set(
-            fechasOcupadas
-                .map(f => new Date(f)) // Convierte string a objeto Date
-                .filter(d => d.toDateString() === selectedDateObj.toDateString()) // Filtra solo las del día seleccionado
-                .map(d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`) // Formatea a "HH:mm"
-        );
+        const occupiedTimes = new Set();
 
-        // Filtra las horas posibles, quedándose solo con las que NO están en el set de horas ocupadas.
+        fechasOcupadas.forEach(fechaOcupada => {
+            if (!fechaOcupada) return;
+
+            const fechaOcupadaObj = new Date(fechaOcupada);
+            const fechaOcupadaString = fechaOcupadaObj.toDateString();
+
+            if (fechaOcupadaString === selectedDateString) {
+                const horaFormateada = `${String(fechaOcupadaObj.getHours()).padStart(2, '0')}:${String(fechaOcupadaObj.getMinutes()).padStart(2, '0')}`;
+                occupiedTimes.add(horaFormateada);
+            }
+        });
+
         const available = possibleHours.filter(hour => !occupiedTimes.has(hour));
-
         setAvailableHours(available);
     };
-
 
     useEffect(() => {
         generateAvailableHours(selectedDate);
@@ -80,20 +168,83 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
 
     const handleDateChange = (e) => {
         const newDate = e.target.value;
+        const today = new Date().toISOString().split('T')[0];
+
+        // Validar que la fecha sea actual o posterior
+        if (newDate < today) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fecha inválida',
+                text: 'Por favor, selecciona una fecha actual o posterior.',
+            });
+            return;
+        }
+
         setSelectedDate(newDate);
         setSelectedTime('');
-
-        // La llamada a onChange se hace en handleTimeChange para asegurar que ambos valores están presentes
+        // Limpiar el valor en el formulario cuando se cambia la fecha
+        onChange('');
     };
+
 
     const handleTimeChange = (e) => {
         const newTime = e.target.value;
+
+        if (!selectedDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Selecciona una fecha',
+                text: 'Primero debes seleccionar una fecha válida.',
+            });
+            return;
+        }
+
         setSelectedTime(newTime);
 
         if (selectedDate && newTime) {
             const dateTime = `${selectedDate}T${newTime}`;
-            onChange(dateTime);
+
+            // Verificar si la hora es >= 17:00
+            const hourNumber = parseInt(newTime.split(':')[0]);
+            if (hourNumber >= 17) {
+                // Mostrar alerta y manejar cobro extra
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cobro Extra',
+                    text: 'Si la hora excede de las 21:00 (9:00 PM) se aplicará un costo extra de $1,000 MXN.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Cancelar selección',
+                    cancelButtonText: 'Acepto el cobro extra',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Usuario cancela la selección
+                        setSelectedTime('');
+                        onChange(''); // Limpiar el valor en el formulario
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // Usuario acepta el cobro extra - MANTENER la fecha/hora temporalmente
+                        // NO actualizar el formulario aún, pero mantener el estado local
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            // Usuario acepta el cobro extra - se guarda en el form y se dispara modal de pago
+                            if (onExtraChargeRequired) {
+                                onExtraChargeRequired(dateTime);
+                            }
+                            onChange(dateTime); // <-- ✅ Esta línea garantiza que no se pierda
+                        }
+                        // NO limpiar selectedTime aquí para que se mantenga visible
+                    }
+                });
+            } else {
+                // Hora normal, sin cobro extra - actualizar inmediatamente
+                onChange(dateTime);
+            }
         }
+    };
+    const handlePaymentCancel = () => {
+        // Limpia la fecha/hora del formulario y del pendingDateTime
+        setValue('dateSimulation', '');
+        setPendingDateTime(null);
+        setIsPaymentRequired(false);
     };
 
     const getMinDate = () => {
@@ -101,7 +252,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
         return today.toISOString().split('T')[0];
     };
 
-    // Función que verifica si una hora específica está en la lista de horas disponibles.
     const isHourAvailable = (hour) => {
         return availableHours.includes(hour);
     };
@@ -130,24 +280,30 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
                         disabled={!selectedDate || allHoursOccupied}
                     >
                         <option value="">Selecciona una hora</option>
-                        {allHours.map(hour => (
-                            <option
-                                key={hour}
-                                value={hour}
-                                // Aquí está la lógica clave: se deshabilita la opción si la hora no está disponible.
-                                disabled={!isHourAvailable(hour)}
-                                style={{
-                                    // El estilo visual ayuda a diferenciar las horas disponibles de las que no.
-                                    color: isHourAvailable(hour) ? 'inherit' : '#999',
-                                    backgroundColor: isHourAvailable(hour) ? 'white' : '#f2f2f2'
-                                }}
-                            >
-                                {hour} {!isHourAvailable(hour) && ' (Ocupado)'}
-                            </option>
-                        ))}
+                        {allHours.map(hour => {
+                            const hourNumber = parseInt(hour.split(':')[0]);
+                            const isExtraCharge = hourNumber >= 17;
+                            return (
+                                <option
+                                    key={hour}
+                                    value={hour}
+                                    disabled={!isHourAvailable(hour)}
+                                    style={{
+                                        color: isExtraCharge ? '#ff6b35' : (isHourAvailable(hour) ? 'inherit' : '#999'),
+                                        backgroundColor: isExtraCharge ? '#fff3e0' : (isHourAvailable(hour) ? 'white' : '#f2f2f2'),
+                                        fontWeight: isExtraCharge ? 'bold' : 'normal'
+                                    }}
+                                >
+                                    {hour}
+                                    {!isHourAvailable(hour) && ' (Ocupado)'}
+                                    {isExtraCharge && isHourAvailable(hour) && ' (+$1,000)'}
+                                </option>
+                            );
+                        })}
                     </select>
                 </div>
             </div>
+
             {allHoursOccupied && (
                 <div className="mt-2">
                     <small className="text-danger">
@@ -155,13 +311,32 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error })
                     </small>
                 </div>
             )}
+
+            <div className="mt-2">
+                <small className="text-info">
+                    <strong>ℹ️ Información:</strong>
+                    <br />
+                    • Horario de atención: 9:00 AM - 12:00 AM
+                    <br />
+                    • Cada cita dura aproximadamente 1 hora
+                    <br />
+                    • <span className="text-warning"><strong>Citas después de las 17:00 tienen un costo extra de $1,000 MXN</strong></span>
+                    <br />
+                    {selectedDate && (
+                        <small className="text-info">
+                            Fecha: {selectedDate} |
+                            Horas totales: {allHours.length} |
+                            Horas disponibles: {availableHours.length} |
+                            Horas ocupadas: {allHours.length - availableHours.length}
+                        </small>
+                    )}
+                </small>
+            </div>
         </div>
     );
 };
 
-
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
-    // ... (El resto del componente ActualizarMiTramite no necesita cambios y permanece igual)
     const citaCas = cliente?.transact?.cas === true;
     const citaCon = cliente?.transact?.con === true;
     const citaSimulacion = cliente?.transact?.simulation === true;
@@ -170,6 +345,12 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
     const [mensaje, setMensaje] = useState();
     const [fechasOcupadas, setFechasOcupadas] = useState([]);
+
+    // Estados para el modal de Stripe
+    const [showStripeModal, setShowStripeModal] = useState(false);
+    const [pendingDateTime, setPendingDateTime] = useState(null); // Fecha/hora pendiente de confirmación
+    const [extraChargeClientInfo, setExtraChargeClientInfo] = useState(null);
+    const [isPaymentRequired, setIsPaymentRequired] = useState(false); // Flag para saber si se requiere pago
 
     const schema = yup.object().shape({
         dateSimulation: yup
@@ -197,6 +378,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     });
 
     const advanceValue = watch('advance');
+    const currentDateSimulation = watch('dateSimulation');
 
     // Obtener fechas ocupadas del endpoint
     useEffect(() => {
@@ -204,7 +386,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             try {
                 const response = await getAllDates();
                 if (response.success && response.response?.transactProgresses) {
-                    // Extraer solo las fechas de simulación y filtrar las que no sean null
                     const fechas = response.response.transactProgresses
                         .map(item => item.dateSimulation)
                         .filter(fecha => fecha !== null && fecha !== undefined);
@@ -253,10 +434,13 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 passwordAcces: cliente.passwordAcces,
                 stepProgress: cliente.stepProgress,
             });
+
+            // Resetear estados de pago cuando se carga un nuevo cliente
+            setIsPaymentRequired(false);
+            setPendingDateTime(null);
         }
     }, [cliente, reset]);
 
-    // Obtener nombre y descripción del paso actual
     useEffect(() => {
         const obtenerPasoActual = async () => {
             if (cliente?.transact?.idTransact && cliente?.stepProgress != null) {
@@ -277,12 +461,81 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         obtenerPasoActual();
     }, [cliente]);
 
+    // Función para manejar cuando se requiere cobro extra
+    const handleExtraChargeRequired = (dateTime) => {
+        console.log('Se requiere cobro extra para:', dateTime);
+        setPendingDateTime(dateTime); // Guardamos la fecha/hora pendiente
+        setIsPaymentRequired(true); // Marcamos que se requiere pago
+
+        // Preparar la información del cliente para el pago
+        const clienteInfo = {
+            id: cliente?.idTransactProgress,
+            idTransactProgress: cliente?.idTransactProgress,
+            name: cliente?.name || 'Cliente',
+            email: cliente?.emailAcces || '',
+            idTransact: cliente?.transact?.idTransact,
+            tramite_id: cliente?.transact?.idTransact,
+        };
+
+        console.log('Cliente info para pago:', clienteInfo);
+        setExtraChargeClientInfo(clienteInfo);
+        setShowStripeModal(true);
+    };
+
+    // ✅ Función robusta para manejar el éxito del pago
+    const handlePaymentSuccess = (paymentResult, confirmedDateTime) => {
+        console.log('✅ Pago exitoso:', paymentResult);
+        console.log('✅ Fecha/hora confirmada:', confirmedDateTime);
+
+        // 👉 Asegurarse de tener siempre la fecha/hora correcta en el formulario
+        if (confirmedDateTime) {
+            setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
+            setPendingDateTime(null);
+        }
+
+        // 👉 Marcar que ya no se requiere pago extra
+        setIsPaymentRequired(false);
+
+        // Limpiar info temporal del cliente para pago extra
+        setExtraChargeClientInfo(null);
+
+        // Mostrar confirmación al usuario
+        Swal.fire({
+            icon: 'success',
+            title: 'Pago exitoso',
+            text: 'El cobro extra ha sido procesado exitosamente y tu cita ha sido agendada.',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            // Por seguridad, reestablecer la fecha/hora por si hubo cambios
+            if (confirmedDateTime) {
+                setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
+            }
+        });
+
+        // 👉 Cerrar el modal de Stripe (opcional si aún no lo cierras)
+        setShowStripeModal(false);
+    };
+
+
     const onSubmit = async (data) => {
-        // VALIDACIONES ADICIONALES DEL SEGUNDO CÓDIGO
+        // Verificar si hay una hora >= 17:00 pendiente de pago
+        if (data.dateSimulation && isPaymentRequired) {
+            const selectedHour = new Date(data.dateSimulation).getHours();
+            if (selectedHour >= 21) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pago requerido',
+                    text: 'Debes completar el pago del cobro extra antes de continuar.',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+        }
+
+        // Validaciones existentes...
         if (data.dateSimulation) {
             const nuevaFecha = new Date(data.dateSimulation);
 
-            // Filtrar todas las fechas ya ocupadas en la base de datos para el mismo día, excluyendo la cita actual si la estás actualizando
             const ocupadasMismaFecha = fechasOcupadas
                 .filter(f => {
                     if (!f) return false;
@@ -292,14 +545,12 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 })
                 .map(f => new Date(f));
 
-            // Comprobar si hay una hora libre (1 hora de separación con cada cita existente de ese día)
             const cumpleSeparacion = ocupadasMismaFecha.every(ocupada => {
                 const diffMinutos = Math.abs((nuevaFecha - ocupada) / 60000);
-                return diffMinutos >= 60; // al menos 1 hora de diferencia
+                return diffMinutos >= 60;
             });
 
             if (!cumpleSeparacion) {
-                // Verificar si no hay ninguna posible hora para ese día
                 const startHour = 9;
                 const endHour = 24;
                 let hayPosibleHora = false;
@@ -322,7 +573,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 } else {
                     Swal.fire('Hora no disponible', 'La hora seleccionada ya está ocupada. Por favor, elige otra.', 'error');
                 }
-                return; // No continuar con la actualización
+                return;
             }
         }
 
@@ -364,6 +615,10 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             if (typeof onClienteRegistrado === 'function') {
                 onClienteRegistrado();
             }
+
+            // Resetear estados de pago
+            setIsPaymentRequired(false);
+            setPendingDateTime(null);
 
             onHide();
         } catch (error) {
@@ -429,130 +684,146 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         }
     }
 
+    const handleModalHide = () => {
+        // Resetear estados cuando se cierra el modal principal
+        setIsPaymentRequired(false);
+        setPendingDateTime(null);
+        setShowStripeModal(false);
+        onHide();
+    };
+
     return (
-        <Modal show={show} onHide={onHide} size="lg" centered>
-            <Modal.Header closeButton>
-                <Modal.Title className="Titulo" style={{ marginLeft: "350px" }}>{cliente?.transact?.description}</Modal.Title>
-            </Modal.Header>
+        <>
+            <Modal show={show} onHide={handleModalHide} size="lg" centered>
+                <Modal.Header closeButton>
+                    <Modal.Title className="Titulo" style={{ marginLeft: "350px" }}>
+                        {cliente?.transact?.description}
+                    </Modal.Title>
+                </Modal.Header>
 
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                <Modal.Body>
-                    <div className="form-group">
-                        <label>Imagen:</label>
-                        {cliente?.transact?.image ? (
-                            <img src={cliente.transact.image} alt="Imagen" style={{ maxWidth: '100%', height: 'auto' }} />
-                        ) : (
-                            <p>Sin imagen</p>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Cita CAS:</label>
-                        <p>
-                            {cliente?.dateCas
-                                ? "Ya cuentas con una cita agendada"
-                                : "No cuentas con cita agendada"}
-                        </p>
-                        <input type="text" className="form-control" value={cliente?.dateCas ?? ''} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Cita CON:</label>
-                        <p>
-                            {cliente?.dateCon
-                                ? "Ya cuentas con una cita agendada"
-                                : "No cuentas con cita agendada"}
-                        </p>
-                        <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Pago Adelantado:</label>
-                        <input type="text" className="form-control" value={cliente?.paid ?? ''} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Pago Total:</label>
-                        <input type="text" className="form-control" value={cliente?.paidAll ?? ''} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Estado:</label>
-                        <input type="text" className="form-control" value={
-                            cliente?.status === 1 ? 'En proceso' :
-                                cliente?.status === 2 ? 'En espera' :
-                                    cliente?.status === 3 ? 'Falta de pago' :
-                                        cliente?.status === 4 ? 'Terminado' :
-                                            cliente?.status === 5 ? 'Cancelado' :
-                                                cliente?.status === 6 ? 'Revisar' : ''
-                        } disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Paso del trámite actual:</label>
-                        <input type="text" className="form-control" value={nombreDelPaso} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Descripción del paso:</label>
-                        <input type="text" className="form-control" value={descripcionDelPaso} disabled />
-                    </div>
-
-                    <div className="form-group">
-                        <p>
-                            {cliente?.dateSimulation
-                                ? "Ya cuentas con una cita agendada"
-                                : "No cuentas con cita agendada"}
-                        </p>
+                <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+                    <Modal.Body>
                         <div className="form-group">
-                            <label>Cita de Simulación:</label>
-                            <Controller
-                                name="dateSimulation"
-                                control={control}
-                                render={({ field }) => (
-                                    <DateTimeSelector
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        fechasOcupadas={fechasOcupadas}
-                                        error={errors.dateSimulation}
-                                    />
-                                )}
-                            />
-                            {errors.dateSimulation && (
-                                <span className="text-danger">{errors.dateSimulation.message}</span>
+                            <label>Imagen:</label>
+                            {cliente?.transact?.image ? (
+                                <img src={cliente.transact.image} alt="Imagen" style={{ maxWidth: '100%', height: 'auto' }} />
+                            ) : (
+                                <p>Sin imagen</p>
                             )}
-
-                            {/* Información sobre las citas ocupadas */}
-                            <div className="mt-2">
-                                <small className="text-info">
-                                    <strong>ℹ️ Información:</strong>
-                                    <br />
-                                    • Horario de atención: 9:00 AM - 12:00 AM
-                                    <br />
-                                    • Cada cita dura aproximadamente 1 hora
-                                    <br />
-                                    • {fechasOcupadas.length} horarios ya ocupados
-                                </small>
-                            </div>
                         </div>
 
-                        {cliente?.dateSimulation && (
-                            <button
-                                type="button"
-                                className="btn btn-danger mt-2"
-                                onClick={() => eliminarCita(cliente)}
-                            >
-                                Cancelar cita
-                            </button>
-                        )}
-                    </div>
-                </Modal.Body>
+                        <div className="form-group">
+                            <label>Cita CAS:</label>
+                            <p>
+                                {cliente?.dateCas
+                                    ? "Ya cuentas con una cita agendada"
+                                    : "No cuentas con cita agendada"}
+                            </p>
+                            <input type="text" className="form-control" value={cliente?.dateCas ?? ''} disabled />
+                        </div>
 
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={onHide}>Cerrar <MdClose /></Button>
-                    <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>Guardar <FaCheck /></Button>
-                </Modal.Footer>
-            </form>
-        </Modal>
+                        <div className="form-group">
+                            <label>Cita CON:</label>
+                            <p>
+                                {cliente?.dateCon
+                                    ? "Ya cuentas con una cita agendada"
+                                    : "No cuentas con cita agendada"}
+                            </p>
+                            <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Pago Adelantado:</label>
+                            <input type="text" className="form-control" value={cliente?.paid ?? ''} disabled />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Pago Total:</label>
+                            <input type="text" className="form-control" value={cliente?.paidAll ?? ''} disabled />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Estado:</label>
+                            <input type="text" className="form-control" value={
+                                cliente?.status === 1 ? 'En proceso' :
+                                    cliente?.status === 2 ? 'En espera' :
+                                        cliente?.status === 3 ? 'Falta de pago' :
+                                            cliente?.status === 4 ? 'Terminado' :
+                                                cliente?.status === 5 ? 'Cancelado' :
+                                                    cliente?.status === 6 ? 'Revisar' : ''
+                            } disabled />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Paso del trámite actual:</label>
+                            <input type="text" className="form-control" value={nombreDelPaso} disabled />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Descripción del paso:</label>
+                            <input type="text" className="form-control" value={descripcionDelPaso} disabled />
+                        </div>
+
+
+
+                        <div className="form-group">
+                            <p>
+                                {cliente?.dateSimulation
+                                    ? "Ya cuentas con una cita agendada"
+                                    : "No cuentas con cita agendada"}
+                            </p>
+                            <div className="form-group">
+                                <label>Cita de Simulación:</label>
+                                <Controller
+                                    name="dateSimulation"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <DateTimeSelector
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            fechasOcupadas={fechasOcupadas}
+                                            error={errors.dateSimulation}
+                                            onExtraChargeRequired={handleExtraChargeRequired}
+                                        />
+                                    )}
+                                />
+                                {errors.dateSimulation && (
+                                    <span className="text-danger">{errors.dateSimulation.message}</span>
+                                )}
+                            </div>
+
+                            {cliente?.dateSimulation && (
+                                <button
+                                    type="button"
+                                    className="btn btn-danger mt-2"
+                                    onClick={() => eliminarCita(cliente)}
+                                >
+                                    Cancelar cita
+                                </button>
+                            )}
+                        </div>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={onHide}>Cerrar <MdClose /></Button>
+                        <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>
+                            Guardar <FaCheck />
+                        </Button>
+                    </Modal.Footer>
+                </form>
+            </Modal>
+
+            {/* Modal de Stripe para cobro extra - CORREGIDO */}
+            <StripePaymentModal
+                show={showStripeModal}
+              onHide={() => setShowStripeModal(false)}
+                onPaymentSuccess={handlePaymentSuccess}
+                amount={1000}
+                clienteInfo={extraChargeClientInfo}
+                pendingDateTime={pendingDateTime}
+            />
+
+
+        </>
     );
 }
