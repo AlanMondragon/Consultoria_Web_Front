@@ -86,10 +86,16 @@ export const createService = async (serviceData) => {
       simulation: serviceData.simulation,
       cas: serviceData.cas,
       con: serviceData.con,
-      cashAdvance: serviceData.cashAdvance
+      cashAdvance: serviceData.cashAdvance,
+      status: true,
+      totalPayment: serviceData.totalPayment,
+      cost: serviceData.cost ?? null,
+      nameOption: serviceData.nameOption ?? null,
+      optionCost: serviceData.optionCost ?? null,
+      isDateService: serviceData.isDateService ?? null
     };
 
-    const response = await axios.post(`${API_URL}/transaction`, payload, {
+    const response = await axios.post(`${API_URL}/transaction/web`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
