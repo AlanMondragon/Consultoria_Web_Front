@@ -56,13 +56,8 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
 
             <Modal.Body>
                 <div className="alert alert-info">
-                    <strong>Cobro adicional:</strong> $1,000 MXN por cita programada después de las 21:00 horas.
+                    <strong>Cobro adicional:</strong> $99 MXN por cita programada después de las 21:00 horas.
                 </div>
-
-                <div className="alert alert-warning mt-3 mb-3">
-                    <strong>Total a pagar:</strong> $1,000.00 MXN
-                </div>
-
                 {pendingDateTime && (
                     <div className="alert alert-secondary">
                         <strong>Fecha y hora seleccionada:</strong> {new Date(pendingDateTime).toLocaleString('es-MX')}
