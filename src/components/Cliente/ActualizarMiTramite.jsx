@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck, FaCreditCard } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates, servicios } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
 import CheckoutForm from '../Pagos.jsx';
 
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
@@ -27,22 +27,12 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
         setIsProcessing(false);
         onHide();
         if (onPaymentSuccess) {
-            onPaymentSuccess(paymentResult, pendingDateTime); // Pasamos la fecha/hora pendiente
+            onPaymentSuccess(paymentResult, pendingDateTime);
         }
     };
-    const handlePaymentCancel = () => {
-        // Limpia el estado relacionado con el pago extra si aplica
-        setShowStripeModal(false);
-        setPendingDateTime(null);
-        setIsPaymentRequired(false);
-        setExtraChargeClientInfo(null);
-    };
-
-
     const handlePaymentError = (error) => {
         console.error('Error en el pago:', error);
         setIsProcessing(false);
-        // NO cerramos el modal en caso de error para que el usuario pueda intentar de nuevo
     };
 
     return (
@@ -165,7 +155,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         const newDate = e.target.value;
         const today = new Date().toISOString().split('T')[0];
 
-        // Validar que la fecha sea actual o posterior
         if (newDate < today) {
             Swal.fire({
                 icon: 'error',
@@ -177,7 +166,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
 
         setSelectedDate(newDate);
         setSelectedTime('');
-        // Limpiar el valor en el formulario cuando se cambia la fecha
         onChange('');
     };
 
@@ -201,46 +189,32 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
 
             const hourNumber = parseInt(newTime.split(':')[0]);
             if (hourNumber >= 21) {
-                // Mostrar alerta y manejar cobro extra
                 Swal.fire({
                     icon: 'warning',
                     title: 'Cobro Extra',
-                    text: 'Si la hora excede de las 21:00 (9:00 PM) se aplicará un costo extra de $1,000 MXN.',
+                    text: 'Si la hora excede de las 21:00 (9:00 PM) se aplicará un costo extra de $99 MXN.',
                     showCancelButton: true,
                     confirmButtonText: 'Cancelar selección',
                     cancelButtonText: 'Acepto el cobro extra',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Usuario cancela la selección
                         setSelectedTime('');
-                        onChange(''); // Limpiar el valor en el formulario
+                        onChange(''); 
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Usuario acepta el cobro extra - MANTENER la fecha/hora temporalmente
-                        // NO actualizar el formulario aún, pero mantener el estado local
                         if (result.dismiss === Swal.DismissReason.cancel) {
-                            // Usuario acepta el cobro extra - se guarda en el form y se dispara modal de pago
                             if (onExtraChargeRequired) {
                                 onExtraChargeRequired(dateTime);
                             }
-                            onChange(dateTime); // <-- ✅ Esta línea garantiza que no se pierda
+                            onChange(dateTime); 
                         }
-                        // NO limpiar selectedTime aquí para que se mantenga visible
                     }
                 });
             } else {
-                // Hora normal, sin cobro extra - actualizar inmediatamente
                 onChange(dateTime);
             }
         }
     };
-    const handlePaymentCancel = () => {
-        // Limpia la fecha/hora del formulario y del pendingDateTime
-        setValue('dateSimulation', '');
-        setPendingDateTime(null);
-        setIsPaymentRequired(false);
-    };
-
     const getMinDate = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
@@ -340,11 +314,10 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     const [mensaje, setMensaje] = useState();
     const [fechasOcupadas, setFechasOcupadas] = useState([]);
 
-    // Estados para el modal de Stripe
     const [showStripeModal, setShowStripeModal] = useState(false);
-    const [pendingDateTime, setPendingDateTime] = useState(null); // Fecha/hora pendiente de confirmación
+    const [pendingDateTime, setPendingDateTime] = useState(null); 
     const [extraChargeClientInfo, setExtraChargeClientInfo] = useState(null);
-    const [isPaymentRequired, setIsPaymentRequired] = useState(false); // Flag para saber si se requiere pago
+    const [isPaymentRequired, setIsPaymentRequired] = useState(false); 
 
     const schema = yup.object().shape({
         dateSimulation: yup
@@ -373,8 +346,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
     const advanceValue = watch('advance');
     const currentDateSimulation = watch('dateSimulation');
-
-    // Obtener fechas ocupadas del endpoint
     useEffect(() => {
         const obtenerFechasOcupadas = async () => {
             try {
@@ -429,7 +400,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 stepProgress: cliente.stepProgress,
             });
 
-            // Resetear estados de pago cuando se carga un nuevo cliente
             setIsPaymentRequired(false);
             setPendingDateTime(null);
         }
@@ -455,13 +425,11 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         obtenerPasoActual();
     }, [cliente]);
 
-    // Función para manejar cuando se requiere cobro extra
     const handleExtraChargeRequired = (dateTime) => {
         console.log('Se requiere cobro extra para:', dateTime);
-        setPendingDateTime(dateTime); // Guardamos la fecha/hora pendiente
-        setIsPaymentRequired(true); // Marcamos que se requiere pago
+        setPendingDateTime(dateTime); 
+        setIsPaymentRequired(true); 
 
-        // Preparar la información del cliente para el pago
         const clienteInfo = {
             id: cliente?.idTransactProgress,
             idTransactProgress: cliente?.idTransactProgress,
@@ -476,37 +444,29 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         setShowStripeModal(true);
     };
 
-    // ✅ Función robusta para manejar el éxito del pago
     const handlePaymentSuccess = (paymentResult, confirmedDateTime) => {
         console.log('✅ Pago exitoso:', paymentResult);
         console.log('✅ Fecha/hora confirmada:', confirmedDateTime);
 
-        // 👉 Asegurarse de tener siempre la fecha/hora correcta en el formulario
         if (confirmedDateTime) {
             setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
             setPendingDateTime(null);
         }
 
-        // 👉 Marcar que ya no se requiere pago extra
         setIsPaymentRequired(false);
-
-        // Limpiar info temporal del cliente para pago extra
         setExtraChargeClientInfo(null);
 
-        // Mostrar confirmación al usuario
         Swal.fire({
             icon: 'success',
             title: 'Pago exitoso',
-            text: 'El cobro extra ha sido procesado exitosamente y tu cita ha sido agendada.',
+            text: 'El cobro extra ha sido procesado exitosamente y tu cita ha sido agendada (Guarda los datos).',
             confirmButtonText: 'Aceptar'
         }).then(() => {
-            // Por seguridad, reestablecer la fecha/hora por si hubo cambios
             if (confirmedDateTime) {
                 setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
             }
         });
 
-        // 👉 Cerrar el modal de Stripe (opcional si aún no lo cierras)
         setShowStripeModal(false);
     };
 
@@ -525,7 +485,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
 
-        // Validaciones existentes...
         if (data.dateSimulation) {
             const nuevaFecha = new Date(data.dateSimulation);
 
@@ -609,7 +568,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 onClienteRegistrado();
             }
 
-            // Resetear estados de pago
             setIsPaymentRequired(false);
             setPendingDateTime(null);
 
@@ -678,7 +636,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }
 
     const handleModalHide = () => {
-        // Resetear estados cuando se cierra el modal principal
         setIsPaymentRequired(false);
         setPendingDateTime(null);
         setShowStripeModal(false);
@@ -806,7 +763,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 </form>
             </Modal>
 
-            {/* Modal de Stripe para cobro extra - CORREGIDO */}
             <StripePaymentModal
                 show={showStripeModal}
               onHide={() => setShowStripeModal(false)}
