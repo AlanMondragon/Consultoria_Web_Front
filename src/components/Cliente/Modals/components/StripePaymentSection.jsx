@@ -39,7 +39,7 @@ const StripePaymentSection = ({
     setSelectedDate(dateTime);
     if (dateTime) {
       const hour = parseInt(dateTime.split('T')[1]?.split(':')[0], 10);
-      setExtraFee(hour >= 17 ? 99 : 0);
+      setExtraFee(hour >= 21 ? 99 : 0);
     } else {
       setExtraFee(0);
     }

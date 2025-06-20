@@ -31,6 +31,7 @@ import Page0 from "./components/Page0.jsx";
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import PruebaPago from "./PruebaPago.jsx";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 function App() {
@@ -55,6 +56,8 @@ function App() {
 
         <Route path="/Login" element={<Home />} />
         <Route path="/" element={<Page0 />} />
+        <Route path="/test" element={<PruebaPago />} />
+
 
         <Route path="/olvidar-contra" element={<OlvidarContra />} />
 

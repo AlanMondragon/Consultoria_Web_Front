@@ -14,6 +14,8 @@ export default function RegistrarServicio() {
   const [imagenDetallePreview, setImagenDetallePreview] = useState(null);  const [tieneOtroCosto, setTieneOtroCosto] = useState(false);
   const [tieneAnticipo, setTieneAnticipo] = useState(false);
   const [esCita, setEsCita] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -102,7 +104,7 @@ export default function RegistrarServicio() {
   return (
     <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
-        <Navbar title={"- Registrar Servicios"} />
+        <Navbar title={isMobile ? "- Servicio" : "- Registrar Servicio" } />
       </div>
 
       <div className={styles.containerRegistrarTramite}>
