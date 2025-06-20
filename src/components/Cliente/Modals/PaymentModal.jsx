@@ -6,6 +6,8 @@ import DS160Section from './components/DS160Section';
 import StripePaymentSection from './components/StripePaymentSection';
 import paymentStyles from '../../../styles/servicios/client/PaymentModal.module.css';
 import { LockIcon } from 'lucide-react';
+import PayPalScriptLoader from '../../PayPal/PayPalScriptLoader';
+import PayPalButton from '../../PayPal/BottonTest';
 
 // SVGs inline para logos y escudo
 const VisaSVG = () => (
@@ -115,6 +117,21 @@ const PaymentModal = ({
             onError={onError}
           />
         )}
+        {/* PayPal siempre visible debajo del método principal */}
+        <div style={{ marginTop: 24, marginBottom: 12 }}>
+          <PayPalScriptLoader>
+            <PayPalButton 
+              amount={currentPaymentOption?.amount || service.cost || 0} 
+              onSuccess={onSuccess} 
+              onError={onError}
+              userId={userId}
+              service={{
+                ...service,
+                cost: currentPaymentOption?.amount || service.cost || 0
+              }}
+            />
+          </PayPalScriptLoader>
+        </div>
         <div className={paymentStyles.paymentMethods}>
           <VisaSVG />
           <MastercardSVG />
