@@ -4,7 +4,7 @@
   max-width: 700px;
   height: 98vh;
   max-height: 99vh;
-  border-radius: 18px;
+  border-radius: 55px;
   box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44, 62, 80, 0.10);
   background: #fff;
   border: none;
@@ -13,7 +13,7 @@
 
 .customDialog {
   max-width: 700px;
-  border-radius: 18px;
+  border-radius: 55px;
   margin: 0 auto;
   height: 98vh;
   max-height: 99vh;
@@ -71,7 +71,7 @@
 
 .paymentAmountContainer {
   background-color: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 55px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -186,7 +186,7 @@
   .paymentModal, .customDialog {
     width: 99vw;
     max-width: 99vw;
-    border-radius: 0;
+    border-radius: 55px;
     height: 99vh;
     max-height: 99vh;
   }
