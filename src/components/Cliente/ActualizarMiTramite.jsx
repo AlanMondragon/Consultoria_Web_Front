@@ -13,6 +13,8 @@ import { FaCheck, FaCreditCard } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
 import CheckoutForm from '../Pagos.jsx';
+import PayPalScriptLoader from '../PayPal/PayPalScriptLoader.jsx';
+import PayPalButton from '../PayPal/BottonTest.jsx';
 
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 const stripePromise = loadStripe(stripeKey);
@@ -70,6 +72,18 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
                         idTransactProgress={clienteInfo?.idTransactProgress || 'N/A'}
                     />
                 </Elements>
+                <div style={{ marginTop: 24, marginBottom: 12 }}>
+
+                    <PayPalScriptLoader>
+                        <PayPalButton
+                            amount={99}
+                            onSuccess={handlePaymentSuccess}
+                            onError={handlePaymentError}
+                            userId={decoded.idUser || 'N/A'}
+                            service="hora_extra"
+                        />
+                    </PayPalScriptLoader>
+                </div>
             </Modal.Body>
 
             <Modal.Footer>
@@ -200,13 +214,13 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                 }).then((result) => {
                     if (result.isConfirmed) {
                         setSelectedTime('');
-                        onChange(''); 
+                        onChange('');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         if (result.dismiss === Swal.DismissReason.cancel) {
                             if (onExtraChargeRequired) {
                                 onExtraChargeRequired(dateTime);
                             }
-                            onChange(dateTime); 
+                            onChange(dateTime);
                         }
                     }
                 });
@@ -315,9 +329,9 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     const [fechasOcupadas, setFechasOcupadas] = useState([]);
 
     const [showStripeModal, setShowStripeModal] = useState(false);
-    const [pendingDateTime, setPendingDateTime] = useState(null); 
+    const [pendingDateTime, setPendingDateTime] = useState(null);
     const [extraChargeClientInfo, setExtraChargeClientInfo] = useState(null);
-    const [isPaymentRequired, setIsPaymentRequired] = useState(false); 
+    const [isPaymentRequired, setIsPaymentRequired] = useState(false);
 
     const schema = yup.object().shape({
         dateSimulation: yup
@@ -427,8 +441,8 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
     const handleExtraChargeRequired = (dateTime) => {
         console.log('Se requiere cobro extra para:', dateTime);
-        setPendingDateTime(dateTime); 
-        setIsPaymentRequired(true); 
+        setPendingDateTime(dateTime);
+        setIsPaymentRequired(true);
 
         const clienteInfo = {
             id: cliente?.idTransactProgress,
@@ -765,7 +779,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
             <StripePaymentModal
                 show={showStripeModal}
-              onHide={() => setShowStripeModal(false)}
+                onHide={() => setShowStripeModal(false)}
                 onPaymentSuccess={handlePaymentSuccess}
                 amount={99}
                 clienteInfo={extraChargeClientInfo}

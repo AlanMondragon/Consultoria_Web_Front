@@ -20,23 +20,23 @@ import styles from './../../styles/ClienteServicios.module.css';
 
 export default function ClienteServicios() {
   const navigate = useNavigate();
-  
+
   // Estados principales
   const [services, setServices] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
-  
+
   // Estados para modal de detalles
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false);
-  
+
   // Estados para modal de pasos
   const [stepsModalOpen, setStepsModalOpen] = useState(false);
   const [steps, setSteps] = useState([]);
   const [stepsLoading, setStepsLoading] = useState(false);
-  
+
   // Estados para modal de pago
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [serviceToPay, setServiceToPay] = useState(null);
@@ -49,7 +49,7 @@ export default function ClienteServicios() {
       const decoded = jwtDecode(token);
       setUserEmail(decoded.sub || "");
       setUserId(decoded.idUser || "");
-      
+
       if (decoded.role !== "USER") {
         Swal.fire({
           icon: 'error',
@@ -180,7 +180,17 @@ export default function ClienteServicios() {
 
   const handlePaymentSuccess = () => {
     handleClosePaymentModal();
-    Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
+    if (serviceToPay.name && /160/.test(serviceToPay.name)) {
+      Swal.fire({
+        title: '¡Pago procesado!',
+        text: 'Un correo se ha enviado a ' + userEmail + ', con los detalles de la transacción.',
+        icon: 'info',
+        confirmButtonText: 'Entendido'
+      });
+
+    } else {
+      Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
+    }
   };
 
   const handlePaymentError = (error) => {
