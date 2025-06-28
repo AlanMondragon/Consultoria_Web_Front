@@ -183,6 +183,10 @@ export default function Page0() {
     await fetchStepsById(service.idTransact);
   };
 
+  const singint =  () => {
+    window.location.href = '/Login';
+  };
+
   const handleCloseDetailsModal = () => {
     setSelectedService(null);
     setDetailsModalOpen(false);
@@ -490,6 +494,12 @@ export default function Page0() {
                           onClick={() => handleOpenDetailsModal(service)}
                         >
                           Ver más
+                        </button>
+                          <button
+                          className={styles.cardButton}
+                          onClick={() => singint()}
+                        >
+                          Obtener
                         </button>
                       </div>
                     </div>

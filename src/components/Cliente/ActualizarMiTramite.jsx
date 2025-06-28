@@ -1,28 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import * as yup from 'yup';
 import { jwtDecode } from 'jwt-decode';
-
 import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
-import { FaCheck, FaCreditCard } from 'react-icons/fa';
-import { MdClose } from 'react-icons/md';
+import { FaCreditCard } from 'react-icons/fa';
 import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
 import CheckoutForm from '../Pagos.jsx';
 import PayPalScriptLoader from '../PayPal/PayPalScriptLoader.jsx';
 import PayPalButton from '../PayPal/BottonTest.jsx';
+import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller } from 'react-hook-form';
+import { MdClose } from 'react-icons/md';
+import { FaCheck } from 'react-icons/fa';
 
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 const stripePromise = loadStripe(stripeKey);
-const token = localStorage.getItem("token");
-const decoded = jwtDecode(token);
 
 const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clienteInfo, pendingDateTime }) => {
     const [isProcessing, setIsProcessing] = useState(false);
+    const [decoded, setDecoded] = useState({ sub: '', idUser: '' });
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No estás autenticado',
+                text: 'Por favor, inicia sesión para continuar.',
+                confirmButtonText: 'Iniciar sesión'
+            }).then(() => {
+                window.location.href = '/Login';
+            });
+        } else {
+            try {
+                const decodedToken = jwtDecode(token);
+                setDecoded(decodedToken);
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+            }
+        }
+    }, []);
 
     const handlePaymentSuccess = (paymentResult) => {
         console.log('Pago exitoso:', paymentResult);
@@ -32,6 +53,7 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
             onPaymentSuccess(paymentResult, pendingDateTime);
         }
     };
+
     const handlePaymentError = (error) => {
         console.error('Error en el pago:', error);
         setIsProcessing(false);
@@ -72,8 +94,8 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
                         idTransactProgress={clienteInfo?.idTransactProgress || 'N/A'}
                     />
                 </Elements>
-                <div style={{ marginTop: 24, marginBottom: 12 }}>
 
+                <div style={{ marginTop: 24, marginBottom: 12 }}>
                     <PayPalScriptLoader>
                         <PayPalButton
                             amount={99}

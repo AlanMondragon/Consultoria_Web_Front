@@ -583,6 +583,38 @@ export const olvidarContra = async (email) => {
   }
 };
 
+export const olvidarContraSin = async (email) => {
+  try {
+    if (!email || !email.trim() || !email.includes('@')) {
+      Swal.fire('Advertencia', 'Ingresa un correo electrónico válido.', 'warning');
+      return;
+    }
+
+    const body = {
+      subject: "Verificación de contraseña",
+      message: "Hola, aquí tienes tu código de verificacion de parte del equipo de Consultoría JAS: ",
+    };
+
+    const response = await axios.post(
+      `${API_URL_MAIL}/send/sin/${email.trim()}`,
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    console.log("Respuesta del servidor:", response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error("Error al mandar el correo:", error);
+    const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
+    throw new Error(errorMessage);
+  }
+};
+
 export const payDS160 = async (email) => {
   try {
 

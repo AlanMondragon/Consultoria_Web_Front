@@ -5,17 +5,18 @@ import styles from './../../styles/Home.module.css'; // Importar el módulo CSS
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'
 import Swal from 'sweetalert2';
+import { Icon } from '@iconify/react';
 
 export default function Home() {
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     // Aplicar fondo al body
     document.body.style.backgroundColor = '#132E3C';
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     localStorage.removeItem("token");
-    
+
     // Limpiar estilos al desmontar
     return () => {
       document.body.style.backgroundColor = '';
@@ -30,10 +31,10 @@ export default function Home() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await Login(email, password); 
-      const data = response.response; 
+      const response = await Login(email, password);
+      const data = response.response;
 
-      if(!data.token){
+      if (!data.token) {
         const message = response.message || 'Error desconocido';
         Swal.fire({
           icon: 'error',
@@ -86,6 +87,12 @@ export default function Home() {
   const handleForgotPassword = () => {
     navigate('/olvidar-contra')
   }
+   const volver = () => {
+    navigate('/')
+  }
+  const singint = () => {
+    navigate('/Signin')
+  }
 
   return (
     <div className={styles.homePage}>
@@ -102,6 +109,15 @@ export default function Home() {
           <div className={styles.verticalLine}></div>
 
           <div className={styles.cardRight}>
+            <button
+              type="button"
+              onClick={volver}
+              className={styles.volver}
+            >
+              <Icon icon="mdi:arrow-left" width="20" height="20" />
+
+              Volver
+            </button>
             <h2 className={styles.title}>Bienvenido</h2>
             <form onSubmit={handleLogin} className={styles.form}>
               <input
@@ -119,12 +135,20 @@ export default function Home() {
                 required
               />
               <div className={styles.forgotPasswordContainer}>
-                <button 
+                <button
                   type="button"
-                  onClick={handleForgotPassword} 
+                  onClick={handleForgotPassword}
                   className={styles.forgotPassword}
                 >
                   ¿Olvidaste tu contraseña?
+                </button>
+                <br></br>
+                <button
+                  type="button"
+                  onClick={singint}
+                  className={styles.forgotPassword}
+                >
+                  ¿No tienes una cuenta?
                 </button>
               </div>
               <button type="submit" className={styles.btnLogin}>

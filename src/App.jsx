@@ -28,6 +28,7 @@ import MiPerfil from "./components/Cliente/MiPerfil.jsx";
 import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
 import CombinedStepManager from "./components/Administrador/ActualizarPasos.jsx";
 import Page0 from "./components/Page0.jsx";
+import Signin from "./components/Singin.jsx";
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -57,6 +58,7 @@ function App() {
         <Route path="/Login" element={<Home />} />
         <Route path="/" element={<Page0 />} />
         <Route path="/test" element={<PruebaPago />} />
+        <Route path="/Signin" element={<Signin />} />
 
 
         <Route path="/olvidar-contra" element={<OlvidarContra />} />

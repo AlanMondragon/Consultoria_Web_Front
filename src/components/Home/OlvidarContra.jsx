@@ -3,7 +3,7 @@ import styles from './../../styles/OlvidarContra.module.css'; // Importar el mó
 import Swal from 'sweetalert2';
 import { olvidarContra, actualizarContra, obtenerUsuarioPorCorreo } from './../../api/api.js';
 import { Icon } from '@iconify/react';
-import logo from '../../img/logo.jpg';
+import logo from './../../img/logo_letras_negras.jpg';
 import { redirect } from 'react-router-dom';
 
 export default function OlvidarContra() {

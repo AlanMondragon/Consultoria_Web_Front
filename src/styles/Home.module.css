@@ -5,6 +5,16 @@
   margin: 0;
   padding: 0;
 }
+.volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  background-color: transparent;
+  color: #0056b3;
+}
+
+
 
 .homePage {
   background-color: #132E3C !important;
