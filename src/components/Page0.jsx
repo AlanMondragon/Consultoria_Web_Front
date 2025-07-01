@@ -27,6 +27,24 @@ export default function Page0() {
   const [showNavbar, setShowNavbar] = useState(true);
 
   const [faqActiveIndex, setFaqActiveIndex] = useState(null);
+  const handleDownloadTerminos = () => {
+  const link = document.createElement('a');
+  link.href = 'http://localhost:8080/api/pdf/download/terminos';
+  link.setAttribute('download', 'Terminos_y_Condiciones_Consultoria_JAS.pdf');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const handleDownloadPrivacidad = () => {
+  const link = document.createElement('a');
+  link.href = 'http://localhost:8080/api/pdf/download/privacidad';
+  link.setAttribute('download', 'Politica_de_Privacidad_Consultoria_JAS.pdf');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 
   useEffect(() => {
     fetchServices();
@@ -1119,6 +1137,15 @@ export default function Page0() {
           <Row className="mt-5">
             <Col className="text-center">
               <div className={styles.foote}>
+                              <p>
+                                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>
+                                  Términos y Condiciones
+                                </a>{' '}
+                                y{' '}
+                                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>
+                                  Política de Privacidad
+                                </a>
+                              </p>
                 <p className={styles.texto}>
                   &copy; {new Date().getFullYear()} <span style={{ color: '#60A5FA', fontWeight: '600' }}>Consultoría JAS</span>.
                   Todos los derechos reservados.

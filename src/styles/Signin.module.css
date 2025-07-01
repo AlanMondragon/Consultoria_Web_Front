@@ -2,10 +2,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg,#132E3C 0%,#132E3C 100%);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-
 
 .custom-container {
   margin: 0;
@@ -31,7 +29,7 @@ html, body {
   padding: 40px;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Barra decorativa superior */
@@ -101,6 +99,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 1rem;
 }
 
 .label {
@@ -116,6 +115,7 @@ html, body {
 .labelIcon {
   color: #667eea;
   font-size: 14px;
+  margin-right: 0.5rem;
 }
 
 /* Inputs */
@@ -151,6 +151,38 @@ html, body {
   padding-right: 56px;
 }
 
+.inputError {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+}
+
+.inputSuccess {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Mensajes de error y éxito */
+.errorMessage {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 500;
+}
+
+.successMessage {
+  color: #10b981;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.checkIcon {
+  font-size: 12px;
+}
+
 /* Toggle de contraseña */
 .passwordToggle {
   position: absolute;
@@ -167,6 +199,264 @@ html, body {
 .passwordToggle:hover {
   color: #667eea;
   background: rgba(102, 126, 234, 0.1);
+}
+
+/* Estilos para el contenedor de teléfono */
+.phoneContainer {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.phoneInputWrapper {
+  flex: 1;
+  display: flex;
+}
+
+.phoneNumberInput {
+  border-radius: 12px;
+  margin: 0;
+}
+
+/* Estilos para el selector de países personalizado */
+.countrySelectContainer {
+  position: relative;
+  min-width: 220px;
+}
+
+.countrySelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 56px;
+  box-sizing: border-box;
+}
+
+.countrySelectTrigger:hover {
+  border-color: #d1d5db;
+}
+
+.countrySelectTrigger:focus,
+.countrySelectOpen {
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.countrySelectValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.countryFlag {
+  font-size: 18px;
+  line-height: 1;
+  min-width: 20px;
+  text-align: center;
+}
+
+.countryCode {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 40px;
+}
+
+.countryName {
+  font-size: 14px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.countrySelectArrow {
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.countrySelectArrowUp {
+  transform: rotate(180deg);
+}
+
+/* Dropdown del selector */
+.countrySelectDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-top: 4px;
+  max-height: 280px;
+  overflow: hidden;
+}
+
+/* Buscador dentro del dropdown */
+.countrySearchContainer {
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.countrySearchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.countrySearchInput:focus {
+  border-color: #667eea;
+}
+
+/* Lista de opciones */
+.countryOptionsList {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.countryOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin: 2px 0;
+}
+
+.countryOption:hover {
+  background: #f8fafc;
+}
+
+.countryOptionSelected {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.countryOptionSelected:hover {
+  background: #dbeafe;
+}
+
+.countryLabel {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.countryOptionSelected .countryLabel {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.countryOption .countryCode {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.countryOptionSelected .countryCode {
+  color: #3b82f6;
+}
+
+/* Scrollbar personalizada para el dropdown */
+.countryOptionsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.countryOptionsList::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.countryOptionsList::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.countryOptionsList::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Sección de verificación */
+.verificationSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.verificationCard {
+  text-align: center;
+  padding: 32px;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+}
+
+.verificationIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  margin-bottom: 24px;
+  color: white;
+  font-size: 24px;
+}
+
+.codeInput {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  padding: 20px;
+}
+
+/* Términos y condiciones */
+.terms {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.terms p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
 }
 
 /* Botones */
@@ -206,6 +496,16 @@ html, body {
 .buttonPrimary:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
+}
+
+.buttonSecondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.buttonSecondary:hover {
+  background: #e2e8f0;
 }
 
 .buttonOutline {
@@ -216,19 +516,47 @@ html, body {
 
 .buttonOutline:hover {
   background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Spinner para loading */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .container {
+  .custom-container {
     padding: 0;
     align-items: flex-start;
+    width: 100%;
   }
   
   .card {
     border-radius: 0;
     min-height: 100vh;
     padding: 32px 24px;
+    max-width: none;
+  }
+  
+  .phoneContainer {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .countrySelectContainer {
+    min-width: 100%;
   }
   
   .actions {
@@ -237,6 +565,16 @@ html, body {
   
   .button {
     width: 100%;
+  }
+  
+  .countrySelectDropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    max-height: 60vh;
   }
 }
 
@@ -252,5 +590,59 @@ html, body {
   .headerIcon {
     width: 56px;
     height: 56px;
+  }
+  
+  .countrySelectValue {
+    gap: 6px;
+  }
+  
+  .countryName {
+    display: none;
+  }
+  
+  .countryCode {
+    min-width: 50px;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.countrySelectTrigger:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.countryOption:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: -2px;
+}
+
+.button:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Estados adicionales */
+.countrySelectTrigger[aria-expanded="true"] {
+  border-color: #667eea;
+}
+
+.countryOption[aria-selected="true"] {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* Animaciones suaves */
+.countrySelectDropdown {
+  animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

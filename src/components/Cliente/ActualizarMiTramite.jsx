@@ -341,13 +341,9 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
 };
 
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
-    const citaCas = cliente?.transact?.cas === true;
-    const citaCon = cliente?.transact?.con === true;
-    const citaSimulacion = cliente?.transact?.simulation === true;
 
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
-    const [mensaje, setMensaje] = useState();
     const [fechasOcupadas, setFechasOcupadas] = useState([]);
 
     const [showStripeModal, setShowStripeModal] = useState(false);
@@ -670,6 +666,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
     }
+    console.log('Cliente:', cliente);
 
     const handleModalHide = () => {
         setIsPaymentRequired(false);
@@ -686,7 +683,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         {cliente?.transact?.description}
                     </Modal.Title>
                 </Modal.Header>
-
                 <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                     <Modal.Body>
                         <div className="form-group">
@@ -717,6 +713,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             </p>
                             <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
                         </div>
+                  
 
                         <div className="form-group">
                             <label>Pago Adelantado:</label>

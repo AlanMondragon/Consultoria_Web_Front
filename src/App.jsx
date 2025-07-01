@@ -29,6 +29,7 @@ import RegistrarPasos from "./components/Administrador/RegistrarPasos.jsx";
 import CombinedStepManager from "./components/Administrador/ActualizarPasos.jsx";
 import Page0 from "./components/Page0.jsx";
 import Signin from "./components/Singin.jsx";
+import UploadPfd from "./components/Administrador/UploadPdf.jsx";
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -67,6 +68,11 @@ function App() {
         <Route path="/HomeAdmin" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <AdministradorHome />
+          </ProtectedRoute>
+        } />
+          <Route path="/PDF" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <UploadPfd />
           </ProtectedRoute>
         } />
         <Route path="/ServiciosAdmin" element={
