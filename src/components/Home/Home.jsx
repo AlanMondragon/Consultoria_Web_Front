@@ -98,6 +98,15 @@ export default function Home() {
     <div className={styles.homePage}>
       <div className={styles.bodyLogin}>
         <div className={styles.cardLogin}>
+          <button
+            type="button"
+            onClick={volver}
+            className={styles.volver}
+          >
+            <Icon icon="mdi:arrow-left" width="20" height="20" />
+            Volver
+          </button>
+          
           <div className={styles.cardLeft}>
             <img
               src={logo}
@@ -109,15 +118,6 @@ export default function Home() {
           <div className={styles.verticalLine}></div>
 
           <div className={styles.cardRight}>
-            <button
-              type="button"
-              onClick={volver}
-              className={styles.volver}
-            >
-              <Icon icon="mdi:arrow-left" width="20" height="20" />
-
-              Volver
-            </button>
             <h2 className={styles.title}>Bienvenido</h2>
             <form onSubmit={handleLogin} className={styles.form}>
               <input
