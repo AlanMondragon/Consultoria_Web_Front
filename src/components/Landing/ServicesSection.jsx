@@ -96,9 +96,13 @@ export default function ServicesSection({
         <h1 style={{ 
           fontSize: '3.5rem', 
           fontWeight: 'bold', 
-          marginBottom: '20px', 
-          color: '#FFFFFF', 
-          textAlign: 'center' 
+          marginBottom: '60px', 
+          color: '#0f172a', 
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
         }}>
           Nuestros Servicios
         </h1>
@@ -144,7 +148,7 @@ export default function ServicesSection({
             ))}
           </Slider>
         ) : (
-          <p className="text-center text-white">Cargando servicios...</p>
+          <p className="text-center" style={{ color: '#64748b', fontSize: '1.2rem' }}>Cargando servicios...</p>
         )}
       </Container>
     </section>

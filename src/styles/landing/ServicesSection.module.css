@@ -1,102 +1,176 @@
 /* Estilos de la sección de servicios */
 .seccion {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: linear-gradient(135deg, #043370 0%, #0d6e69 50%, #032f64 100%);
+  position: relative;
   min-height: 100vh;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  padding: 80px 0;
+  padding: 100px 0;
   display: flex;
   align-items: center;
-  position: relative;
   overflow: hidden;
+}
+
+.seccion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+  z-index: 1;
 }
 
 /* Estilos de las tarjetas de servicios */
 .cardContainer {
   padding: 10px;
   perspective: 1000px;
+  position: relative;
+  z-index: 2;
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .cardImage {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
-  border-bottom: 1px solid #eee;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
 .card:hover .cardImage {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .cardBody {
-  padding: 10px;
+  padding: 24px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: transparent;
+  position: relative;
+}
+
+.cardBody::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: linear-gradient(90deg, #0b457e, #187177, #0d4284);
+  border-radius: 2px;
 }
 
 .cardTitle {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #132E3C;
+  color: white;
+  line-height: 1.4;
+  margin-top: 16px;
 }
 
 .cardDescription {
-  color: #64748B;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  line-height: 1.6;
   margin-bottom: 20px;
   flex-grow: 1;
+  font-weight: 300;
 }
 
 .cardButtons {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   flex-wrap: wrap;
   margin-top: auto;
 }
 
 .cardButton {
-  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
-  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 10px 20px;
   color: white;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: inline-block;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   flex: 1;
   min-width: 120px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.cardButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cardButton:hover::before {
+  left: 100%;
 }
 
 .cardButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Badge de categoría moderno */
+.cardBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 3;
 }
 
 /* Estilos para el slider */
@@ -140,20 +214,29 @@
   }
   
   .cardBody {
-    padding: 15px;
+    padding: 20px;
   }
   
   .cardTitle {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
   
   .cardButtons {
     flex-direction: column;
+    gap: 8px;
   }
   
   .cardButton {
     flex: none;
     width: 100%;
+    padding: 12px 20px;
+  }
+  
+  .cardBadge {
+    top: 15px;
+    right: 15px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
   }
 }
 

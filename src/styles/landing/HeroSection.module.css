@@ -27,7 +27,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('../../img/fondo.jpg') center/cover no-repeat;
+  background: url('../../img/fondo.jpeg') center/cover no-repeat;
   opacity: 0.6;
   z-index: 1;
 }
