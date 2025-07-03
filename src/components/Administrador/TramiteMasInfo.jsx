@@ -190,12 +190,36 @@ export default function TramiteMasInfo() {
                     <option value={5}>Cancelado</option>
                     <option value={6}>Revisar</option>
                   </Form.Select>
-
+                </td>
+                <td>
+                  <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => {
+                      setClienteSeleccionado(cliente);
+                      setShowModalA(true);
+                    }}
+                  >
+                    <FaInfo /> Ver más
+                  </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
+      )}
+
+      {/* Modal para actualizar trámite */}
+      {showModalA && (
+        <ModalActualizarCliente
+          show={showModalA}
+          onHide={() => {
+            setShowModalA(false);
+            setClienteSeleccionado(null);
+          }}
+          onClienteRegistrado={fetchServices}
+          cliente={clienteSeleccionado}
+        />
       )}
 
       <div className="d-flex justify-content-center align-items-center my-3 gap-2">

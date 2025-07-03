@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
-import { actualizarTC, obtenerLosPasos, actualizarPaso } from './../../api/api.js';
+import { actualizarTC, obtenerLosPasos, deleteTRansactProgress } from './../../api/api.js';
 
 export default function ActualizarTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const citaCas = cliente?.transact?.cas === true;
@@ -328,8 +328,50 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={onHide}>Cancelar <MdClose /></Button>
-                    <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>Guardar <FaCheck /></Button>
+                    <Button variant="danger" onClick={() => {
+                        Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: "Esta acción no se puede deshacer",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, eliminar',
+                            cancelButtonText: 'Cancelar'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    await deleteTRansactProgress(cliente.idTransactProgress);
+                                    
+                                    Swal.fire(
+                                        'Eliminado!',
+                                        'El trámite ha sido eliminado.',
+                                        'success'
+                                    );
+                                    
+                                    // Actualizar la lista después de eliminar
+                                    if (typeof onClienteRegistrado === 'function') {
+                                        onClienteRegistrado();
+                                    }
+                                    
+                                    onHide();
+                                } catch (error) {
+                                    console.error('Error al eliminar el trámite:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error al eliminar',
+                                        text: 'No se pudo eliminar el trámite. Inténtalo de nuevo.',
+                                    });
+                                }
+                            }
+                        });
+                    }}>
+                        Eliminar
+                    </Button>
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
+                        <Button variant="secondary" onClick={onHide}>Cancelar <MdClose /></Button>
+                        <Button className="Guardar" variant="primary" type="submit" disabled={isSubmitting}>Guardar <FaCheck /></Button>
+                    </div>
                 </Modal.Footer>
             </form>
         </Modal>

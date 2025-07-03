@@ -1,0 +1,312 @@
+/* Estilos de la sección Nosotros */
+.nosotrosSection {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 100px 0;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efectos de fondo */
+.backgroundEffect1 {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.backgroundEffect2 {
+  position: absolute;
+  bottom: 20%;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatReverse 4s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes floatReverse {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(20px); }
+}
+
+/* Header de la sección */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border-radius: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+}
+
+.sectionTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFFFFF, #CBD5E1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.sectionDivider {
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* Tarjetas principales */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardMision {
+  margin-bottom: 30px;
+}
+
+.cardVision {
+  margin-bottom: 0;
+}
+
+.cardValores {
+  height: 100%;
+}
+
+/* Efectos decorativos de las tarjetas */
+.cardEffect1 {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  border-radius: 50%;
+  transform: rotate(45deg);
+}
+
+.cardEffect2 {
+  position: absolute;
+  bottom: -50%;
+  left: -50%;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+  border-radius: 50%;
+  transform: rotate(-45deg);
+}
+
+.cardEffect3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Headers de las tarjetas */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.cardIconContainer {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.iconMision {
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.iconVision {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.iconValores {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.cardTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* Contenido de las tarjetas */
+.cardContent {
+  position: relative;
+  z-index: 2;
+}
+
+.cardText {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #CBD5E1;
+  margin: 0;
+}
+
+/* Sección de valores */
+.valoresContainer {
+  position: relative;
+  z-index: 2;
+}
+
+.valoresHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.valorItem {
+  margin-bottom: 25px;
+}
+
+.valorItem:last-child {
+  margin-bottom: 0;
+}
+
+.valorHeader {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.valorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.valorText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #94A3B8;
+  margin: 0;
+  padding-left: 20px;
+}
+
+/* Colores para cada valor */
+.colorTrabajoEquipo {
+  color: #3B82F6;
+}
+
+.colorTrabajoEquipo .valorDot {
+  background: #3B82F6;
+}
+
+.colorOrientacionLogro {
+  color: #8B5CF6;
+}
+
+.colorOrientacionLogro .valorDot {
+  background: #8B5CF6;
+}
+
+.colorInnovacion {
+  color: #10B981;
+}
+
+.colorInnovacion .valorDot {
+  background: #10B981;
+}
+
+.colorHonestidad {
+  color: #F59E0B;
+}
+
+.colorHonestidad .valorDot {
+  background: #F59E0B;
+}
+
+.colorConfianza {
+  color: #EF4444;
+}
+
+.colorConfianza .valorDot {
+  background: #EF4444;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .cardMision {
+    margin-bottom: 30px;
+  }
+  
+  .cardVision {
+    margin-bottom: 30px;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nosotrosSection {
+    padding: 60px 0;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+  }
+  
+  .card {
+    padding: 30px;
+  }
+  
+  .backgroundEffect1,
+  .backgroundEffect2 {
+    width: 150px;
+    height: 150px;
+  }
+}

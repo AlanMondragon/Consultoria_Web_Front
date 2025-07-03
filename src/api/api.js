@@ -59,10 +59,14 @@ export const forgetPassword = async (email, token) => {
 //Procesos (los procesos disponibles para el cliente)
 export const getAllProcess = async () => {
   try {
+    console.log('getAllProcess: API_URL =', API_URL);
+    console.log('getAllProcess: URL completa =', `${API_URL}/transaction/web`);
     const response = await axios.get(`${API_URL}/transaction/web`);
+    console.log('getAllProcess: Respuesta recibida =', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching processes:', error);
+    console.error('Error details:', error.response?.data);
     throw error;
   }
 };
@@ -345,6 +349,17 @@ export const tramitesPorId = async (id) => {
     throw error;
   }
 };
+
+//Eliminar trnasacProgress
+export const deleteTRansactProgress = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/progress/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const obtenerLosPasos = async (id) => {
   try {
     console.log('ID de la  trasnsaccionm enviada:', id);
