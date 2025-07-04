@@ -138,7 +138,7 @@
 .section-description {
   font-size: 1.1rem;
   line-height: 1.6;
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto;
   color: #475569;
 }
@@ -687,6 +687,13 @@
 .colorConfianza {
   color: #EF4444;
 }
+.colorAzulBlanco {
+  color: #6c9fe7;
+}
+
+.colorAzulBlanco  .valorDot {
+  background: #6c9fe7;
+}
 
 .colorConfianza .valorDot {
   background: #EF4444;
@@ -747,18 +754,19 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(86, 85, 85, 0.5);
   z-index: 1;
 }
 .titulo{
   font-size: '3.5rem';
    font-weight: 'bold';
-    margin-bottom: '20px'
+    margin-bottom: '20px';
 }
 .descripcion{
   font-size: 1.5rem;
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto 40px;
+
 }
 /*SERVICIOS*/
 .seccion{
