@@ -23,6 +23,7 @@
     radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
   z-index: 1;
+  pointer-events: none;
 }
 
 /* Estilos de las tarjetas de servicios */
@@ -30,7 +31,7 @@
   padding: 10px;
   perspective: 1000px;
   position: relative;
-  z-index: 2;
+  z-index: 10;
 }
 
 .card {
@@ -47,6 +48,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  z-index: 15;
 }
 
 .card:hover {
@@ -77,6 +79,7 @@
   flex-direction: column;
   background: transparent;
   position: relative;
+  z-index: 20;
 }
 
 .cardBody::before {
@@ -88,6 +91,8 @@
   height: 2px;
   background: linear-gradient(90deg, #0b457e, #187177, #0d4284);
   border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .cardTitle {
@@ -113,36 +118,32 @@
   gap: 12px;
   flex-wrap: wrap;
   margin-top: auto;
+  position: relative;
+  z-index: 20;
 }
 
 .cardButton {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  padding: 10px 20px;
-  color: white;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  display: inline-block;
-  font-size: 0.85rem;
-  flex: 1;
-  min-width: 120px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.15);  border: 2px solid white !important;
+  border-radius: 8px !important;
+  padding: 12px 20px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  font-size: 0.9rem !important;
+  flex: 1 !important;
+  min-width: 120px !important;
+  text-align: center !important;
+  position: relative !important;
+  cursor: pointer !important;
+  z-index: 999 !important;
+  pointer-events: auto !important;
+  user-select: none !important;
 }
 
 .cardButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  display: none !important;
 }
 
 .cardButton:hover::before {
@@ -150,9 +151,8 @@
 }
 
 .cardButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
+  background: rgba(59, 130, 246, 1) !important;
+  transform: scale(1.02) !important;
 }
 
 /* Badge de categoría moderno */

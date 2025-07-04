@@ -83,7 +83,7 @@
 }
 
 .description {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: #e2e8f0;
   margin-bottom: 3rem;
   line-height: 1.6;
@@ -131,7 +131,7 @@
 }
 
 .featureList li {
-  color: #cbd5e1;
+  color: #ffffff;
   font-size: 1rem;
   margin-bottom: 0.8rem;
   font-weight: 500;
@@ -148,7 +148,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: #cbd5e1;
+  color: #fbfdff;
   font-size: 1rem;
   font-weight: 500;
 }

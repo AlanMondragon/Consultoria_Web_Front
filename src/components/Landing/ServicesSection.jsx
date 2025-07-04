@@ -125,19 +125,28 @@ export default function ServicesSection({
                     <div className={styles.cardButtons}>
                       <button
                         className={styles.cardButton}
-                        onClick={() => handleOpenStepsModal(service.idTransact)}
+                        onClick={() => {
+                          console.log('Ver Pasos clicked for service:', service.idTransact);
+                          handleOpenStepsModal(service.idTransact);
+                        }}
                       >
                         Ver Pasos
                       </button>
                       <button
                         className={styles.cardButton}
-                        onClick={() => handleOpenDetailsModal(service)}
+                        onClick={() => {
+                          console.log('Ver más clicked for service:', service);
+                          handleOpenDetailsModal(service);
+                        }}
                       >
                         Ver más
                       </button>
                       <button
                         className={styles.cardButton}
-                        onClick={() => singint()}
+                        onClick={() => {
+                          console.log('Obtener clicked');
+                          singint();
+                        }}
                       >
                         Obtener
                       </button>
