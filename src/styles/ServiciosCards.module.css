@@ -1,3 +1,20 @@
+/*
+ * DEPRECATED: ServiciosCards.module.css
+ * 
+ * This file has been refactored into modular CSS files.
+ * All landing page styles have been moved to:
+ * - src/styles/Landing/LandingNavbar.module.css
+ * - src/styles/Landing/HeroSection.module.css
+ * - src/styles/Landing/ServicesSection.module.css
+ * - src/styles/Landing/AboutSection.module.css
+ * - src/styles/Landing/TestimonialsSection.module.css
+ * - src/styles/Landing/FAQSection.module.css
+ * - src/styles/Landing/FooterSection.module.css
+ * 
+ * This file can be safely removed once all references are confirmed to be migrated.
+ * Last updated: During landing page refactoring
+ */
+
 /* Estilos de la barra de navegación */
 .modern-navbar {
   background-color: #132E3C;
