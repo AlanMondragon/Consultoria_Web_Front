@@ -40,8 +40,8 @@ export default function AboutSection() {
 
               <div className={styles.cardContent}>
                 <p className={styles.cardText}>
-                  "Brindar servicio de calidad a nuestros clientes, informando y facilitando los trámites que deseen, para cumplir con sus expectativas y hacerlos sentir satisfechos."
-                </p>
+                  "Ser una consultoría líder en servicios migratorios a nivel nacional e internacional, reconocida por la calidad, precisión y ética en cada gestión.
+                  Aspiramos a transformar la experiencia del solicitante, facilitando sus trámites con información clara, asesoría profesional y atención personalizada, superando sus expectativas y generando confianza en cada etapa del proceso."                </p>
               </div>
             </div>
 
@@ -60,7 +60,7 @@ export default function AboutSection() {
 
               <div className={styles.cardContent}>
                 <p className={styles.cardText}>
-                  "Ser una empresa reconocida por su mentalidad de servicio al cliente, compromiso y resolución profesional de las necesidades de cada cliente."
+                  "Ser una empresa reconocida por su enfoque genuino en el servicio al cliente, su compromiso constante y su capacidad para ofrecer soluciones profesionales que respondan eficazmente a las necesidades de cada persona."
                 </p>
               </div>
             </div>
