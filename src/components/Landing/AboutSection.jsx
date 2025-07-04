@@ -99,7 +99,7 @@ export default function AboutSection() {
                     Orientación al logro
                   </h4>
                   <p className={styles.valorText}>
-                    Teniendo en cuenta la visión, misión y objetivos de la organización, asumiendo la responsabilidad de los resultados.
+                    Actuamos alineados con la visión, misión y objetivos de la organización, asumiendo con responsabilidad los resultados obtenidos.
                   </p>
                 </div>
 
@@ -110,8 +110,7 @@ export default function AboutSection() {
                     Innovación y creatividad
                   </h4>
                   <p className={styles.valorText}>
-                    Basadas en la generación y desarrollo de ideas y soluciones.
-                  </p>
+                    Impulsamos la generación y desarrollo constante de ideas y soluciones que aporten valor y mejoren nuestros procesos.                  </p>
                 </div>
 
                 {/* Honestidad */}
@@ -121,8 +120,7 @@ export default function AboutSection() {
                     Honestidad
                   </h4>
                   <p className={styles.valorText}>
-                    Ser realistas con las expectativas y la definición de objetivos de los clientes.
-                  </p>
+                    Mantenemos una comunicación realista y transparente respecto a las expectativas y objetivos de cada cliente.                  </p>
                 </div>
 
                 {/* Confianza */}
@@ -132,8 +130,7 @@ export default function AboutSection() {
                     Confianza
                   </h4>
                   <p className={styles.valorText}>
-                    Poseer una experiencia demostrable y profesional al problema que enfrenta el cliente.
-                  </p>
+                    Respaldamos nuestro trabajo con experiencia demostrable y un enfoque profesional para abordar y resolver las necesidades de nuestros clientes.                  </p>
                 </div>
               </div>
             </div>
