@@ -28,22 +28,22 @@ export default function Page0() {
 
   const [faqActiveIndex, setFaqActiveIndex] = useState(null);
   const handleDownloadTerminos = () => {
-  const link = document.createElement('a');
-  link.href = 'http://localhost:8080/api/pdf/download/terminos';
-  link.setAttribute('download', 'Terminos_y_Condiciones_Consultoria_JAS.pdf');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+    const link = document.createElement('a');
+    link.href = 'http://localhost:8080/api/pdf/download/terminos';
+    link.setAttribute('download', 'Terminos_y_Condiciones_Consultoria_JAS.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-const handleDownloadPrivacidad = () => {
-  const link = document.createElement('a');
-  link.href = 'http://localhost:8080/api/pdf/download/privacidad';
-  link.setAttribute('download', 'Politica_de_Privacidad_Consultoria_JAS.pdf');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+  const handleDownloadPrivacidad = () => {
+    const link = document.createElement('a');
+    link.href = 'http://localhost:8080/api/pdf/download/privacidad';
+    link.setAttribute('download', 'Politica_de_Privacidad_Consultoria_JAS.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
 
   useEffect(() => {
@@ -53,27 +53,27 @@ const handleDownloadPrivacidad = () => {
   const faqData = [
     {
       question: "¿Cuánto tiempo tarda el proceso de visa?",
-      answer: "El tiempo de procesamiento varía según el tipo de visa y el país de destino. Generalmente, las visas de turista pueden tardar entre 15-30 días, mientras que las visas de trabajo o estudio pueden tomar de 1-3 meses. Te mantendremos informado durante todo el proceso."
+      answer: "El tiempo de procesamiento varía según el tipo de servicio solicitado. Por ejemplo, para el trámite de eTA, el proceso suele tomar entre 30 minutos y 72 horas. En el caso de visa americana, el tiempo de espera puede oscilar entre 2 y 6 meses, dependiendo de lo acordado en el contrato. Cabe destacar que en CONSULTORÍA JAS siempre trabajamos para minimizar los tiempos de espera y agilizar cada trámite, buscando la mayor eficiencia posible para nuestros clientes."
     },
     {
       question: "¿Qué documentos necesito para solicitar una visa?",
-      answer: "Los documentos requeridos dependen del tipo de visa y país de destino. Generalmente incluyen: pasaporte vigente, fotografías, formularios completados, comprobantes financieros, carta de invitación (si aplica), y documentos específicos según el propósito del viaje. Te proporcionaremos una lista detallada personalizada."
+      answer: "Los documentos requeridos varían según el tipo de visa y el país de destino. Por lo general, incluyen pasaporte vigente, fotografías, formularios completados, comprobantes financieros, carta de invitación (cuando sea necesario) y otros documentos específicos relacionados con el propósito del viaje. Nosotros te proporcionaremos una lista detallada y personalizada para que tengas toda la información clara y completa."
     },
     {
       question: "¿Ofrecen garantía de aprobación?",
-      answer: "Si bien tenemos una alta tasa de éxito, no podemos garantizar la aprobación al 100% ya que la decisión final es de las autoridades consulares. Sin embargo, nos comprometemos a preparar tu solicitud de la mejor manera posible y te acompañamos en todo el proceso."
+      answer: "Aunque contamos con una alta tasa de éxito, no podemos garantizar la aprobación al 100%, ya que la decisión final recae en las autoridades consulares. No obstante, nos comprometemos a preparar tu solicitud con el máximo cuidado y profesionalismo, acompañándote en cada etapa del proceso para brindarte el mejor apoyo posible."
     },
     {
       question: "¿Cuáles son sus tarifas y métodos de pago?",
-      answer: "Nuestras tarifas varían según el tipo de servicio y complejidad del caso. Ofrecemos precios competitivos y transparentes. Aceptamos pagos en efectivo, transferencias bancarias y tarjetas de crédito. Solicita una cotización gratuita para conocer el costo específico de tu trámite."
+      answer: "Nuestras tarifas varían según el tipo de servicio, la complejidad del caso y la urgencia del trámite requerida por el solicitante. Ofrecemos precios competitivos, transparentes y con todos los costos incluidos, IVA incluido. Aceptamos pagos en efectivo, transferencias bancarias y tarjetas de crédito, además de ofrecer la opción de pago a meses sin intereses para mayor comodidad. Solicita una cotización gratuita y personalizada para conocer el costo específico de tu trámite."
     },
     {
       question: "¿Qué pasa si mi visa es rechazada?",
-      answer: "En caso de rechazo, analizamos las razones y te asesoramos sobre las opciones disponibles, que pueden incluir una nueva solicitud con documentación adicional o una apelación si es posible. Nuestro equipo te apoyará para mejorar las posibilidades de éxito en futuros intentos."
+      answer: "En caso de que tu solicitud sea negada, puedes contactarnos para analizar tu caso a detalle y orientarte sobre las mejores alternativas para una segunda aplicación. En esta ocasión, solo deberás cubrir las cuotas arancelarias, y el pago de nuestros honorarios estará sujeto a la aprobación de tu documento. Nuestro equipo especializado en casos de rechazo estará contigo para brindarte todo el apoyo necesario y así aumentar las posibilidades de éxito en futuros intentos."
     },
     {
       question: "¿Atienden casos de emergencia o urgentes?",
-      answer: "Sí, ofrecemos servicios de procesamiento urgente cuando es posible. Evaluamos cada caso individualmente y te informamos sobre las opciones de servicio rápido disponibles, aunque esto puede implicar costos adicionales por los trámites expresos."
+      answer: "Sí, ofrecemos servicios de procesamiento urgente, incluso las 24 horas del día, los 7 días de la semana, siempre que sea posible. Evaluamos cada caso de manera personalizada y te informamos sobre las opciones de servicio rápido disponibles. Es importante considerar que estos trámites exprés pueden implicar costos adicionales, que en algunos casos pueden llegar hasta el doble del costo normal."
     }
   ];
 
@@ -201,7 +201,7 @@ const handleDownloadPrivacidad = () => {
     await fetchStepsById(service.idTransact);
   };
 
-  const singint =  () => {
+  const singint = () => {
     window.location.href = '/Login';
   };
 
@@ -468,12 +468,11 @@ const handleDownloadPrivacidad = () => {
           zIndex: 2
         }}>
           <div className="text-center text-white">
-            <h1 className={styles.titulo} >
-              Consultoría JAS
-            </h1>
             <p className={styles.descripcion}>
-              Somos una empresa especializada en trámites migratorios, comprometida con brindar un servicio de calidad, transparente y orientado a las necesidades de cada cliente. Nos destacamos por nuestro profesionalismo, atención personalizada y enfoque en la satisfacción del usuario, guiados por valores como la honestidad, la confianza, el trabajo en equipo y la innovación.
-            </p>
+              En <strong>CONSULTORÍA JAS </strong>somos especialistas en trámites migratorios. Ofrecemos un servicio profesional, transparente y enfocado en brindar soluciones efectivas, basadas en un análisis detallado del perfil de cada solicitante.
+              Nuestro equipo está conformado en su mayoría por profesionales jóvenes con grado académico superior, lo que nos permite combinar preparación técnica con una visión actualizada y dinámica del entorno migratorio.
+              Además, nos capacitamos constantemente en nuevas políticas, cambios normativos y estrategias migratorias que representen un beneficio real para nuestros clientes. Esta actualización continua nos permite ofrecer asesoría precisa, segura y alineada a los lineamientos más recientes.
+              En CONSULTORÍA JAS, trabajamos con integridad, responsabilidad y excelencia para generar confianza y acompañar a cada cliente en su proceso con total compromiso y ética profesional.            </p>
           </div>
         </Container>
       </section>
@@ -513,7 +512,7 @@ const handleDownloadPrivacidad = () => {
                         >
                           Ver más
                         </button>
-                          <button
+                        <button
                           className={styles.cardButton}
                           onClick={() => singint()}
                         >
@@ -566,8 +565,8 @@ const handleDownloadPrivacidad = () => {
 
                 <div className={styles.cardContent}>
                   <p className={styles.cardText}>
-                    "Brindar servicio de calidad a nuestros clientes, informando y facilitando los trámites que deseen, para cumplir con sus expectativas y hacerlos sentir satisfechos."
-                  </p>
+                    Ser una consultoría líder en servicios migratorios a nivel nacional e internacional, reconocida por la calidad, precisión y ética en cada gestión.
+                    Aspiramos a transformar la experiencia del solicitante, facilitando sus trámites con información clara, asesoría profesional y atención personalizada, superando sus expectativas y generando confianza en cada etapa del proceso.                  </p>
                 </div>
               </div>
 
@@ -586,8 +585,7 @@ const handleDownloadPrivacidad = () => {
 
                 <div className={styles.cardContent}>
                   <p className={styles.cardText}>
-                    "Ser una empresa reconocida por su mentalidad de servicio al cliente, compromiso y resolución profesional de las necesidades de cada cliente."
-                  </p>
+                    Ser una empresa reconocida por su enfoque genuino en el servicio al cliente, su compromiso constante y su capacidad para ofrecer soluciones profesionales que respondan eficazmente a las necesidades de cada persona.                  </p>
                 </div>
               </div>
             </Col>
@@ -622,21 +620,20 @@ const handleDownloadPrivacidad = () => {
                   <div className={styles.valorItem}>
                     <h4 className={`${styles.valorHeader} ${styles.colorOrientacionLogro}`}>
                       <div className={styles.valorDot}></div>
-                      Orientación al logro
+                      Trabajo en equipo:
                     </h4>
                     <p className={styles.valorText}>
-                      Teniendo en cuenta la visión, misión y objetivos de la organización, asumiendo la responsabilidad de los resultados.
-                    </p>
+                      Se fomenta a través del apoyo mutuo, el respeto y la confianza, promoviendo la colaboración mediante el intercambio de conocimientos y experiencias.                    </p>
                   </div>
 
                   {/* Innovación */}
                   <div className={styles.valorItem}>
                     <h4 className={`${styles.valorHeader} ${styles.colorInnovacion}`}>
                       <div className={styles.valorDot}></div>
-                      Innovación y creatividad
+                      Orientación al logro:
                     </h4>
                     <p className={styles.valorText}>
-                      Basadas en la generación y desarrollo de ideas y soluciones.
+                      Actuamos alineados con la visión, misión y objetivos de la organización, asumiendo con responsabilidad los resultados obtenidos.
                     </p>
                   </div>
 
@@ -644,10 +641,10 @@ const handleDownloadPrivacidad = () => {
                   <div className={styles.valorItem}>
                     <h4 className={`${styles.valorHeader} ${styles.colorHonestidad}`}>
                       <div className={styles.valorDot}></div>
-                      Honestidad
+                      Innovación y creatividad:
                     </h4>
                     <p className={styles.valorText}>
-                      Ser realistas con las expectativas y la definición de objetivos de los clientes.
+                      Impulsamos la generación y desarrollo constante de ideas y soluciones que aporten valor y mejoren nuestros procesos.
                     </p>
                   </div>
 
@@ -655,12 +652,21 @@ const handleDownloadPrivacidad = () => {
                   <div className={styles.valorItem}>
                     <h4 className={`${styles.valorHeader} ${styles.colorConfianza}`}>
                       <div className={styles.valorDot}></div>
-                      Confianza
+                      Honestidad:
                     </h4>
                     <p className={styles.valorText}>
-                      Poseer una experiencia demostrable y profesional al problema que enfrenta el cliente.
-                    </p>
+                      Mantenemos una comunicación realista y transparente respecto a las expectativas y objetivos de cada cliente.                    </p>
                   </div>
+                  <div className={styles.valorItem}>
+                    <h4 className={`${styles.valorHeader} ${styles.colorAzulBlanco}`}>
+                      <div className={styles.valorDot}></div>
+                      Confianza:
+                    </h4>
+                    <p className={styles.valorText}>
+                      Respaldamos nuestro trabajo con experiencia demostrable y un enfoque profesional para abordar y resolver las necesidades de nuestros clientes.
+                    </p>                 
+                     </div>
+
                 </div>
               </div>
             </Col>
@@ -1137,15 +1143,15 @@ const handleDownloadPrivacidad = () => {
           <Row className="mt-5">
             <Col className="text-center">
               <div className={styles.foote}>
-                              <p>
-                                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>
-                                  Términos y Condiciones
-                                </a>{' '}
-                                y{' '}
-                                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>
-                                  Política de Privacidad
-                                </a>
-                              </p>
+                <p>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>
+                    Términos y Condiciones
+                  </a>{' '}
+                  y{' '}
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>
+                    Política de Privacidad
+                  </a>
+                </p>
                 <p className={styles.texto}>
                   &copy; {new Date().getFullYear()} <span style={{ color: '#60A5FA', fontWeight: '600' }}>Consultoría JAS</span>.
                   Todos los derechos reservados.

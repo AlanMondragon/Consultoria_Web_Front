@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import '../../styles/ActualizarTramite.css';
 import { FaCreditCard } from 'react-icons/fa';
-import { actualizarTC, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
+import { actualizarTC, actualizarTCS, obtenerLosPasos, cancelarCita, getAllDates } from './../../api/api.js';
 import CheckoutForm from '../Pagos.jsx';
 import PayPalScriptLoader from '../PayPal/PayPalScriptLoader.jsx';
 import PayPalButton from '../PayPal/BottonTest.jsx';
@@ -117,19 +117,34 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
     );
 };
 
-const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired }) => {
+const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired, disabled // 👈✅ ahora sí existe
+}) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
     const [availableHours, setAvailableHours] = useState([]);
     const [allHours, setAllHours] = useState([]);
 
     useEffect(() => {
+     
         if (value) {
-            const date = new Date(value);
-            const dateStr = date.toISOString().split('T')[0];
-            const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-            setSelectedDate(dateStr);
-            setSelectedTime(timeStr);
+            // CORRECCIÓN: Manejo más simple y directo de fecha/hora
+            if (typeof value === 'string' && value.includes('T')) {
+                // Si es una cadena ISO, extraer directamente fecha y hora
+                const [datePart, timePart] = value.split('T');
+                const timeOnly = timePart.split(':').slice(0, 2).join(':'); // Solo HH:MM
+                setSelectedDate(datePart);
+                setSelectedTime(timeOnly);
+            } else {
+                // Si es un objeto Date, usar métodos locales
+                const date = new Date(value);
+                const dateStr = date.getFullYear() + '-' +
+                    String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(date.getDate()).padStart(2, '0');
+                const timeStr = String(date.getHours()).padStart(2, '0') + ':' +
+                    String(date.getMinutes()).padStart(2, '0');
+                setSelectedDate(dateStr);
+                setSelectedTime(timeStr);
+            }
         }
     }, [value]);
 
@@ -137,6 +152,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         if (!selectedDateStr) return [];
 
         const today = new Date();
+        // CORRECCIÓN: Crear fecha sin desplazamiento de zona horaria
         const selectedDateObj = new Date(selectedDateStr + 'T00:00:00');
         const isToday = selectedDateObj.toDateString() === today.toDateString();
 
@@ -162,20 +178,35 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         const possibleHours = generateAllPossibleHours(selectedDateStr);
         setAllHours(possibleHours);
 
-        const selectedDateObj = new Date(selectedDateStr + 'T00:00:00');
-        const selectedDateString = selectedDateObj.toDateString();
-
         const occupiedTimes = new Set();
 
         fechasOcupadas.forEach(fechaOcupada => {
             if (!fechaOcupada) return;
 
-            const fechaOcupadaObj = new Date(fechaOcupada);
-            const fechaOcupadaString = fechaOcupadaObj.toDateString();
 
-            if (fechaOcupadaString === selectedDateString) {
-                const horaFormateada = `${String(fechaOcupadaObj.getHours()).padStart(2, '0')}:${String(fechaOcupadaObj.getMinutes()).padStart(2, '0')}`;
-                occupiedTimes.add(horaFormateada);
+            let fechaOcupadaDate, fechaOcupadaHour;
+
+            if (typeof fechaOcupada === 'string' && fechaOcupada.includes('T')) {
+                // Formato ISO string
+                const [datePart, timePart] = fechaOcupada.split('T');
+                fechaOcupadaDate = datePart;
+                fechaOcupadaHour = timePart.split(':').slice(0, 2).join(':');
+            } else if (typeof fechaOcupada === 'string' && fechaOcupada.includes(' ')) {
+                // Formato "YYYY-MM-DD HH:MM:SS"
+                const [datePart, timePart] = fechaOcupada.split(' ');
+                fechaOcupadaDate = datePart;
+                fechaOcupadaHour = timePart.split(':').slice(0, 2).join(':');
+            } else {
+                const fechaObj = new Date(fechaOcupada);
+                fechaOcupadaDate = fechaObj.getFullYear() + '-' +
+                    String(fechaObj.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(fechaObj.getDate()).padStart(2, '0');
+                fechaOcupadaHour = String(fechaObj.getHours()).padStart(2, '0') + ':' +
+                    String(fechaObj.getMinutes()).padStart(2, '0');
+            }
+
+            if (fechaOcupadaDate === selectedDateStr) {
+                occupiedTimes.add(fechaOcupadaHour);
             }
         });
 
@@ -205,7 +236,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         onChange('');
     };
 
-
     const handleTimeChange = (e) => {
         const newTime = e.target.value;
 
@@ -221,7 +251,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         setSelectedTime(newTime);
 
         if (selectedDate && newTime) {
-            const dateTime = `${selectedDate}T${newTime}`;
+            const dateTime = `${selectedDate}T${newTime}:00`;
 
             const hourNumber = parseInt(newTime.split(':')[0]);
             if (hourNumber >= 21) {
@@ -238,12 +268,10 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                         setSelectedTime('');
                         onChange('');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        if (result.dismiss === Swal.DismissReason.cancel) {
-                            if (onExtraChargeRequired) {
-                                onExtraChargeRequired(dateTime);
-                            }
-                            onChange(dateTime);
+                        if (onExtraChargeRequired) {
+                            onExtraChargeRequired(dateTime);
                         }
+                        onChange(dateTime);
                     }
                 });
             } else {
@@ -251,6 +279,8 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
             }
         }
     };
+
+
     const getMinDate = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
@@ -273,6 +303,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                         onChange={handleDateChange}
                         min={getMinDate()}
                         className={`form-control ${error ? 'is-invalid' : ''}`}
+                        disabled={disabled}
                     />
                 </div>
                 <div className="col-md-6">
@@ -281,7 +312,7 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
                         value={selectedTime}
                         onChange={handleTimeChange}
                         className={`form-control ${error ? 'is-invalid' : ''}`}
-                        disabled={!selectedDate || allHoursOccupied}
+                        disabled={disabled || !selectedDate || allHoursOccupied}
                     >
                         <option value="">Selecciona una hora</option>
                         {allHours.map(hour => {
@@ -339,8 +370,8 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         </div>
     );
 };
-
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
+    console.log('Cliente en ActualizarMiTramite:', cliente);
 
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
@@ -406,6 +437,8 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }, [show]);
 
     useEffect(() => {
+           console.log('Cliente recibido:', cliente);
+        console.log('WasUpdated:', cliente?.wasUpdated);
         if (cliente) {
             const formattedCas = cliente.dateCas
                 ? cliente.dateCas.replace(' ', 'T').slice(0, 16)
@@ -481,6 +514,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         console.log('✅ Fecha/hora confirmada:', confirmedDateTime);
 
         if (confirmedDateTime) {
+
             setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
             setPendingDateTime(null);
         }
@@ -501,7 +535,23 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
         setShowStripeModal(false);
     };
+    const formatDate = (date, maintainLocalTime = false) => {
+        if (!date) return null;
 
+        let d;
+        if (maintainLocalTime && typeof date === 'string') {
+            d = new Date(date + (date.includes('T') ? '' : 'T00:00:00'));
+        } else {
+            d = new Date(date);
+        }
+
+        const yyyy = d.getFullYear();
+        const MM = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
+    };
 
     const onSubmit = async (data) => {
         if (data.dateSimulation && isPaymentRequired) {
@@ -587,30 +637,39 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 passwordAcces: data.passwordAcces,
                 stepProgress: data.stepProgress,
             };
+            const response = await actualizarTCS(cliente.idTransactProgress, payload);
 
-            await actualizarTC(cliente.idTransactProgress, payload);
+            console.log('Datos actualizados:', response.message);
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Actualización exitosa',
-                confirmButtonText: 'Aceptar',
-            });
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    confirmButtonText: 'Aceptar',
+                });
 
-            if (typeof onClienteRegistrado === 'function') {
-                onClienteRegistrado();
+                if (typeof onClienteRegistrado === 'function') {
+                    onClienteRegistrado();
+                }
+
+                setIsPaymentRequired(false);
+                setPendingDateTime(null);
+
+                onHide();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al actualizar',
+                    text: response.message || 'No se pudo actualizar el trámite',
+                });
             }
-
-            setIsPaymentRequired(false);
-            setPendingDateTime(null);
-
-            onHide();
         } catch (error) {
+            console.error('Error al actualizar el trámite:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error al actualizar',
-                text: 'Error al actualizar',
+                text: 'No se pudo actualizar el trámite. Por favor, inténtalo de nuevo más tarde.',
             });
-            console.error(error);
         }
     };
 
@@ -666,7 +725,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
     }
-    console.log('Cliente:', cliente);
 
     const handleModalHide = () => {
         setIsPaymentRequired(false);
@@ -713,7 +771,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             </p>
                             <input type="text" className="form-control" value={cliente?.dateCon ?? ''} disabled />
                         </div>
-                  
+
 
                         <div className="form-group">
                             <label>Pago Adelantado:</label>
@@ -746,7 +804,26 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             <label>Descripción del paso:</label>
                             <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                         </div>
+                        {cliente?.emailAcces && (
+                            <div className="form-group">
+                                <label>Email de Acceso:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    {...register('emailAcces')}
+                                    placeholder="Email de acceso"
+                                    disabled
+                                />
+                            </div>
+                        )}
 
+                        {cliente?.emailAcces && (
+                            <div className="form-group">
+                                <label>Contraseña:</label>
+                                <input type="password" {...register('passwordAcces')} className={`modern-input ${errors.passwordAcces ? 'input-error' : ''}`} />
+                                <span className="error">{errors.passwordAcces?.message}</span>
+                            </div>
+                        )}
 
 
                         <div className="form-group">
@@ -767,15 +844,17 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                                             fechasOcupadas={fechasOcupadas}
                                             error={errors.dateSimulation}
                                             onExtraChargeRequired={handleExtraChargeRequired}
+                                            disabled={cliente?.wasUpdated} // ✅ Deshabilita si ya se actualizó una vez
                                         />
                                     )}
                                 />
+
                                 {errors.dateSimulation && (
                                     <span className="text-danger">{errors.dateSimulation.message}</span>
                                 )}
                             </div>
 
-                            {cliente?.dateSimulation && (
+                            {cliente?.wasUpdated && (
                                 <button
                                     type="button"
                                     className="btn btn-danger mt-2"
