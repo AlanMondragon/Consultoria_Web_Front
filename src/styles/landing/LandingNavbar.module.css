@@ -27,8 +27,8 @@
 }
 
 .navbarLogo {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
   border-radius: 12px;
   transition: transform 0.3s ease;
 }
