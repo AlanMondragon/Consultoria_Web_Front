@@ -30,6 +30,7 @@ import CombinedStepManager from "./components/Administrador/ActualizarPasos.jsx"
 import Page0 from "./components/Page0.jsx";
 import Signin from "./components/Singin.jsx";
 import UploadPfd from "./components/Administrador/UploadPdf.jsx";
+import Practicas from "../Practicas.jsx";
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -60,6 +61,7 @@ function App() {
         <Route path="/" element={<Page0 />} />
         <Route path="/test" element={<PruebaPago />} />
         <Route path="/Signin" element={<Signin />} />
+        <Route path="/practicas" element={<Practicas />} />
 
 
         <Route path="/olvidar-contra" element={<OlvidarContra />} />

@@ -117,7 +117,7 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
     );
 };
 
-const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired, disabled // 👈✅ ahora sí existe
+const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired, disabled 
 }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
@@ -371,7 +371,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
     );
 };
 export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
-    console.log('Cliente en ActualizarMiTramite:', cliente);
 
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
