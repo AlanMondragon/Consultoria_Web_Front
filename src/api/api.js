@@ -1,18 +1,17 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-
-/**
- * Función para actualizar pasos existentes y crear nuevos si es necesario
- * @param {number} idTransact - ID del trámite
- * @param {Array} stepsArray - Arreglo de pasos a actualizar o crear
- * @returns {Array} - Resultados de las operaciones
- */
-
+// =============================================================================
+// CONFIGURACIÓN DE URLS
+// =============================================================================
 const API_URL = import.meta.env.VITE_API_URL;
 const API_URL_MAIL = import.meta.env.VITE_API_URL_MAIL
 const URL_DS160 = import.meta.env.VITE_URL_DS160;
 console.log('API_URL:', API_URL);
+
+// =============================================================================
+// AUTENTICACIÓN Y USUARIOS
+// =============================================================================
 
 export const Login = async (email, password) => {
   try {
@@ -55,8 +54,90 @@ export const forgetPassword = async (email, token) => {
   }
 };
 
+export const obtenerUsuarioPorCorreo = async (email) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/email/${email}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener usuario por correo', error);
+    throw error;
+  }
+};
 
-//Procesos (los procesos disponibles para el cliente)
+export const actualizarContra = async (id_user, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/password/${id_user}`, { password: data });
+    return response.data;
+  } catch (error) {
+    console.error('Error al actualizar contraseña', error);
+    throw error;
+  }
+};
+
+// =============================================================================
+// GESTIÓN DE CLIENTES (ADMINISTRADOR)
+// =============================================================================
+
+export const clientes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users`);
+    return response.data;
+  } catch (error) {
+    console.error('Error durante la peticion', error);
+    throw error;
+  }
+};
+
+export const clientePorId = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error durante la peticion', error);
+    throw error;
+  }
+};
+
+export const RegistrarCliente = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/users`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al hacer el post', error);
+    throw error;
+  }
+};
+
+export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/${id_user}/status`, { status: nuevoEstado });
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el estado del cliente", error);
+    throw error;
+  }
+};
+
+export const actualizar = async (idUser, datosActualizados) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/${idUser}`, {
+      idUser,
+      name: datosActualizados.name,
+      email: datosActualizados.email,
+      phone: datosActualizados.phone,
+      status: datosActualizados.status
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el cliente", error);
+    throw error;
+  }
+};
+
+// =============================================================================
+// GESTIÓN DE SERVICIOS/PROCESOS
+// =============================================================================
+
 export const getAllProcess = async () => {
   try {
     console.log('getAllProcess: API_URL =', API_URL);
@@ -70,6 +151,7 @@ export const getAllProcess = async () => {
     throw error;
   }
 };
+
 export const servicios = async () => {
   try {
     const response = await axios.get(`${API_URL}/transaction`);
@@ -133,8 +215,46 @@ export const getServiceById = async (id) => {
   }
 }
 
+export const updateService = async (id, serviceData) => {
+  const serviceId = Number.isInteger(id) ? id : parseInt(id, 10); // Ensure id is a valid integer
+  if (isNaN(serviceId)) {
+    throw new Error(`Invalid service ID: ${id}`);
+  }
 
-//Pasos para los procesos (los pasos disponibles para el cliente)
+  try {
+    const payload = {
+      name: serviceData.name,
+      description: serviceData.description,
+      image: serviceData.image, // Base64 string
+      imageDetail: serviceData.imageDetail, // Base64 string
+      simulation: serviceData.simulation,
+      cas: serviceData.cas,
+      con: serviceData.con,
+      cashAdvance: serviceData.cashAdvance
+    };
+
+    const response = await axios.put(`${API_URL}/transaction/${serviceId}`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating service:', error);
+    throw error;
+  }
+}
+
+export const getAllServices = async () => {
+  const response = await axios.get(`${API_URL}/services`);
+  return response.data;
+};
+
+// =============================================================================
+// GESTIÓN DE PASOS
+// =============================================================================
+
 export const getSteps = async () => {
   try {
     const response = await axios.get(`${API_URL}/steps`);
@@ -155,8 +275,20 @@ export const getStepById = async (id) => {
   }
 };
 
-// Creacion de los pasos para los procesos
+export const obtenerLosPasos = async (id) => {
+  try {
+    console.log('ID de la  trasnsaccionm enviada:', id);
+    const response = await axios.get(`${API_URL}/steps/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener los pasos', error);
+    throw error;
+  }
+};
 
+/**
+ * Función para crear pasos para los procesos
+ */
 export const createSteps = async (stepsArray) => {
   if (!Array.isArray(stepsArray) || stepsArray.length === 0) {
     throw new Error('Debe proporcionar un arreglo de pasos para crear.');
@@ -190,6 +322,12 @@ export const createSteps = async (stepsArray) => {
   return results;
 };
 
+/**
+ * Función para actualizar pasos existentes y crear nuevos si es necesario
+ * @param {number} idTransact - ID del trámite
+ * @param {Array} stepsArray - Arreglo de pasos a actualizar o crear
+ * @returns {Array} - Resultados de las operaciones
+ */
 export const updateSteps = async (idTransact, stepsArray) => {
   if (!Array.isArray(stepsArray) || stepsArray.length === 0) {
     throw new Error('Debe proporcionar un arreglo de pasos para actualizar.');
@@ -283,61 +421,9 @@ export const updateSteps = async (idTransact, stepsArray) => {
   return results;
 }
 
-
-
-//CLIENTES ADMINISTRADOR
-export const updateService = async (id, serviceData) => {
-  const serviceId = Number.isInteger(id) ? id : parseInt(id, 10); // Ensure id is a valid integer
-  if (isNaN(serviceId)) {
-    throw new Error(`Invalid service ID: ${id}`);
-  }
-
-  try {
-    const payload = {
-      name: serviceData.name,
-      description: serviceData.description,
-      image: serviceData.image, // Base64 string
-      imageDetail: serviceData.imageDetail, // Base64 string
-      simulation: serviceData.simulation,
-      cas: serviceData.cas,
-      con: serviceData.con,
-      cashAdvance: serviceData.cashAdvance
-    };
-
-    const response = await axios.put(`${API_URL}/transaction/${serviceId}`, payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error('Error updating service:', error);
-    throw error;
-  }
-}
-
-//OBTENER TODOS LOS CLIENTES
-export const clientes = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/users`);
-    return response.data;
-  } catch (error) {
-    console.error('Error durante la peticion', error);
-    throw error;
-  }
-};
-
-export const clientePorId = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/users/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error durante la peticion', error);
-    throw error;
-  }
-};
-
+// =============================================================================
+// GESTIÓN DE TRÁMITES/TRANSACCIONES
+// =============================================================================
 
 export const tramitesPorId = async (id) => {
   try {
@@ -350,7 +436,6 @@ export const tramitesPorId = async (id) => {
   }
 };
 
-//Eliminar trnasacProgress
 export const deleteTRansactProgress = async (id) => {
   try {
     const response = await axios.delete(`${API_URL}/progress/delete/${id}`);
@@ -360,16 +445,6 @@ export const deleteTRansactProgress = async (id) => {
   }
 }
 
-export const obtenerLosPasos = async (id) => {
-  try {
-    console.log('ID de la  trasnsaccionm enviada:', id);
-    const response = await axios.get(`${API_URL}/steps/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener los pasos', error);
-    throw error;
-  }
-};
 export const cancelarCita = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/progress/cancelSimulation/${id}`);
@@ -379,52 +454,7 @@ export const cancelarCita = async (id) => {
     throw error;
   }
 }
-export const actualizarContra = async (id_user, data) => {
-  try {
-    const response = await axios.put(`${API_URL}/users/password/${id_user}`, { password: data });
-    return response.data;
-  } catch (error) {
-    console.error('Error al actualizar contraseña', error);
-    throw error;
-  }
-};
 
-export const RegistrarCliente = async (data) => {
-  try {
-    const response = await axios.post(`${API_URL}/users`, data);
-    return response.data;
-  } catch (error) {
-    console.error('Error al hacer el post', error);
-    throw error;
-  }
-};
-export const actualizarStatusCliente = async (id_user, nuevoEstado) => {
-  try {
-    const response = await axios.put(`${API_URL}/users/${id_user}/status`, { status: nuevoEstado });
-    return response.data;
-  } catch (error) {
-    console.error("Error al actualizar el estado del cliente", error);
-    throw error;
-  }
-};
-
-export const actualizar = async (idUser, datosActualizados) => {
-  try {
-    const response = await axios.put(`${API_URL}/users/${idUser}`, {
-      idUser,
-      name: datosActualizados.name,
-      email: datosActualizados.email,
-      phone: datosActualizados.phone,
-      status: datosActualizados.status
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error al actualizar el cliente", error);
-    throw error;
-  }
-};
-
-//TRANSACCIONES ADMINISTRADOR
 export const trasacciones = async () => {
   try {
     const response = await axios.get(`${API_URL}/progress/transactWithDataUser`)
@@ -434,6 +464,7 @@ export const trasacciones = async () => {
     throw error;
   }
 };
+
 export const trasaccionesPorCliente = async () => {
   try {
     const response = await axios.get(`${API_URL}/progress/transactWithDataUser`)
@@ -443,6 +474,7 @@ export const trasaccionesPorCliente = async () => {
     throw error;
   }
 };
+
 export const actualizarT = async (idTransactProgress, nuevoEstado) => {
   try {
     const response = await axios.patch(
@@ -482,6 +514,7 @@ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
     throw error;
   }
 };
+
 export const actualizarTCS = async (idTransactProgress, datosActualizados) => {
   try {
     const response = await axios.put(`${API_URL}/progress/simulation/${idTransactProgress}`,
@@ -509,7 +542,6 @@ export const actualizarTCS = async (idTransactProgress, datosActualizados) => {
   }
 };
 
-
 export const actualizarPaso = async (idTransactProgress, datosActualizados) => {
   try {
     const response = await axios.put(
@@ -526,7 +558,7 @@ export const actualizarPaso = async (idTransactProgress, datosActualizados) => {
     throw error;
   }
 };
-//Este es para asignar un servico a un cliente , pera que emprize el proceso de que va a empezar a darle el seguimiento  a su servicio
+
 export const RegistrarTransaccion = async (data) => {
   try {
     const response = await axios.post(`${API_URL}/progress`, data);
@@ -536,6 +568,7 @@ export const RegistrarTransaccion = async (data) => {
     throw error;
   }
 };
+
 export const Obtenertrasacciones = async () => {
   try {
     const response = await axios.get(`${API_URL}/progress`)
@@ -546,10 +579,30 @@ export const Obtenertrasacciones = async () => {
   }
 };
 
-export const getAllServices = async () => {
-  const response = await axios.get(`${API_URL}/services`);
-  return response.data;
-};
+export const createProcessWithPayment = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/progress/CreateProgressWithPay`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear proceso con pago:", error);
+    const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
+    throw new Error(errorMessage);
+  }
+}
+
+export const getAllDates = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/progress/simulation`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las fechas", error);
+    throw error;
+  }
+}
+
+// =============================================================================
+// GESTIÓN DE PAGOS
+// =============================================================================
 
 export const getAllPayments = async () => {
   try {
@@ -560,8 +613,6 @@ export const getAllPayments = async () => {
     throw error;
   }
 };
-
-//Pagos
 
 export const statusPayments = async (idPayment, datosActualizados) => {
   try {
@@ -576,22 +627,15 @@ export const statusPayments = async (idPayment, datosActualizados) => {
     throw error;
   }
 };
+
 export const createPaymentIntent = async (data) => {
   const response = await axios.post(`${API_URL}/stripe/payment-intent`, data);
   return response.data;
 };
 
-// Crear proceso con pago
-export const createProcessWithPayment = async (data) => {
-  try {
-    const response = await axios.post(`${API_URL}/progress/CreateProgressWithPay`, data);
-    return response.data;
-  } catch (error) {
-    console.error("Error al crear proceso con pago:", error);
-    const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
-    throw new Error(errorMessage);
-  }
-}
+// =============================================================================
+// GESTIÓN DE CORREOS ELECTRÓNICOS
+// =============================================================================
 
 export const olvidarContra = async (email) => {
   try {
@@ -683,27 +727,5 @@ export const payDS160 = async (email) => {
     const errorMessage = error.response?.data?.message || error.message || "Error desconocido";
     throw new Error(errorMessage);
 
-  }
-}
-
-
-
-
-export const obtenerUsuarioPorCorreo = async (email) => {
-  try {
-    const response = await axios.get(`${API_URL}/users/email/${email}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener usuario por correo', error);
-    throw error;
-  }
-};
-export const getAllDates = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/progress/simulation`);
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener las fechas", error);
-    throw error;
   }
 }
