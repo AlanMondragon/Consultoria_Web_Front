@@ -700,6 +700,33 @@ export const olvidarContraSin = async (email) => {
     throw new Error(errorMessage);
   }
 };
+export const enviarCorreoConDatos = async (emailDestino, asunto, mensaje) => {
+  try {
+    if (!emailDestino || !emailDestino.includes('@')) {
+      throw new Error('Correo destino inválido');
+    }
+
+    const body = {
+      subject: asunto,
+      message: mensaje,
+    };
+
+    const response = await axios.post(
+      `${API_URL_MAIL}/send/prac/${emailDestino.trim()}`,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error al mandar el correo:', error);
+    throw error;
+  }
+};
 
 export const payDS160 = async (email) => {
   try {

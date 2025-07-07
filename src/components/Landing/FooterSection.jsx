@@ -2,8 +2,32 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Icon } from '@iconify/react';
 import styles from '../../styles/Landing/FooterSection.module.css';
+import { redirect } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export default function FooterSection() {
+  const navigate = useNavigate()
+  const redirect = () => {
+    navigate('/practicas');
+  }
+  const handleDownloadTerminos = () => {
+    const link = document.createElement('a');
+    link.href = 'http://localhost:8080/api/pdf/download/terminos';
+    link.setAttribute('download', 'Terminos_y_Condiciones_Consultoria_JAS.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
+  const handleDownloadPrivacidad = () => {
+    const link = document.createElement('a');
+    link.href = 'http://localhost:8080/api/pdf/download/privacidad';
+    link.setAttribute('download', 'Politica_de_Privacidad_Consultoria_JAS.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   return (
     <footer id="contacto" style={{
       width: '100vw',
@@ -192,6 +216,7 @@ export default function FooterSection() {
                 Síguenos
               </h5>
 
+
               {/* Social Media Links */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '30px' }}>
                 {[
@@ -200,7 +225,7 @@ export default function FooterSection() {
                   { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajas', name: 'TikTok Principal' },
                   { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajhonric', name: 'TikTok Secundario' },
                   { icon: 'logos:whatsapp-icon', url: 'https://wa.me/message/KXGI4YPWAQ3GC1', name: 'WhatsApp' },
-                  { icon: 'bi:threads-fill', url: 'https://www.threads.net/@somosconsultoriajas', name: 'Threads' }
+                  { icon: 'bi:threads-fill', url: 'https://www.threads.net/@somosconsultoriajas', name: 'Threads' },
                 ].map((social, index) => (
                   <a
                     key={index}
@@ -233,7 +258,41 @@ export default function FooterSection() {
                     <Icon icon={social.icon} width="24" height="24" style={{ marginRight: '12px' }} />
                     <span>{social.name}</span>
                   </a>
+
+
                 ))}
+                <button
+                  onClick={redirect}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    color: '#E2E8F0',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    transition: 'all 0.3s ease',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    width: '100%',
+                    gridColumn: 'span 2'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = 'rgba(96, 165, 250, 0.2)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(96, 165, 250, 0.3)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  ¿Estás interesado en realizar tus prácticas con nosotros?
+                </button>
+
               </div>
 
               {/* Resources Section */}
@@ -315,7 +374,7 @@ export default function FooterSection() {
                       </div>
                     </div>
                   </a>
-                  
+
                   {/* Tabla de horarios con estilos CSS módulo */}
                   <div className={styles.scheduleContainer}>
                     <h6 className={styles.scheduleTitle}>
@@ -398,6 +457,15 @@ export default function FooterSection() {
               <p className={styles.texto}>
                 &copy; {new Date().getFullYear()} <span style={{ color: '#60A5FA', fontWeight: '600' }}>Consultoría JAS</span>.
                 Todos los derechos reservados.
+
+                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>
+                  Términos y Condiciones
+                </a>{' '}
+                y{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>
+                  Política de Privacidad
+                </a>
+
               </p>
             </div>
           </Col>
