@@ -11,6 +11,15 @@ export default function ActualizarServicio() {
   const location = useLocation();
   const service = location.state?.service;
 
+  const [imagenNombre, setImagenNombre] = useState(service?.image ? "Imagen actual" : "Ningún archivo seleccionado");
+  const [imagenDetalleNombre, setImagenDetalleNombre] = useState(service?.imageDetail ? "Imagen actual" : "Ningún archivo seleccionado");
+  const [imagenPreview, setImagenPreview] = useState(service?.image || null);
+  const [imagenDetallePreview, setImagenDetallePreview] = useState(service?.imageDetail || null);
+  const [tieneOtroCosto, setTieneOtroCosto] = useState(service?.nameOption ? true : false);
+  const [tieneAnticipo, setTieneAnticipo] = useState(service?.cashAdvance !== service?.totalPayment);
+  const [esCita, setEsCita] = useState(service?.isDateService || false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -28,19 +37,7 @@ export default function ActualizarServicio() {
       console.error("Error decoding token:", error);
       navigate("/");
     }
-  }, []);
-
-  const truncateFileName = (name) => {
-    if (name && name.length > 30) {
-      return name.substring(0, 30) + '...';
-    }
-    return name;
-  };
-
-  const [imagenNombre, setImagenNombre] = useState(service?.image || "Ningún archivo seleccionado");
-  const [imagenDetalleNombre, setImagenDetalleNombre] = useState(service?.imageDetail || "Ningún archivo seleccionado");
-  const [imagenPreview, setImagenPreview] = useState(service?.image || null);
-  const [imagenDetallePreview, setImagenDetallePreview] = useState(service?.imageDetail || null);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,14 +57,19 @@ export default function ActualizarServicio() {
     const imageDetailFile = formData.get('imageDetail');
 
     const serviceData = {
-      name: formData.get('description'),
-      description: formData.get('name'),
+      name: formData.get('name'),
+      description: formData.get('description'),
       image: imageFile && imageFile.size > 0 ? await convertToBase64(imageFile) : service?.image,
       imageDetail: imageDetailFile && imageDetailFile.size > 0 ? await convertToBase64(imageDetailFile) : service?.imageDetail,
-      simulation: formData.get('simulation') === 'on',
-      cas: formData.get('cas') === 'on',
-      con: formData.get('con') === 'on',
-      cashAdvance: formData.get('cashAdvance'),
+      simulation: !esCita && formData.get('simulation') === 'on',
+      cas: !esCita && formData.get('cas') === 'on',
+      con: !esCita && formData.get('con') === 'on',
+      totalPayment: service?.totalPayment,
+      cashAdvance: tieneAnticipo ? parseFloat(formData.get('cashAdvance')) : parseFloat(formData.get('cost')),
+      cost: parseFloat(formData.get('cost')),
+      nameOption: tieneOtroCosto ? formData.get('nameOption') : "",
+      optionCost: tieneOtroCosto ? (formData.get('optionCost') ? parseFloat(formData.get('optionCost')) : "") : "",
+      isDateService: formData.get('isDateService') === 'on',
     };
 
     try {
@@ -97,9 +99,9 @@ export default function ActualizarServicio() {
   };
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
-        <Navbar title={"- Actualizar Servicios"} />
+        <Navbar title={isMobile ? "- Actualizar" : "- Actualizar Servicio"} />
       </div>
 
       <div className={styles['container-registrar-tramite']}>
@@ -107,17 +109,18 @@ export default function ActualizarServicio() {
           <h2>Actualizar Servicio</h2>
           <form className={styles['form-registrar-tramite']} onSubmit={handleSubmit}>
             <div className={styles['form-group']}>
-              <label htmlFor='nombre'>Nombre del Tramite</label>
-              <input type='text' id='nombre' name='name' defaultValue={service?.description} required />
+              <label htmlFor='nombre'>Nombre del Trámite *</label>
+              <input type='text' id='nombre' name='name' defaultValue={service?.name} required />
             </div>
+            
             <div className={styles['form-group']}>
-              <label htmlFor='descripcion'>Descripción</label>
-              <textarea id='descripcion' name='description' defaultValue={service?.name} required></textarea>
+              <label htmlFor='descripcion'>Descripción *</label>
+              <textarea id='descripcion' name='description' defaultValue={service?.description} required></textarea>
             </div>
 
             {/* Imagen */}
             <div className={styles['form-group']}>
-              <label htmlFor='imagen'>Imagen</label>
+              <label htmlFor='imagen'>Imagen *</label>
               <input
                 type='file'
                 id='imagen'
@@ -130,13 +133,13 @@ export default function ActualizarServicio() {
                     setImagenNombre(file.name);
                     setImagenPreview(URL.createObjectURL(file));
                   } else {
-                    setImagenNombre(service?.image || "Ningún archivo seleccionado");
-                    setImagenPreview(null);
+                    setImagenNombre(service?.image ? "Imagen actual" : "Ningún archivo seleccionado");
+                    setImagenPreview(service?.image || null);
                   }
                 }}
               />
               <label htmlFor='imagen' className={styles['custom-file-button']}>Seleccionar imagen</label>
-              <span className={styles['file-name']}>{truncateFileName(imagenNombre)}</span>
+              <span className={styles['file-name']}>{imagenNombre}</span>
               {imagenPreview && (
                 <img src={imagenPreview} alt="Vista previa" className={styles['preview-img']} />
               )}
@@ -144,7 +147,7 @@ export default function ActualizarServicio() {
 
             {/* Imagen Detalle */}
             <div className={styles['form-group']}>
-              <label htmlFor='imagenDetalle'>Imagen de detalles</label>
+              <label htmlFor='imagenDetalle'>Imagen de detalles *</label>
               <input
                 type='file'
                 id='imagenDetalle'
@@ -157,48 +160,192 @@ export default function ActualizarServicio() {
                     setImagenDetalleNombre(file.name);
                     setImagenDetallePreview(URL.createObjectURL(file));
                   } else {
-                    setImagenDetalleNombre(service?.imageDetail || "Ningún archivo seleccionado");
-                    setImagenDetallePreview(null);
+                    setImagenDetalleNombre(service?.imageDetail ? "Imagen actual" : "Ningún archivo seleccionado");
+                    setImagenDetallePreview(service?.imageDetail || null);
                   }
                 }}
               />
               <label htmlFor='imagenDetalle' className={styles['custom-file-button']}>Seleccionar imagen</label>
-              <span className={styles['file-name']}>{truncateFileName(imagenDetalleNombre)}</span>
+              <span className={styles['file-name']}>{imagenDetalleNombre}</span>
               {imagenDetallePreview && (
                 <img src={imagenDetallePreview} alt="Vista previa detalle" className={styles['preview-img']} />
               )}
             </div>
 
             <div className={styles['form-group']}>
-              <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo</label>
-              <input type='number' id='anticipoEfectivo' name='cashAdvance' step='0.01' defaultValue={service?.cashAdvance} required />
+              <label htmlFor='cost'>Costo Total *</label>
+              <input 
+                type='number' 
+                id='cost' 
+                name='cost' 
+                step='0.01'
+                defaultValue={service?.cost}
+                required
+                onChange={(e) => {
+                  if (!tieneAnticipo) {
+                    // Si no tiene anticipo, actualizar el campo de anticipo
+                    const form = e.target.form;
+                    if (form.cashAdvance) {
+                      form.cashAdvance.value = e.target.value;
+                    }
+                  }
+                }}
+              />
             </div>
 
-            {/* Switches modificados: ahora con las etiquetas arriba y switches abajo */}
             <div className={styles['form-group-switch']}>
-              <label htmlFor='simulacion'>Simulación</label>
+              <label htmlFor='isDateService'>¿El servicio es una cita?</label>
               <label className={styles['switch']}>
-                <input type='checkbox' id='simulacion' name='simulation' defaultChecked={service?.simulation} />
+                <input 
+                  type='checkbox' 
+                  id='isDateService' 
+                  name='isDateService'
+                  checked={esCita}
+                  onChange={(e) => {
+                    setEsCita(e.target.checked);
+                    if (e.target.checked) {
+                      // Si es una cita, desactivar y limpiar los otros campos
+                      const form = e.target.form;
+                      form.simulation.checked = false;
+                      form.cas.checked = false;
+                      form.con.checked = false;
+                    }
+                  }}
+                />
                 <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
 
             <div className={styles['form-group-switch']}>
-              <label htmlFor='cas'>CAS</label>
+              <label htmlFor='tieneAnticipo'>¿Requiere anticipo diferente?</label>
               <label className={styles['switch']}>
-                <input type='checkbox' id='cas' name='cas' defaultChecked={service?.cas} />
+                <input
+                  type='checkbox'
+                  id='tieneAnticipo'
+                  checked={tieneAnticipo}
+                  onChange={(e) => {
+                    setTieneAnticipo(e.target.checked);
+                    if (!e.target.checked) {
+                      const form = e.target.form;
+                      if (form.cost) {
+                        form.cashAdvance.value = form.cost.value;
+                      }
+                    }
+                  }}
+                />
                 <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
+
+            {tieneAnticipo && (
+              <div className={styles['form-group']}>
+                <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo *</label>
+                <input 
+                  type='number' 
+                  id='anticipoEfectivo' 
+                  name='cashAdvance' 
+                  step='0.01'
+                  defaultValue={service?.cashAdvance}
+                  required={tieneAnticipo}
+                />
+              </div>
+            )}
 
             <div className={styles['form-group-switch']}>
-              <label htmlFor='con'>CON</label>
+              <label htmlFor='tieneOtroCosto'>¿Tiene otro costo?</label>
               <label className={styles['switch']}>
-                <input type='checkbox' id='con' name='con' defaultChecked={service?.con} />
+                <input
+                  type='checkbox'
+                  id='tieneOtroCosto'
+                  checked={tieneOtroCosto}
+                  onChange={(e) => {
+                    setTieneOtroCosto(e.target.checked);
+                    if (!e.target.checked) {
+                      const form = e.target.form;
+                      // Limpiar los campos cuando se desactiva
+                      if (form.nameOption) form.nameOption.value = '';
+                      if (form.optionCost) form.optionCost.value = '';
+                    }
+                  }}
+                />
                 <span className={`${styles['slider']} ${styles['round']}`}></span>
               </label>
             </div>
 
+            {tieneOtroCosto && (
+              <>
+                <div className={styles['form-group']}>
+                  <label htmlFor='nameOption'>Nombre de la Opción *</label>
+                  <input 
+                    type='text' 
+                    id='nameOption' 
+                    name='nameOption' 
+                    defaultValue={service?.nameOption}
+                    required={tieneOtroCosto}
+                  />
+                </div>
+
+                <div className={styles['form-group']}>
+                  <label htmlFor='optionCost'>Costo de la Opción *</label>
+                  <input 
+                    type='number' 
+                    id='optionCost' 
+                    name='optionCost' 
+                    step='0.01'
+                    defaultValue={service?.optionCost}
+                    required={tieneOtroCosto}
+                  />
+                </div>
+              </>
+            )}
+
+            {!esCita && (
+              <>
+                <div className={styles['form-group-switch']}>
+                  <label htmlFor='simulacion'>Requiere simulación *</label>
+                  <label className={styles['switch']}>
+                    <input 
+                      type='checkbox' 
+                      id='simulacion' 
+                      name='simulation' 
+                      defaultChecked={service?.simulation}
+                      disabled={esCita}
+                    />
+                    <span className={`${styles['slider']} ${styles['round']}`}></span>
+                  </label>
+                </div>
+
+                <div className={styles['form-group-switch']}>
+                  <label htmlFor='cas'>CAS *</label>
+                  <label className={styles['switch']}>
+                    <input 
+                      type='checkbox' 
+                      id='cas' 
+                      name='cas' 
+                      defaultChecked={service?.cas}
+                      disabled={esCita}
+                    />
+                    <span className={`${styles['slider']} ${styles['round']}`}></span>
+                  </label>
+                </div>
+
+                <div className={styles['form-group-switch']}>
+                  <label htmlFor='con'>CON *</label>
+                  <label className={styles['switch']}>
+                    <input 
+                      type='checkbox' 
+                      id='con' 
+                      name='con' 
+                      defaultChecked={service?.con}
+                      disabled={esCita}
+                    />
+                    <span className={`${styles['slider']} ${styles['round']}`}></span>
+                  </label>
+                </div>
+              </>
+            )}
+
+            <p className={styles['required-fields-note']}>* Campos obligatorios</p>
             <button type='submit' className={styles['button-submit-service']}>Actualizar</button>
           </form>
         </div>
