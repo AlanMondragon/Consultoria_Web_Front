@@ -224,16 +224,22 @@ export const updateService = async (id, serviceData) => {
   try {
     const payload = {
       name: serviceData.name,
-      description: serviceData.description,
-      image: serviceData.image, // Base64 string
-      imageDetail: serviceData.imageDetail, // Base64 string
+      status: true,
+      totalPayment: serviceData.totalPayment,
       simulation: serviceData.simulation,
       cas: serviceData.cas,
       con: serviceData.con,
-      cashAdvance: serviceData.cashAdvance
+      imageDetail: serviceData.imageDetail, // Base64 string
+      cashAdvance: serviceData.cashAdvance,
+      cost: serviceData.cost ?? null,
+      nameOption: serviceData.nameOption ?? null,
+      optionCost: serviceData.optionCost ?? null,
+      description: serviceData.description,
+      isDateService: serviceData.isDateService ?? false,
+      image: serviceData.image, // Base64 string
     };
 
-    const response = await axios.put(`${API_URL}/transaction/${serviceId}`, payload, {
+    const response = await axios.put(`${API_URL}/transaction/web/update/${serviceId}`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
