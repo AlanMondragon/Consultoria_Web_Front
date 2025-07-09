@@ -7,9 +7,9 @@ export default function HeroSection() {
     <section id="inicio" className={styles.inicio}>
       <div className={styles.overlay}></div>
 
-      <Container className={styles.heroContainer}>
+      <Container className={styles.heroContainer} fluid>
         <Row className="align-items-center w-100 justify-content-center">
-          <Col lg={10} xl={8} className="text-white text-center">
+          <Col xs={12} sm={11} md={10} lg={10} xl={8} className="text-white text-center">
             <div className={styles.heroContent}>
               <h1 className={styles.mainTitle}>
                 CONSULTORÍA JAS
@@ -27,10 +27,10 @@ export default function HeroSection() {
                 <div className={styles.featureColumn}>
                   <h3 className={styles.featureTitle}>Nos distingue:</h3>
                   <ul className={styles.featureList}>
-                    <li>• Profesionalismo</li>
-                    <li>• Atención personalizada</li>
-                    <li>• Orientación clara</li>
-                    <li>• Satisfacción total del cliente</li>
+                    <li>Profesionalismo</li>
+                    <li>Atención personalizada</li>
+                    <li>Orientación clara</li>
+                    <li>Satisfacción total del cliente</li>
                   </ul>
                 </div>
                 

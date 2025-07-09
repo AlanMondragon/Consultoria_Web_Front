@@ -18,7 +18,7 @@ export default function LandingNavbar({
       className={`${styles.modernNavbar} ${isScrolled ? styles.scrolled : ''}`}
       style={{ top: showNavbar ? '0' : '-120px' }}
     >
-      <Container fluid>
+      <Container fluid className="px-3 px-lg-4">
         <Navbar.Brand href="#" className={styles.navbarBrand}>
           <div className={styles.logoContainer}>
             <img 
@@ -27,25 +27,38 @@ export default function LandingNavbar({
               alt="Consultoría JAS Logo" 
             />
           </div>
-          <div className="d-none d-md-block">
+          <div className="d-none d-sm-block">
             <h1 className={styles.navbarTitle}>Consultoría JAS</h1>
             <p className={styles.navbarSubtitle}>JOHNRIC</p>
           </div>
         </Navbar.Brand>
 
-        <div className="d-none d-lg-flex align-items-center ms-auto">
+        {/* Botones de acción para desktop */}
+        <div className="d-none d-lg-flex align-items-center ms-auto order-lg-3">
           <Button
             className={`${styles.ctaButton} me-3`}
             onClick={() => window.location.href = 'tel:+527779835782'}
           >
             <Phone size={16} />
-            Cotizar
+            <span className="d-none d-xl-inline">Cotizar</span>
+            <span className="d-inline d-xl-none">Call</span>
+          </Button>
+          <Button
+            className={styles.sessionButton}
+            onClick={() => window.location.href = '/Login'}
+          >
+            <LogInIcon size={16} />
+            <span className="d-none d-xl-inline">Iniciar sesión</span>
+            <span className="d-inline d-xl-none">Login</span>
           </Button>
         </div>
 
-        <Navbar.Toggle aria-controls="basic-navbar-nav" className={styles.navbarToggle} />
+        <Navbar.Toggle 
+          aria-controls="basic-navbar-nav" 
+          className={`${styles.navbarToggle} order-lg-2`}
+        />
 
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Collapse id="basic-navbar-nav" className="order-lg-1">
           <Nav className="me-auto">
             {navSections.map((section) => {
               const IconComponent = section.icon;
@@ -59,26 +72,30 @@ export default function LandingNavbar({
                   className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
                 >
                   <IconComponent size={16} className={styles.navIcon} />
-                  {section.label}
+                  <span className="d-inline d-lg-inline">{section.label}</span>
                 </Nav.Link>
               );
             })}
-            <Button
-              className={styles.sessionButton}
-              onClick={() => window.location.href = '/Login'}
-            >
-              <LogInIcon size={16} />
-              Iniciar sesión
-            </Button>
           </Nav>
 
+          {/* Botones de acción para mobile */}
           <div className="d-lg-none mt-3">
-            <Button
-              className={`${styles.ctaButton} w-100`}
-            >
-              <Phone size={16} />
-              Solicitar Cotización
-            </Button>
+            <div className="d-flex flex-column gap-2">
+              <Button
+                className={`${styles.ctaButton} w-100`}
+                onClick={() => window.location.href = 'tel:+527779835782'}
+              >
+                <Phone size={16} />
+                Solicitar Cotización
+              </Button>
+              <Button
+                className={`${styles.sessionButton} w-100`}
+                onClick={() => window.location.href = '/Login'}
+              >
+                <LogInIcon size={16} />
+                Iniciar sesión
+              </Button>
+            </div>
           </div>
         </Navbar.Collapse>
       </Container>
