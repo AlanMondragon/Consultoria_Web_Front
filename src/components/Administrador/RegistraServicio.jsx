@@ -37,6 +37,7 @@ export default function RegistrarServicio() {
   }, [navigate]);
 
   const handleSubmit = async (e) => {
+    console.log("Formulario enviado");
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -54,16 +55,26 @@ export default function RegistrarServicio() {
     const imageDetailFile = formData.get('imageDetail');
     const totalPayment = parseFloat(formData.get('totalPayment'));
 
+    // Validar campos obligatorios
+    if (!formData.get('name') || !formData.get('description') || !imageFile || !imageDetailFile || isNaN(totalPayment)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos obligatorios faltantes',
+        text: 'Por favor, complete todos los campos obligatorios: Nombre, Descripción, Imagen, Imagen de detalles y Pago Total.',
+      });
+      return;
+    }
+
     const serviceData = {
       name: formData.get('name'),
       description: formData.get('description'),
-      image: imageFile ? await convertToBase64(imageFile) : '',
-      imageDetail: imageDetailFile ? await convertToBase64(imageDetailFile) : '',      simulation: !esCita && formData.get('simulation') === 'on',
-      cas: !esCita && formData.get('cas') === 'on',
-      con: !esCita && formData.get('con') === 'on',
+      image: await convertToBase64(imageFile),
+      imageDetail: await convertToBase64(imageDetailFile),
+      simulation: !esCita && formData.get('simulation') === 'on',
+      cas: formData.get('cas') === 'on',
+      con: formData.get('con') === 'on',
       status: true, // Un servicio siempre se crea activo
       totalPayment: totalPayment,
-      // Si no tiene anticipo, el cashAdvance es igual al totalPayment
       cashAdvance: tieneAnticipo ? parseFloat(formData.get('cashAdvance')) : totalPayment,
       cost: tieneOtroCosto ? (formData.get('cost') ? parseFloat(formData.get('cost')) : null) : totalPayment,
       nameOption: tieneOtroCosto ? formData.get('nameOption') : null,
@@ -110,7 +121,7 @@ export default function RegistrarServicio() {
       <div className={styles.containerRegistrarTramite}>
         <div className={styles.cardRegistrarTramite}>
           <h2>Registrar Servicio</h2>
-          <form className={styles.formRegistrarTramite} onSubmit={handleSubmit}>
+          <form className={styles.formRegistrarTramite} onSubmit={(e) => { console.log("Evento onSubmit disparado"); handleSubmit(e); }}>
             <div className={styles.formGroup}>
               <label htmlFor='nombre'>Nombre del Trámite *</label>
               <input type='text' id='nombre' name='name' required />
@@ -294,13 +305,12 @@ export default function RegistrarServicio() {
             )}            {!esCita && (
               <>
                 <div className={styles.switchContainer}>
-                  <label htmlFor='simulacion'>Requiere simulación *</label>
+                  <label htmlFor='simulacion'>Requiere simulación</label>
                   <label className={styles.switch}>
                     <input 
                       type='checkbox' 
                       id='simulacion' 
                       name='simulation' 
-                      required={!esCita}
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>
@@ -308,13 +318,12 @@ export default function RegistrarServicio() {
                 </div>
 
                 <div className={styles.switchContainer}>
-                  <label htmlFor='cas'>CAS *</label>
+                  <label htmlFor='cas'>CAS</label>
                   <label className={styles.switch}>
                     <input 
                       type='checkbox' 
                       id='cas' 
                       name='cas' 
-                      required={!esCita}
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>
@@ -322,13 +331,12 @@ export default function RegistrarServicio() {
                 </div>
 
                 <div className={styles.switchContainer}>
-                  <label htmlFor='con'>CON *</label>
+                  <label htmlFor='con'>CON</label>
                   <label className={styles.switch}>
                     <input 
                       type='checkbox' 
                       id='con' 
                       name='con' 
-                      required={!esCita}
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>
