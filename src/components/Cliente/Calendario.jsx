@@ -192,43 +192,70 @@ export default function Calendario() {
                         <button style={buttonStyle} onClick={() => irAFechaMasCercana('SIMULACION')}>Simulación</button>
                     </div>
 
-                    <FullCalendar
-                        ref={calendarRef}
-                        plugins={[dayGridPlugin]}
-                        initialView="dayGridMonth"
-                        contentHeight="auto"
-                        locale={esLocale}
-                        events={eventosFiltrados}
-                        eventClick={(info) => {
-                            Swal.fire({
-                                title: info.event.title,
-                                text: `${info.event.extendedProps.description} el DÍA y HORA ${info.event.extendedProps.text}` || 'Sin descripción',
-                                icon: 'info'
-                            });
-                        }}
-                    />
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        border: '1px solid #e0e0e0'
+                    }}>
+                        <FullCalendar
+                            ref={calendarRef}
+                            plugins={[dayGridPlugin]}
+                            initialView="dayGridMonth"
+                            contentHeight="auto"
+                            locale={esLocale}
+                            events={eventosFiltrados}
+                            eventClick={(info) => {
+                                Swal.fire({
+                                    title: info.event.title,
+                                    text: `${info.event.extendedProps.description} el DÍA y HORA ${info.event.extendedProps.text}` || 'Sin descripción',
+                                    icon: 'info'
+                                });
+                            }}
+                            headerToolbar={{
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth'
+                            }}
+                            dayHeaderFormat={{ weekday: 'short' }}
+                            height="auto"
+                            aspectRatio={1.35}
+                        />
+                    </div>
                 </div>
 
                 <div>
-                    <h4>Información</h4>
-                    <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
-                        {Object.entries(coloresPorTramite).map(([id, color]) => {
-                            const descripcion = eventos.find(e => e.backgroundColor === color)?.transactDesc;
-                            return (
-                                <li key={id} style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
-                                    <span style={{
-                                        display: 'inline-block',
-                                        width: '15px',
-                                        height: '15px',
-                                        backgroundColor: color,
-                                        marginRight: '10px',
-                                        borderRadius: '3px'
-                                    }}></span>
-                                    {descripcion || `No hay fechas #${id}`}
-                                </li>
-                            );
-                        })}
-                    </ul>
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        border: '1px solid #e0e0e0'
+                    }}>
+                        <h4 style={{ marginTop: '0', marginBottom: '15px', color: '#333' }}>Información</h4>
+                        <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
+                            {Object.entries(coloresPorTramite).map(([id, color]) => {
+                                const descripcion = eventos.find(e => e.backgroundColor === color)?.transactDesc;
+                                return (
+                                    <li key={id} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            width: '15px',
+                                            height: '15px',
+                                            backgroundColor: color,
+                                            marginRight: '10px',
+                                            borderRadius: '3px',
+                                            border: '1px solid #ddd'
+                                        }}></span>
+                                        <span style={{ fontSize: '14px', color: '#555' }}>
+                                            {descripcion || `No hay fechas #${id}`}
+                                        </span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -236,10 +263,17 @@ export default function Calendario() {
 }
 
 const buttonStyle = {
-    backgroundColor: 'white',
-    color: 'black',
-    border: '1px solid #ccc',
-    padding: '8px',
+    backgroundColor: '#f8f9fa',
+    color: '#495057',
+    border: '1px solid #dee2e6',
+    padding: '8px 12px',
     borderRadius: '4px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500',
+    transition: 'all 0.2s ease-in-out',
+    ':hover': {
+        backgroundColor: '#e9ecef',
+        borderColor: '#adb5bd'
+    }
 };
