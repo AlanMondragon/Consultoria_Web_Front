@@ -33,6 +33,8 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         customerId: customer
       });
 
+
+
       const clientSecret = data.clientSecret;
       const cardElement = elements.getElement(CardElement);
 
@@ -74,7 +76,6 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             description: serviceName ? `${serviceName} - ${description}` : description,
             customerEmail: userEmail,
             customerId: customer,
-            idTransact: parseInt(idProductoTransaccion, 10)
           });
 
           await axios.post(`${API_URL}/payment`, paymentData);

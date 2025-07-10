@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { registerPayPalPayment } from '../../api/paypal';
+import { createProcessWithPayment } from '../../api/api.js';
+import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
+import { useState } from 'react';
 
-const PayPalButton = ({ amount, onSuccess, onError, userId, service }) => {
+const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalStatus }) => {
   const paypalRef = useRef();
+  const [paymentStatus, setPaymentStatus] = useState(null);
 
-  // Formatea el monto a string con dos decimales y valor mínimo 1.00
+
   const formattedAmount = (() => {
     let num = Number(amount);
     if (isNaN(num) || num <= 0) num = 1;
@@ -13,7 +17,7 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service }) => {
 
   useEffect(() => {
     if (!window.paypal) return;
-    // Limpia el contenedor antes de renderizar el botón
+
     if (paypalRef.current) {
       paypalRef.current.innerHTML = '';
     }
@@ -22,30 +26,68 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service }) => {
         return actions.order.create({
           purchase_units: [{
             amount: {
-              value: formattedAmount // monto en dólares
+              value: formattedAmount 
             }
           }]
         });
       },
       onApprove: (data, actions) => {
         return actions.order.capture().then(async function (details) {
-          try {
-            // Registrar el pago en la base de datos
-            const response = await registerPayPalPayment(details, userId, service);
-            
-            if (response.success) {
-              console.log('Pago registrado correctamente:', response);
-              // Llamar al callback de éxito con los detalles del pago
-              if (onSuccess) onSuccess(details);
-            } else {
-              console.error('Error al registrar el pago:', response.error);
-              // Si hay un error al registrar, mostrar error pero no fallar el pago
+          console.log("Service:", service, "Id Usuario:", userId, "Status:", details.status);
+          
+          setPaymentStatus(details.status);
+          
+
+          if (setPaypalStatus) {
+            setPaypalStatus(details.status);
+          }
+          
+          if (details.status === "COMPLETED") {
+            try {
+
+              let idTransact;
+              if (service.transact && service.transact.idTransact) {
+                idTransact = service.transact.idTransact;
+              } else if (service.idTransact) {
+                idTransact = service.idTransact;
+              } else {
+                console.error('No se encontró idTransact en service:', service);
+                throw new Error('idTransact no encontrado en service');
+              }
+              
+
+              const paymentData = {
+                total: amount,     
+                status: 1,                 
+                idUser: parseInt(userId),  
+                idTransact: idTransact      
+              };
+              
+              console.log('Enviando paymentData:', paymentData);
+              
+    
+              const response = await axios.post(`${API_URL}/payment`, paymentData);
+              
+
+              await createProcessWithPayment(paymentData);
+              
+              console.log('Respuesta backend:', response.data);
+              
+             
+              if (response.data.success) {
+                console.log('Pago registrado correctamente');
+                if (onSuccess) onSuccess(details);
+              } else {
+                console.error('Error al registrar en backend:', response.data.error);
+                if (onSuccess) onSuccess(details);
+              }
+            } catch (error) {
+              console.error('Error al procesar registro:', error);
               if (onSuccess) onSuccess(details);
             }
-          } catch (error) {
-            console.error('Error al procesar el registro del pago:', error);
-            // Aún así, consideramos el pago exitoso porque PayPal lo procesó
-            if (onSuccess) onSuccess(details);
+          } else {
+            console.warn('Pago no completado. Status:', details.status);
+            if (onError) onError(new Error('El pago no fue completado.'));
           }
         });
       },
@@ -54,7 +96,7 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service }) => {
         if (onError) onError(err);
       }
     }).render(paypalRef.current);
-  }, [formattedAmount, onSuccess, onError, userId, service]);
+  }, [formattedAmount, onSuccess, onError, userId, service, setPaypalStatus]);
 
   return <div ref={paypalRef}></div>;
 };

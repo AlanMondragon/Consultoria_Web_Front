@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Modal } from 'react-bootstrap';
@@ -43,38 +43,89 @@ const ShieldSVG = () => (
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 const stripePromise = loadStripe(stripeKey);
 
-export default function Liquidacion({ show, onHide, service, userEmail, userId, onSuccess, onError }) {
+export default function Liquidacion({ show, onHide, service, userEmail, userId, onSuccess, onError, COMPLETED }) {
+    const [paypalStatus, setPaypalStatus] = useState(null);
+    
     if (!show || !service) return null;
 
     const montoRestante = service.paidAll - service.paid;
 
-    const handleSuccess = async (...args) => {
+    const executePaymentRequests = async () => {
         try {
-            console.log("service:  "+ service);
+            console.log("service: ", service);
+            
+
+            if (!service) {
+                throw new Error('Service is undefined');
+            }
+            
             const nuevoPaid = service.paid + service.paidAll;
             await actualizarTC(service.idTransactProgress, {
                 ...service,
                 paid: service.paidAll,
                 paidAll: 0
-            });  
-        const paymentData = {
-            total: montoRestante,
-            status: 1, 
-            idUser: parseInt(userId),
-            idTransact: parseInt(service.transact.idTransact), 
-          };
-         await axios.post(`${API_URL}/payment`, paymentData);
+            });
+            
 
+            let idTransact;
+            if (service.transact && service.transact.idTransact) {
+                idTransact = parseInt(service.transact.idTransact);
+            } else if (service.idTransact) {
+                idTransact = parseInt(service.idTransact);
+            } else {
+                console.error('No se encontró idTransact en service:', service);
+                throw new Error('idTransact no encontrado en service');
+            }
+            
+            const paymentData = {
+                total: montoRestante,
+                status: 1,
+                idUser: parseInt(userId),
+                idTransact: idTransact,
+            };
+            
+            console.log('Enviando paymentData:', paymentData);
+            await axios.post(`${API_URL}/payment`, paymentData);
+            
+            console.log('Peticiones ejecutadas exitosamente');
+            return true;
+        } catch (error) {
+            console.error('Error ejecutando peticiones:', error);
+            throw error;
+        }
+    };
 
-
+    const handleStripeSuccess = async (...args) => {
+        try {
+            await executePaymentRequests();
             if (onSuccess) onSuccess(...args);
         } catch (error) {
             console.error('Error actualizando TC:', error);
             if (onError) onError(error);
         }
-
-
     };
+
+    const handlePayPalSuccess = async (...args) => {
+        try {
+            await executePaymentRequests();
+            if (onSuccess) onSuccess(...args);
+        } catch (error) {
+            console.error('Error actualizando TC:', error);
+            if (onError) onError(error);
+        }
+    };
+
+    useEffect(() => {
+        if (paypalStatus === "COMPLETED") {
+            handlePayPalSuccess();
+        }
+    }, [paypalStatus]);
+
+    useEffect(() => {
+        if (COMPLETED === "COMPLETED") {
+            handlePayPalSuccess();
+        }
+    }, [COMPLETED]);
 
     return (
         <Modal
@@ -122,7 +173,7 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                         idProductoTransaccion={service.idTransact}
                         userEmail={userEmail}
                         customer={userId}
-                        onSuccess={handleSuccess}
+                        onSuccess={handleStripeSuccess}
                         onError={onError}
                         serviceName={"liquidacion"}
                     />
@@ -132,10 +183,11 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                     <PayPalScriptLoader>
                         <PayPalButton
                             amount={montoRestante}
-                            onSuccess={handleSuccess}
+                            onSuccess={handlePayPalSuccess}
                             onError={onError}
                             userId={userId || 'N/A'}
                             service="hora_extra"
+                            setPaypalStatus={setPaypalStatus}
                         />
                     </PayPalScriptLoader>
                 </div>

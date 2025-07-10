@@ -15,7 +15,7 @@ export const registerPayPalPayment = async (paymentData, userId, service) => {
                          service.price || 
                          0;
                          
-    const response = await fetch(`${API_URL}/payments/paypal`, {
+    const response = await fetch(`${API_URL}/payment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
