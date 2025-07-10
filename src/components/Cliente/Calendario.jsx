@@ -152,7 +152,7 @@ export default function Calendario() {
     };
 
     return (
-        <div style={{ marginTop: '100px', backgroundColor: 'white', color: 'black', minHeight: '100vh' }}>
+        <div style={{ marginTop: '100px', minHeight: '100vh' }}>
             <div className='fixed-top'>
                 <Navbar title={"- Calendario"} />
             </div>

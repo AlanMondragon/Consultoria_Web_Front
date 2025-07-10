@@ -72,7 +72,7 @@ function App() {
             <AdministradorHome />
           </ProtectedRoute>
         } />
-          <Route path="/PDF" element={
+        <Route path="/PDF" element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <UploadPfd />
           </ProtectedRoute>
@@ -155,9 +155,12 @@ function App() {
         } />
         <Route path="/MisTramites" element={
           <ProtectedRoute allowedRoles={["USER"]}>
-            <MisTramites />
+            <Elements stripe={stripePromise}>
+              <MisTramites />
+            </Elements>
           </ProtectedRoute>
         } />
+
         <Route path="/MisTramites-sm" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <MisTramitesMobile />

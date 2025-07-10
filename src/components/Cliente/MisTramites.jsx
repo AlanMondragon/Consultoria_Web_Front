@@ -7,8 +7,9 @@ import { Table, Button, Form, Spinner, Image } from 'react-bootstrap';
 import { tramitesPorId, actualizarT } from './../../api/api.js';
 import styles from './../../styles/MisTramites.module.css';
 import ModalActualizarTramite from './ActualizarMiTramite.jsx';
+import PaymentModal from './Modals/Liquidacion.jsx';
 
-export default function AdministradorTramites() {
+export default function MisTramites() {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [busqueda, setBusqueda] = useState("");
@@ -18,8 +19,12 @@ export default function AdministradorTramites() {
   const [paginaActual, setPaginaActual] = useState(1);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
-  const [usuario, setUsuario] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const itemsPorPagina = 7;
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [tramiteALiquidar, setTramiteALiquidar] = useState(null);
+  const [serviceToPay, setServiceToPay] = useState(null);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,7 +36,8 @@ export default function AdministradorTramites() {
 
     try {
       const decoded = jwtDecode(token);
-      setUsuario(decoded.idUser);
+      setUserId(decoded.idUser);
+      setUserEmail(decoded.sub);
       if (decoded.role !== "USER") {
         Swal.fire({
           icon: 'error',
@@ -46,12 +52,6 @@ export default function AdministradorTramites() {
       navigate("/");
     }
   }, [navigate]);
-
-  useEffect(() => {
-    if (usuario) {
-      fetchServices();
-    }
-  }, [usuario]);
 
   // Efecto para manejar el cambio de tamaño de pantalla
   useEffect(() => {
@@ -68,12 +68,39 @@ export default function AdministradorTramites() {
     return () => window.removeEventListener('resize', handleResize);
   }, [navigate]);
 
+  // ✅ CORRECCIÓN: Llamar fetchServices cuando userId esté disponible
+  useEffect(() => {
+    if (userId) {
+      fetchServices();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [busqueda, estadoSeleccionado]);
+
+  const handlePaymentSuccess = () => {
+    handleClosePaymentModal();
+    Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
+    // ✅ CORRECCIÓN: Refrescar datos después del pago exitoso
+    fetchServices();
+  };
+
+  const handlePaymentError = (error) => {
+    Swal.fire('Error', error.message || 'Falló el pago.', 'error');
+  };
+
+  // ✅ CORRECCIÓN: Usar userId en lugar de usuario
   const fetchServices = async () => {
     try {
-      const response = await tramitesPorId(usuario);
+      const response = await tramitesPorId(userId);
       if (response.success && Array.isArray(response.response.transactProgresses)) {
-        setDatos(response.response.transactProgresses);
-
+        // Ordenar los datos por idTransactProgress de forma ascendente (más viejos primero)
+        const sortedData = response.response.transactProgresses.sort((a, b) => {
+          return a.idTransactProgress - b.idTransactProgress;
+        });
+        setDatos(sortedData);
+        console.log(sortedData);
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -84,6 +111,21 @@ export default function AdministradorTramites() {
     } finally {
       setCargando(false);
     }
+  };
+
+  // ✅ CORRECCIÓN: Pasar el trámite completo al modal de pago
+  const handleOpenPaymentModal = (datos) => {
+    if (datos.idTransactProgress) {
+      setServiceToPay(datos);
+      setPaymentModalOpen(true);
+    } else {
+      Swal.fire('Error', 'No se pudo cargar la información del trámite.', 'error');
+    }
+  };
+
+  const handleClosePaymentModal = () => {
+    setServiceToPay(null);
+    setPaymentModalOpen(false);
   };
 
   const handleStatusChange = async (idTransactProgress, nuevoEstado) => {
@@ -100,6 +142,7 @@ export default function AdministradorTramites() {
     const busquedaStr = busqueda.toLowerCase();
     const coincideBusqueda =
       d.transact?.name?.toLowerCase().includes(busquedaStr) ||
+      d.transact?.description?.toLowerCase().includes(busquedaStr) ||
       d.emailAcces?.toLowerCase().includes(busquedaStr);
 
     const coincideEstado = estadoSeleccionado === "" || d.status.toString() === estadoSeleccionado;
@@ -137,6 +180,26 @@ export default function AdministradorTramites() {
       text: `Estado actualizado: ${valor}`,
     });
   }
+
+  // ✅ CORRECCIÓN: Usar handleOpenPaymentModal en lugar de setear variables separadas
+  const handleLiquidar = (datos) => {
+    const montoRestante = datos.paidAll - datos.paid;
+    
+    Swal.fire({
+      title: '¿Deseas liquidar este trámite?',
+      text: `Monto restante: $${montoRestante}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, liquidar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleOpenPaymentModal(datos);
+      }
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -190,6 +253,7 @@ export default function AdministradorTramites() {
               <th>Cita CON</th>
               <th>Pago</th>
               <th>Restante</th>
+              <th>Liquidar</th>
               <th>Estado</th>
               <th>Acción</th>
             </tr>
@@ -208,24 +272,47 @@ export default function AdministradorTramites() {
                 <td>{cliente.transact.description}</td>
                 <td>{cliente.dateStart}</td>
                 <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
-                <td >{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>     
+                <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
                 <td style={{ color: '#38b2ac', fontWeight: 'bold' }}>${cliente.paid}</td>
                 <td style={{ color: (cliente.paidAll - cliente.paid) === 0 ? '#11a553' : '#e53e3e', fontWeight: 'bold' }}>
-                  {(cliente.paidAll - cliente.paid) === 0 ? "Pagado" : `$${cliente.paidAll - cliente.paid}`}
+                  {(cliente.paidAll) === 0 ? "0" : `$${cliente.paidAll - cliente.paid}`}
+                </td>
+                <td>
+                  {(cliente.paidAll - cliente.paid) > 0 ? (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleLiquidar(cliente)}
+                    >
+                      Liquidar
+                    </Button>
+                  ) : (
+                    <span style={{ color: '#11a553', fontWeight: 'bold' }}>Pagado</span>
+                  )}
                 </td>
 
                 <td>
-                  {cliente.status === 1 ? 'En proceso' :
-                    cliente.status === 2 ? 'En espera' :
-                      cliente.status === 3 ? 'Falta de pago' :
-                        cliente.status === 4 ? 'Terminado' :
-                          cliente.status === 5 ? 'Cancelado' :
-                            cliente.status === 6 ? 'Revisar' : 'Desconocido'}
+                  <span style={{
+                    color: cliente.status === 1 ? '#f59e0b' :
+                      cliente.status === 2 ? '#3b82f6' :
+                        cliente.status === 3 ? '#e53e3e' :
+                          cliente.status === 4 ? '#11a553' :
+                            cliente.status === 5 ? '#6b7280' :
+                              cliente.status === 6 ? '#f59e0b' : '#6b7280',
+                    fontWeight: 'bold'
+                  }}>
+                    {cliente.status === 1 ? 'En proceso' :
+                      cliente.status === 2 ? 'En espera' :
+                        cliente.status === 3 ? 'Falta de pago' :
+                          cliente.status === 4 ? 'Terminado' :
+                            cliente.status === 5 ? 'Cancelado' :
+                              cliente.status === 6 ? 'Revisar' : 'Desconocido'}
+                  </span>
                 </td>
-
                 <td>
                   <Button
                     variant="success"
+                    size="sm"
                     className={styles.actionButton}
                     onClick={() => {
                       setClienteSeleccionado(cliente);
@@ -268,6 +355,19 @@ export default function AdministradorTramites() {
           Siguiente
         </Button>
       </div>
+
+      {/* ✅ CORRECCIÓN: Solo mostrar el modal cuando hay datos válidos */}
+      {serviceToPay && (
+        <PaymentModal
+          show={paymentModalOpen}
+          onHide={handleClosePaymentModal}
+          service={serviceToPay}
+          userEmail={userEmail}
+          userId={userId}
+          onSuccess={handlePaymentSuccess}
+          onError={handlePaymentError}
+        />
+      )}
     </div>
   );
 }

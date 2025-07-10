@@ -61,6 +61,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
 
         // Guardar el registro del pago en la base de datos y enviar correo DS-160 si aplica
         try {
+          console.log("cliente : " + customer);
           const paymentData = {
             total: amount, // Usa el monto original
             status: 1, //  1 para "pagado"
@@ -72,7 +73,8 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             currency: 'mxn',
             description: serviceName ? `${serviceName} - ${description}` : description,
             customerEmail: userEmail,
-            customerId: customer
+            customerId: customer,
+            idTransact: parseInt(idProductoTransaccion, 10)
           });
 
           await axios.post(`${API_URL}/payment`, paymentData);
@@ -112,7 +114,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         }
       }
     } catch (err) {
-        console.error("Error creando PaymentIntent:", err.response?.data || err.message);
+      console.error("Error creando PaymentIntent:", err.response?.data || err.message);
 
       console.error("Error en proceso de pago (Stripe):", err);
       let errorMessage = 'Error al procesar el pago.';

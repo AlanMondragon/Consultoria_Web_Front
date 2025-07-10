@@ -73,7 +73,7 @@ export default function MiPerfil() {
                 } else {
                     console.error("Formato inesperado:", response);
                 }
-                
+
             } catch (error) {
                 console.error("Error al obtener datos del usuario:", error);
             }
@@ -107,9 +107,9 @@ export default function MiPerfil() {
 
     return (
         <div style={{ marginTop: '80px' }}>
-          <div className='fixed-top'>
+            <div className='fixed-top'>
                 <Navbar title={"- Mi Perfil"} />
-              </div>
+            </div>
             <div className="profile-container">
                 <div className="form-group">
                     <label>Email:</label>
@@ -147,7 +147,7 @@ export default function MiPerfil() {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 {...register("password")}
-                                placeholder="********"
+                                placeholder="Ingrese su nueva contraseña"
                                 className={`profile-input ${errors.password ? 'input-error' : ''}`}
                             />
                             <span
@@ -166,7 +166,7 @@ export default function MiPerfil() {
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 {...register("confirmPassword")}
-                                placeholder="********"
+                                placeholder="Ingrese su nueva contraseña"
                                 className={`profile-input ${errors.confirmPassword ? 'input-error' : ''}`}
                             />
                             <span

@@ -104,12 +104,12 @@ export default function AdministradorPerfil() {
 
     return (
         <div style={{ marginTop: '80px' }}>
-           <div className='fixed-top'>
-                   <Navbar title={"- Perfil"} />
-                 </div>
+            <div className='fixed-top'>
+                <Navbar title={"- Perfil"} />
+            </div>
             <div className="profile-container">
                 <h1 className="profile-title">Mi Perfil</h1>
-                
+
                 <div className="form-group">
                     <label>Email:</label>
                     <input
@@ -139,14 +139,14 @@ export default function AdministradorPerfil() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="password-form">
                     <h2 className="form-subtitle">Cambiar Contraseña</h2>
-                    
+
                     <div className="form-group password-group">
                         <label>Contraseña:</label>
                         <div className="password-wrapper">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 {...register("password")}
-                                placeholder="********"
+                                placeholder="Ingrese su nueva contraseña"
                                 className={`profile-input ${errors.password ? 'input-error' : ''}`}
                             />
                             <span
@@ -158,14 +158,14 @@ export default function AdministradorPerfil() {
                         </div>
                         <span className="error">{errors.password?.message}</span>
                     </div>
-                    
+
                     <div className="form-group password-group">
                         <label>Confirmar Contraseña:</label>
                         <div className="password-wrapper">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 {...register("confirmPassword")}
-                                placeholder="********"
+                                 placeholder="Ingrese su nueva contraseña"
                                 className={`profile-input ${errors.confirmPassword ? 'input-error' : ''}`}
                             />
                             <span
@@ -177,10 +177,10 @@ export default function AdministradorPerfil() {
                         </div>
                         <span className="error">{errors.confirmPassword?.message}</span>
                     </div>
-                    
-                    <button 
-                        type="submit" 
-                        disabled={isSubmitting} 
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
                         className="submit-button"
                     >
                         {isSubmitting ? 'Actualizando...' : 'Actualizar Contraseña'} <FaCheck />

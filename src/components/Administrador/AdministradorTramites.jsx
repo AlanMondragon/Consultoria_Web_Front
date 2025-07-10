@@ -20,7 +20,7 @@ export default function AdministradorTramites() {
   const [showModalI, setShowModalI] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  const [Datitos, setDatitos] = useState(null);//Lleva los datos al modal resgistrar transaccion
+  const [Datitos, setDatitos] = useState(null);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
   let [numero, setNumero] = useState(0);
 
@@ -64,11 +64,11 @@ export default function AdministradorTramites() {
       const response = await trasacciones();
 
       if (response.success && Array.isArray(response.response.transactProgresses)) {
-        // Ordenar los datos por idTransactProgress de forma descendente
         const sortedData = response.response.transactProgresses.sort((a, b) => {
-          return b.idTransactProgress - a.idTransactProgress;
+          return  b.idTransactProgress-a.idTransactProgress ;
         });
         setDatos(sortedData);
+
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -112,6 +112,7 @@ export default function AdministradorTramites() {
     (paginaActual - 1) * itemsPorPagina,
     paginaActual * itemsPorPagina
   );
+
 
   const cambiarPagina = (numero) => {
     if (numero >= 1 && numero <= totalPaginas) {
