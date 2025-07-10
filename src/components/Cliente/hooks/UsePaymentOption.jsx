@@ -7,18 +7,19 @@ export const usePaymentOptions = (service) => {
   const serviceInfo = useMemo(() => {
     if (!service) return { isDs160: false, isVisaAmericana: false, haveOtherCost: false };
 
-    const name = service.name;
+    const name = service.name.toLowerCase();
     const isDs160 = name === 'ds-160' || name === 'ds160' || name === 'Creación y generación de DS160' || name === 'elaboracion de formato ds-160' || name === 'ELABORACION DE FORMATO DS-160' || name.toLowerCase().includes('ds-160') || name.toLowerCase().includes('ds160');
     const isVisaAmericana = service.name === 'Visa Americana' || service.name === 'Visa Americana (4 meses)';
     const haveOtherCost = service.optionCost !== null && service.optionCost !== undefined && service.optionCost > 0;
+    const isAdvanceVisaAmericana = name.includes('adelanto') && (name.includes('cita') || name.includes('anticipo')) && name.includes('visa') && name.includes('americana');
 
-    return { isDs160, isVisaAmericana, haveOtherCost };
+    return { isDs160, isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost };
   }, [service]);
 
   const paymentOptions = useMemo(() => {
     if (!service) return {};
 
-    const { isVisaAmericana, haveOtherCost } = serviceInfo;
+    const { isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost } = serviceInfo;
 
     if (isVisaAmericana) {
       return {
@@ -40,6 +41,25 @@ export const usePaymentOptions = (service) => {
           amount: service.optionCost,
           description: service.nameOption || 'Visa Americana - Procesamiento en 8 meses',
           processingTime: 'Servicio completo con procesamiento en 8 meses',
+          timeType: 'extended',
+          isDeposit: false
+        }
+      };
+    }
+
+    if (isAdvanceVisaAmericana) {
+      return {
+        '3meses': {
+          amount: service.cost,
+          description: 'Espera no mayor a 3 meses',
+          processingTime: 'Adelanto de cita en un periodo no mayor a 3 meses',
+          timeType: 'normal',
+          isDeposit: false
+        },
+        '6meses': {
+          amount: service.optionCost,
+          description: 'Espera no mayor a 6 meses',
+          processingTime: 'Adelanto de cita en un periodo no mayor a 6 meses',
           timeType: 'extended',
           isDeposit: false
         }
@@ -75,8 +95,16 @@ export const usePaymentOptions = (service) => {
 
   const validatedPaymentType = useMemo(() => {
     const availableOptions = Object.keys(paymentOptions);
-    return availableOptions.includes(selectedPaymentType) ? selectedPaymentType : availableOptions[0];
-  }, [paymentOptions, selectedPaymentType]);
+    if (availableOptions.includes(selectedPaymentType)) {
+      return selectedPaymentType;
+    }
+    // Si es adelanto de cita visa americana, empezar con 3meses
+    if (serviceInfo.isAdvanceVisaAmericana && availableOptions.includes('3meses')) {
+      return '3meses';
+    }
+    // De lo contrario, usar la primera opción disponible
+    return availableOptions[0];
+  }, [paymentOptions, selectedPaymentType, serviceInfo]);
 
   const currentPaymentOption = paymentOptions[validatedPaymentType];
 

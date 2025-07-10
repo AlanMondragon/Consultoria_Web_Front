@@ -33,6 +33,15 @@ const StripePaymentSection = ({
     'creacion y generacion de ds160'
   ].some(name => service.name.trim().toLowerCase() === name);
   const showSinglePayment = service?.cashAdvance !== undefined && service?.cost !== undefined && Number(service.cashAdvance) === Number(service.cost);
+  
+  // Detectar si es adelanto de cita visa americana
+  const isAdvanceVisaAmericana = service?.name?.toLowerCase().includes('adelanto') && 
+                                  (service?.name?.toLowerCase().includes('cita') || service?.name?.toLowerCase().includes('anticipo')) && 
+                                  service?.name?.toLowerCase().includes('visa') && 
+                                  service?.name?.toLowerCase().includes('americana');
+  
+  // Si es adelanto de cita visa americana, usar siempre las opciones del hook
+  const shouldShowPaymentOptions = !showSinglePayment || isAdvanceVisaAmericana;
 
   // Función para detectar si la hora seleccionada es después de las 17:00
   const handleDateSelected = (dateTime) => {
@@ -47,7 +56,7 @@ const StripePaymentSection = ({
 
   return (
     <div className={stylesModal.modalContainer}>
-      {showSinglePayment ? (
+      {showSinglePayment && !isAdvanceVisaAmericana ? (
         <div style={{ marginBottom: 24 }}>
           <InfoBox
             backgroundColor="#e8f5e8"

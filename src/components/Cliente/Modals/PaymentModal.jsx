@@ -56,7 +56,7 @@ const PaymentModal = ({
 
   if (!service) return null;
 
-  const { isDs160, isVisaAmericana, haveOtherCost } = serviceInfo;
+  const { isDs160 } = serviceInfo;
 
   return (
     <Modal
@@ -75,10 +75,8 @@ const PaymentModal = ({
             <div className={paymentStyles.serviceTitle}>{service.name}</div>
             <div className={paymentStyles.serviceSubtitle}>
               {isDs160 
-                ? 'Formulario DS-160 - Enlace de pago por correo'
-                : isVisaAmericana 
-                  ? 'Visa Americana - Pago seguro con Stripe' 
-                  : 'Pago seguro con Stripe'
+                ? 'Formulario DS-160 - Pago seguro con Stripe'
+                : 'Pago seguro con Stripe'
               }
             </div>
           </div>
@@ -114,14 +112,20 @@ const PaymentModal = ({
             selectedPaymentType={validatedPaymentType}
             onPaymentTypeChange={setSelectedPaymentType}
             currentPaymentOption={currentPaymentOption}
-            isVisaAmericana={isVisaAmericana}
-            haveOtherCost={haveOtherCost}
             userEmail={userEmail}
             userId={userId}
             onSuccess={onSuccess}
             onError={onError}
           />
         )}
+        
+        {/* Separador entre métodos de pago */}
+        <div className={paymentStyles.paymentSeparator}>
+          <div className={paymentStyles.separatorLine}></div>
+          <span className={paymentStyles.separatorText}>o paga con</span>
+          <div className={paymentStyles.separatorLine}></div>
+        </div>
+        
         {/* PayPal siempre visible debajo del método principal */}
         <div style={{ marginTop: 24, marginBottom: 12 }}>
           <PayPalScriptLoader>
