@@ -97,6 +97,11 @@ const PaymentModal = ({
         </div>
         {isDs160 ? (
           <DS160Section
+            service={service}
+            paymentOptions={paymentOptions}
+            selectedPaymentType={validatedPaymentType}
+            onPaymentTypeChange={setSelectedPaymentType}
+            currentPaymentOption={currentPaymentOption}
             userEmail={userEmail}
             onSuccess={onSuccess}
             onError={onError}

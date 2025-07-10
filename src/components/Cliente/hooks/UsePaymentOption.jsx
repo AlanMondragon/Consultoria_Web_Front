@@ -7,8 +7,8 @@ export const usePaymentOptions = (service) => {
   const serviceInfo = useMemo(() => {
     if (!service) return { isDs160: false, isVisaAmericana: false, haveOtherCost: false };
 
-    const name = service.name.toLowerCase();
-    const isDs160 = name === 'ds-160' || name === 'ds160' || name === 'Creación y generación de DS160';
+    const name = service.name;
+    const isDs160 = name === 'ds-160' || name === 'ds160' || name === 'Creación y generación de DS160' || name === 'elaboracion de formato ds-160' || name === 'ELABORACION DE FORMATO DS-160' || name.toLowerCase().includes('ds-160') || name.toLowerCase().includes('ds160');
     const isVisaAmericana = service.name === 'Visa Americana' || service.name === 'Visa Americana (4 meses)';
     const haveOtherCost = service.optionCost !== null && service.optionCost !== undefined && service.optionCost > 0;
 

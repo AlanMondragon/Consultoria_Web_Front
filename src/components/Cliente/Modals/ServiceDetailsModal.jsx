@@ -31,7 +31,9 @@ const ServiceDetailsModal = ({
             className={styles.modalImage}
           />
           <div className={styles.modalInfo}>
-            <p>{service.description}</p>
+            <p style={{ whiteSpace: 'pre-line' }}>
+              {service.description}
+            </p>
             <p className={styles.costInfoLabel}>Pago inicial:</p>
             <p className={styles.price} style={{ color: "blue" }}>
               MX$ {service.cashAdvance}.00
