@@ -3,7 +3,7 @@ import styles from './../../styles/OlvidarContra.module.css'; // Importar el mó
 import Swal from 'sweetalert2';
 import { olvidarContra, actualizarContra, obtenerUsuarioPorCorreo } from './../../api/api.js';
 import { Icon } from '@iconify/react';
-import logo from './../../img/logo_letras_negras.jpg';
+import logo from './../../img/logo_letras_negras.png';
 import { redirect } from 'react-router-dom';
 
 export default function OlvidarContra() {
@@ -17,8 +17,8 @@ export default function OlvidarContra() {
   const [verPassword, setVerPassword] = useState(false);
 
   useEffect(() => {
-    // Aplicar fondo al body
-    document.body.style.backgroundColor = '#132E3C';
+    // Aplicar fondo al body (color azul rey como respaldo)
+    document.body.style.backgroundColor = '#1e40af';
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
@@ -114,10 +114,11 @@ export default function OlvidarContra() {
               height="28"
               className={styles.backIcon}
               onClick={handleBack}
+              aria-label="Volver a la página anterior"
             />
           </div>
 
-          <h2 className={styles.titleRecovery}>Recuperación de contraseña</h2>
+          <h1 className={styles.titleRecovery}>Recuperación de contraseña</h1>
 
           {paso === 1 && (
             <form onSubmit={handleEnviarCodigo} className={styles.formRecovery}>
@@ -128,7 +129,7 @@ export default function OlvidarContra() {
               <div className={styles.logoContainer}>
                 <img
                   src={logo}
-                  alt="Logo Consultoría de Visado"
+                  alt="Logo Consultoría JAS - Servicios profesionales de consultoría"
                   className={styles.logoImgOlvidarContra}
                 />
               </div>
@@ -136,14 +137,15 @@ export default function OlvidarContra() {
               <input
                 type="email"
                 name="email"
-                placeholder="Correo electrónico"
+                placeholder="📧 Correo electrónico"
                 required
                 className={styles.inputRecovery}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                aria-label="Ingresa tu correo electrónico"
               />
               <button type="submit" className={styles.btnRecovery}>
-                Enviar
+                Enviar código
               </button>
             </form>
           )}
@@ -154,21 +156,23 @@ export default function OlvidarContra() {
 
               <input
                 type="text"
-                placeholder="Código de verificación"
+                placeholder="🔐 Código de verificación"
                 required
                 className={styles.inputRecovery}
                 value={codigoIngresado}
                 onChange={(e) => setCodigoIngresado(e.target.value)}
+                aria-label="Ingresa el código de verificación"
               />
 
               <div className={styles.passwordField}>
                 <input
                   type={verPassword ? 'text' : 'password'}
-                  placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                  placeholder="🔒 Nueva contraseña (mínimo 6 caracteres)"
                   required
                   className={styles.inputRecovery}
                   value={nuevaPassword}
                   onChange={(e) => setNuevaPassword(e.target.value)}
+                  aria-label="Ingresa tu nueva contraseña"
                 />
                 <Icon
                   icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
@@ -176,17 +180,19 @@ export default function OlvidarContra() {
                   width="24"
                   height="24"
                   onClick={() => setVerPassword(!verPassword)}
+                  aria-label={verPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 />
               </div>
 
               <div className={styles.passwordField}>
                 <input
                   type={verPassword ? 'text' : 'password'}
-                  placeholder="Confirmar nueva contraseña"
+                  placeholder="🔒 Confirmar nueva contraseña"
                   required
                   className={styles.inputRecovery}
                   value={confirmarPassword}
                   onChange={(e) => setConfirmarPassword(e.target.value)}
+                  aria-label="Confirma tu nueva contraseña"
                 />
                 <Icon
                   icon={verPassword ? "mdi:eye-off" : "mdi:eye"}
@@ -194,6 +200,7 @@ export default function OlvidarContra() {
                   width="24"
                   height="24"
                   onClick={() => setVerPassword(!verPassword)}
+                  aria-label={verPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 />
               </div>
 

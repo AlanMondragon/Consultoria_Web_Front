@@ -142,12 +142,13 @@ export default function Home() {
                 >
                   ¿Olvidaste tu contraseña?
                 </button>
+                <br/>
                 <button
                   type="button"
                   onClick={singint}
                   className={styles.forgotPassword}
                 >
-                  ¿No tienes una cuenta?
+                  Crear cuenta
                 </button>
               </div>
               <button type="submit" className={styles.btnLogin}>

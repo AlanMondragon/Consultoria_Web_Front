@@ -7,7 +7,7 @@
 }
 
 .homePage {
-  background-color: #132E3C !important;
+  background: linear-gradient(135deg, #0F172AE5 0%, #243a6ee5 50%, #0F172AE5 100%);
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: fixed;
@@ -15,6 +15,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .bodyLogin {
@@ -28,15 +29,19 @@
 }
 
 .cardRecovery {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
   padding: 50px 40px;
-  border-radius: 20px;
+  border-radius: 25px;
   width: 100%;
   max-width: 650px;
   text-align: center;
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 8px 32px rgba(30, 58, 138, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
   position: relative;
   margin: auto;
+  animation: slideUp 0.6s ease-out;
 }
 
 .topBar {
@@ -47,20 +52,44 @@
 
 .backIcon {
   cursor: pointer;
-  color: #0B3D91;
-  transition: color 0.3s ease;
+  color: #1e40af;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15);
 }
 
 .backIcon:hover {
-  color: #08307a;
+  color: #1e3a8a;
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
 }
 
 .titleRecovery {
   font-size: 28px;
   font-weight: 700;
-  color: #0B3D91;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-top: 20px;
   margin-bottom: 10px;
+  position: relative;
+}
+
+.titleRecovery::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  border-radius: 2px;
 }
 
 .logoContainer {
@@ -76,59 +105,81 @@
   height: 150px;
   border-radius: 20px;
   object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(30, 58, 138, 0.15));
+}
+
+.logoImgOlvidarContra:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 6px 12px rgba(30, 58, 138, 0.2));
 }
 
 .description {
   font-size: 16px;
-  color: #333333;
+  color: #1e3a8a;
   margin-top: 25px;
   margin-bottom: 10px;
-  line-height: 1.4;
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 .formRecovery {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  animation: fadeInUp 0.4s ease-out 0.1s both;
 }
 
 .inputRecovery {
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  padding: 16px 20px;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
   font-size: 16px;
-  color: #333;
+  color: #1e3a8a;
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(30, 58, 138, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .inputRecovery:focus {
   outline: none;
-  border-color: #0B3D91;
-  box-shadow: 0 0 0 2px rgba(11, 61, 145, 0.1);
+  border-color: #1e40af;
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 20px rgba(30, 64, 175, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .inputRecovery::placeholder {
-  color: #999;
+  color: #6b7280;
+  font-weight: 400;
 }
 
 .btnRecovery {
-  background-color: #0B3D91;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
   color: #ffffff;
   font-size: 18px;
   font-weight: 600;
-  padding: 12px;
+  padding: 16px 32px;
   border: none;
-  border-radius: 10px;
+  border-radius: 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .btnRecovery:hover {
-  background-color: #08307a;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.6);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
 }
 
 .btnRecovery:active {
@@ -143,19 +194,51 @@
 }
 
 .passwordField .inputRecovery {
-  padding-right: 45px; /* Espacio para el icono */
+  padding-right: 50px; /* Espacio para el icono */
 }
 
 .togglePasswordIcon {
   position: absolute;
-  right: 12px;
+  right: 15px;
   cursor: pointer;
-  color: #666;
-  transition: color 0.3s ease;
+  color: #6b7280;
+  transition: all 0.3s ease;
 }
 
 .togglePasswordIcon:hover {
-  color: #0B3D91;
+  color: #1e40af;
+  transform: scale(1.1);
+}
+
+/* Animaciones modernas */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos hover para la tarjeta */
+.cardRecovery:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 10px 35px rgba(30, 58, 138, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
 /* Responsive Design */
