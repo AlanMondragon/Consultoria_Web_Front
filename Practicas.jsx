@@ -8,6 +8,10 @@ import styles from './src/styles/Signin.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaChevronDown, FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import Logo from './src/img/logo_letras_negras.jpg';
+import LogoUtez from './src/img/utez.jpg';
+import LogoUpegro from './src/img/upegro.png';
+import { redirect } from 'react-router-dom';
+
 
 const countryOptions = [
     { value: "+57", label: "Colombia", flag: "🇨🇴", code: "CO" },
@@ -135,13 +139,16 @@ export default function Practicas({ onCancel }) {
     const onSubmit = async (data) => {
         try {
             const fullPhone = `${phonePrefix}${data.phone}`;
+            const phoneSolicitante = `${phonePrefix}${data.phoneSolicitante}`;
+
 
             const mensaje = `
   <ul>
-    <li><strong>Nombre completo:</strong> ${data.name}</li>
+    <li><strong>Nombre completo del solicitante:</strong> ${data.name}</li>
+    <li><strong>Numero del solicitante:</strong> ${phoneSolicitante}</li>
     <li><strong>Nombre de la institución:</strong> ${data.institutionName}</li>
-    <li><strong>Correo:</strong> ${data.email}</li>
-    <li><strong>Teléfono:</strong> ${fullPhone}</li>
+    <li><strong>Correo de la institución:</strong> ${data.email}</li>
+    <li><strong>Teléfono de la intitución:</strong> ${fullPhone}</li>
   </ul>
 `;
 
@@ -169,8 +176,15 @@ export default function Practicas({ onCancel }) {
 
     return (
         <div className="custom-container">
+            <a href="https://www.utez.edu.mx/" target="_blank" rel="noopener noreferrer">
+                <img src={LogoUtez} alt="Logo UTEZ" height={200} width={200} />
+            </a>
+            <a href="https://upeg.edu.mx" target="_blank" rel="noopener noreferrer">
+                <img src={LogoUpegro} alt='Logo UPEGRO' height={200} width={200}></img>            </a>
+
             <div className={styles.card}>
                 <div className={styles.header}>
+
                     <button
                         type="button"
                         className={`${styles.button} ${styles.buttonOutline}`}
@@ -203,6 +217,30 @@ export default function Practicas({ onCancel }) {
                                 autoComplete="name"
                             />
                             {errors.name && <span className={styles.errorMessage}>{errors.name.message}</span>}
+                        </div>
+                        {/* Teléfono con prefijo */}
+                        <div className={styles.inputGroup}>
+                            <label className={styles.label}>
+                                <FaPhone className={styles.labelIcon} />
+                                Número de Whatsapp del solicitante
+                            </label>
+                            <div className={styles.phoneContainer}>
+                                <CountrySelect
+                                    value={phonePrefix}
+                                    onChange={setPhonePrefix}
+                                    error={errors.phone}
+                                />
+                                <input
+                                    type="tel"
+                                    placeholder="1234567890"
+                                    {...register('phoneSolicitante')}
+                                    className={`${styles.input} ${styles.phoneNumberInput} ${errors.phone ? styles.inputError : ''}`}
+                                    maxLength={10}
+                                    inputMode="numeric"
+                                    pattern="\d{10}"
+                                />
+                            </div>
+                            {errors.phone && <span className={styles.errorMessage}>{errors.phone.message}</span>}
                         </div>
 
                         {/* Nombre de la institución */}

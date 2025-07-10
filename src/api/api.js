@@ -482,6 +482,8 @@ export const actualizarTC = async (idTransactProgress, datosActualizados) => {
     throw error;
   }
 };
+
+//PARA ACTUALIZAR LA SIMULACION SOLAMENTE UNA VEZ, ESTE ENDPOINT TIENE LA VALIDACION DE QUE SE ACTUALIZE UNA SOLA VEZ
 export const actualizarTCS = async (idTransactProgress, datosActualizados) => {
   try {
     const response = await axios.put(`${API_URL}/progress/simulation/${idTransactProgress}`,
