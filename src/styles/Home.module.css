@@ -7,33 +7,36 @@
 }
 .volver {
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 20px;
+  left: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   text-align: left;
-  background-color: transparent;
-  color: #0056b3;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: #1e40af;
   border: none;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   z-index: 10;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 25px;
   transition: all 0.3s ease;
-  gap: 5px;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.15);
 }
 
 .volver:hover {
-  background-color: rgba(0, 86, 179, 0.1);
-  color: #003d82;
-  transform: translateX(-2px);
+  background: rgba(255, 255, 255, 1);
+  color: #1e3a8a;
+  transform: translateX(-3px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.2);
 }
 
 .homePage {
-  background-color: #132E3C !important;
+  background: linear-gradient(135deg, #0F172AE5 0%, #243a6ee5 50%, #0F172AE5 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -44,6 +47,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .bodyLogin {
@@ -53,16 +57,20 @@
 }
 
 .cardLogin {
-  border-radius: 30px;
+  border-radius: 25px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 850px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  background-color: #fff;
+  max-width: 900px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 
+    0 8px 32px rgba(30, 58, 138, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
   margin: 0 auto;
   position: relative;
+  animation: slideUp 0.6s ease-out;
 }
 
 .verticalLine {
@@ -72,36 +80,73 @@
 }
 
 .cardLeft {
-  background-color: #fff;
-  padding: 20px;
+  background: linear-gradient(135deg, #dbeafe 0%, #e4e6ea 100%);
+  padding: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
+  position: relative;
+}
+
+.cardLeft::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(226, 231, 239, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .cardRight {
-  background-color: #fff;
-  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 50px;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
 }
 
 .logoImg {
-  width: 250px;
+  width: 280px;
   height: auto;
-  border-radius: 25px;
+  border-radius: 20px;
   max-width: 100%;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(30, 58, 138, 0.15));
+}
+
+.logoImg:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 6px 12px rgba(30, 58, 138, 0.2));
 }
 
 .title {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   text-align: center;
-  color: #132E3C;
-  font-size: 28px;
-  font-weight: bold;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  border-radius: 2px;
 }
 
 .form {
@@ -111,23 +156,33 @@
 
 .formControl {
   border: none;
-  border-bottom: 2px solid #ccc;
-  border-radius: 0;
-  margin-bottom: 25px;
-  background: #fff;
-  color: #333;
-  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: #1e3a8a;
+  padding: 16px 20px;
   font-size: 16px;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(30, 58, 138, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 2px solid transparent;
 }
 
 .formControl:focus {
-  border-color: #08307a;
+  border-color: #1e40af;
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 20px rgba(30, 64, 175, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .formControl::placeholder {
-  color: #999;
+  color: #6b7280;
+  font-weight: 400;
 }
 
 .formControl::-webkit-input-placeholder {
@@ -143,58 +198,112 @@
 }
 
 .forgotPasswordContainer {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 .forgotPassword {
   background: none;
   border: none;
-  color: #007bff;
-  text-decoration: underline;
+  color: #1e40af;
+  text-decoration: none;
   cursor: pointer;
   font-size: 14px;
-  padding: 0;
-  transition: color 0.3s ease;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+  margin: 5px;
+  font-weight: 500;
 }
 
 .forgotPassword:hover {
-  color: #0056b3;
+  color: #1e3a8a;
+  background: rgba(30, 64, 175, 0.1);
+  transform: translateY(-1px);
 }
 
 .btnLogin {
-  background-color: #08307a;
-  color: #fff;
-  font-weight: bold;
-  font-size: 20px;
-  padding: 12px 30px;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #192d64 0%, #28408f 50%, #2f4972 100%);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 16px 32px;
+  border-radius: 15px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   width: 100%;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .btnLogin:hover {
-  background-color: #1756cc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.6);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+}
+
+.btnLogin:active {
+  transform: translateY(0);
+}
+
+/* Animaciones optimizadas - solo las esenciales */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos de glassmorphism simplificados */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: fadeInUp 0.4s ease-out 0.1s both;
+}
+
+.verticalLine {
+  width: 2px;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+  flex-shrink: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .homePage {
-    padding: 10px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+    padding: 15px;
   }
 
   .cardLogin {
     flex-direction: column;
     margin: 20px auto;
-    gap: 0;
+    max-width: 400px;
+    border-radius: 20px;
   }
 
   .volver {
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
     font-size: 13px;
-    padding: 6px 10px;
+    padding: 8px 12px;
   }
 
   .verticalLine {
@@ -202,11 +311,12 @@
   }
 
   .cardLeft {
-    padding: 30px 20px 20px 20px;
+    padding: 25px 20px 15px 20px;
+    background: linear-gradient(135deg, #fafbfc 0%, #bfdbfe 100%);
   }
 
   .cardRight {
-    padding: 20px 30px 30px 30px;
+    padding: 20px 25px 30px 25px;
   }
 
   .logoImg {
@@ -214,31 +324,37 @@
   }
 
   .title {
-    font-size: 24px;
-    margin-bottom: 25px;
+    font-size: 26px;
+    margin-bottom: 30px;
+  }
+
+  .formControl {
+    padding: 14px 18px;
+    font-size: 15px;
   }
 
   .btnLogin {
-    font-size: 18px;
-    padding: 12px 25px;
+    font-size: 16px;
+    padding: 14px 28px;
   }
 }
 
 @media (max-width: 480px) {
   .homePage {
-    padding: 5px;
+    padding: 10px;
   }
 
   .cardLogin {
-    margin: 10px auto;
-    border-radius: 20px;
+    margin: 15px auto;
+    border-radius: 18px;
+    max-width: 350px;
   }
 
   .volver {
-    top: 8px;
-    left: 8px;
+    top: 12px;
+    left: 12px;
     font-size: 12px;
-    padding: 5px 8px;
+    padding: 6px 10px;
   }
 
   .cardLeft,
@@ -247,36 +363,41 @@
   }
 
   .logoImg {
-    width: 150px;
+    width: 160px;
   }
 
   .title {
-    font-size: 22px;
-    margin-bottom: 20px;
+    font-size: 24px;
+    margin-bottom: 25px;
   }
 
   .formControl {
     font-size: 14px;
-    margin-bottom: 20px;
+    padding: 12px 16px;
+    margin-bottom: 15px;
   }
 
   .btnLogin {
-    font-size: 16px;
-    padding: 10px 20px;
+    font-size: 15px;
+    padding: 12px 24px;
   }
 
   .forgotPassword {
     font-size: 13px;
+    padding: 6px 12px;
   }
 }
 
-/* Para pantallas muy pequeñas */
 @media (max-width: 320px) {
+  .cardLogin {
+    max-width: 300px;
+  }
+  
   .volver {
-    top: 5px;
-    left: 5px;
+    top: 10px;
+    left: 10px;
     font-size: 11px;
-    padding: 4px 6px;
+    padding: 5px 8px;
   }
 
   .cardLeft,
@@ -285,20 +406,31 @@
   }
 
   .logoImg {
-    width: 120px;
+    width: 140px;
   }
 
   .title {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .formControl {
     font-size: 13px;
-    padding: 8px;
+    padding: 10px 14px;
   }
 
   .btnLogin {
-    font-size: 15px;
-    padding: 10px 15px;
+    font-size: 14px;
+    padding: 10px 20px;
   }
+}
+
+.cardLogin:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 10px 35px rgba(30, 58, 138, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.form {
+  animation: fadeInUp 0.4s ease-out 0.1s both;
 }
