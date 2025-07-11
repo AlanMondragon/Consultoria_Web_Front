@@ -91,7 +91,13 @@ export default function LandingPage() {
     setPaymentModalOpen(false);
   };
 
-  const singint = () => {
+  const singint = (service) => {
+    // Guardar el servicio seleccionado en sessionStorage para pasarlo después del login
+    if (service) {
+      console.log('Guardando servicio en sessionStorage:', service);
+      sessionStorage.setItem('selectedService', JSON.stringify(service));
+    }
+    console.log('Redirigiendo a /Login');
     window.location.href = '/Login';
   };
 
@@ -220,7 +226,7 @@ export default function LandingPage() {
           onSuccess={() => {}}
           onError={() => {}}
           isPreviewMode={true}
-          onLoginRequired={singint}
+          onLoginRequired={() => singint(selectedServiceForPayment)}
         />
       )}
     </>

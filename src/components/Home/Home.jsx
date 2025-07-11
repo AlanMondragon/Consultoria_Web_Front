@@ -62,13 +62,25 @@ export default function Home() {
         })
         navigate('/HomeAdmin');
       } else if (decoded.role === "USER") {
+        // Verificar si hay un servicio preseleccionado desde la landing page
+        const selectedServiceData = sessionStorage.getItem('selectedService');
+        console.log('Datos del servicio preseleccionado en login:', selectedServiceData);
+        
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: 'Bienvenido ',
           showConfirmButton: true,
-        })
-        navigate('/ClienteHome');
+        }).then(() => {
+          // Si hay un servicio preseleccionado, ir directo a servicios
+          if (selectedServiceData) {
+            console.log('Redirigiendo a ClienteServicios con servicio preseleccionado');
+            navigate('/ClienteServicios');
+          } else {
+            console.log('Redirigiendo a ClienteHome - no hay servicio preseleccionado');
+            navigate('/ClienteHome');
+          }
+        });
       } else {
         console.warn("Rol no reconocido:", decoded.role);
       }

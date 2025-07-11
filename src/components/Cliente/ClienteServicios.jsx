@@ -26,6 +26,7 @@ export default function ClienteServicios() {
   const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+  const [preselectedServiceId, setPreselectedServiceId] = useState(null);
 
   // Estados para modal de detalles
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -73,10 +74,72 @@ export default function ClienteServicios() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Efecto para manejar servicio preseleccionado desde la landing page
+  useEffect(() => {
+    const checkPreselectedService = () => {
+      console.log('Verificando servicio preseleccionado...');
+      const selectedServiceData = sessionStorage.getItem('selectedService');
+      console.log('Datos encontrados en sessionStorage:', selectedServiceData);
+      console.log('Número de servicios cargados:', services.length);
+      
+      if (selectedServiceData && services.length > 0) {
+        try {
+          const selectedService = JSON.parse(selectedServiceData);
+          console.log('Servicio parseado:', selectedService);
+          
+          // Buscar el servicio en la lista actual
+          const serviceExists = services.find(s => s.idTransact === selectedService.idTransact);
+          console.log('Servicio encontrado en la lista:', serviceExists);
+          
+          if (serviceExists) {
+            console.log('Estableciendo servicio preseleccionado para resaltado');
+            // Establecer el ID del servicio preseleccionado para resaltado visual
+            setPreselectedServiceId(serviceExists.idTransact);
+            
+            // Abrir el modal de pago directamente después de un breve delay
+            console.log('Abriendo modal de pago en 1 segundo...');
+            setTimeout(() => {
+              console.log('Abriendo modal de pago para:', serviceExists);
+              setServiceToPay(serviceExists);
+              setPaymentModalOpen(true);
+              // Limpiar el sessionStorage después de usar
+              sessionStorage.removeItem('selectedService');
+              console.log('SessionStorage limpiado');
+            }, 1000);
+          } else {
+            console.log('Servicio no encontrado en la lista actual');
+          }
+        } catch (error) {
+          console.error("Error parsing selected service:", error);
+          sessionStorage.removeItem('selectedService');
+        }
+      } else {
+        console.log('No hay servicio preseleccionado o servicios aún no cargados');
+      }
+    };
+
+    if (services.length > 0) {
+      checkPreselectedService();
+    }
+  }, [services]);
+
+  // Efecto para limpiar el resaltado visual después de unos segundos
+  useEffect(() => {
+    if (preselectedServiceId) {
+      const timer = setTimeout(() => {
+        setPreselectedServiceId(null);
+      }, 10000); // Limpiar después de 10 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [preselectedServiceId]);
+
   const fetchServices = async () => {
     try {
+      console.log('Iniciando carga de servicios...');
       const response = await getAllProcess();
       if (response.success && Array.isArray(response.response.Transacts)) {
+        console.log('Servicios cargados exitosamente:', response.response.Transacts.length);
         setServices(response.response.Transacts);
       } else {
         console.error("Unexpected API response format:", response);
@@ -205,6 +268,11 @@ export default function ClienteServicios() {
 
       <div className={styles.servicesSlider}>
         <h1 className={styles.title}>Servicios disponibles</h1>
+        {preselectedServiceId && (
+          <div className={styles.preselectedNotice}>
+            <p>🎯 Servicio seleccionado desde la página principal</p>
+          </div>
+        )}
         {isMobile ? (
           <div className={styles.mobileContainer}>
             {services.map((service, index) => (
@@ -213,6 +281,7 @@ export default function ClienteServicios() {
                 service={service}
                 onShowDetails={handleOpenDetailsModal}
                 onPay={handleOpenPaymentModal}
+                isPreselected={service.idTransact === preselectedServiceId}
               />
             ))}
           </div>
@@ -226,6 +295,7 @@ export default function ClienteServicios() {
                     service={service}
                     onShowDetails={handleOpenDetailsModal}
                     onPay={handleOpenPaymentModal}
+                    isPreselected={service.idTransact === preselectedServiceId}
                   />
                 </div>
               ))}

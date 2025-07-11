@@ -39,6 +39,24 @@
   width: 100%;
 }
 
+.preselectedNotice {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  text-align: center;
+  font-weight: 500;
+  max-width: 600px;
+  width: 100%;
+}
+
+.preselectedNotice p {
+  margin: 0;
+  font-size: 16px;
+}
+
 .serviceCard {
   width: 100%;
   max-width: 340px;
@@ -683,6 +701,12 @@
     font-size: 12px;
     padding: 8px 2px;
     width: 97%;
+  }
+  .slickArrowPrev {
+    left: -20px;
+  }
+  .slickArrowNext {
+    right: -20px;
   }
 }
 
