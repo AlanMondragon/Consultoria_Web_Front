@@ -122,6 +122,7 @@ export default function ServicesSection({
                     <p className={styles.cardDescription}>
                       {truncateDescription(service.description, 100)}
                     </p>
+                    <h4 className={styles.cardCost}> {service.cashAdvance} MX$</h4>
                     <div className={styles.cardButtons}>
                       <button
                         className={styles.cardButton}
@@ -144,8 +145,8 @@ export default function ServicesSection({
                       <button
                         className={styles.cardButton}
                         onClick={() => {
-                          console.log('Obtener clicked');
-                          singint();
+                          console.log('Obtener clicked for service:', service);
+                          singint(service);
                         }}
                       >
                         Obtener

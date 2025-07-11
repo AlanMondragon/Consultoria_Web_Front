@@ -1,9 +1,14 @@
 import React from 'react';
 import cardStyles from '../../styles/servicios/client/ServiceCard.module.css';
 
-export default function ServiceCard({ service, onShowDetails, onPay }) {
+export default function ServiceCard({ service, onShowDetails, onPay, isPreselected = false }) {
   return (
-    <div className={cardStyles.serviceCard}>
+    <div className={`${cardStyles.serviceCard} ${isPreselected ? cardStyles.preselectedCard : ''}`}>
+      {isPreselected && (
+        <div className={cardStyles.preselectedBadge}>
+          ✨ Servicio seleccionado
+        </div>
+      )}
       <img
         src={service.image}
         alt={service.name}

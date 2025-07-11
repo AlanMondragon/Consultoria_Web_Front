@@ -115,3 +115,29 @@
     margin-bottom: 6px;
   }
 }
+
+/* Estilos para el servicio preseleccionado */
+.preselectedCard {
+  border: 3px solid #3b82f6;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  position: relative;
+}
+
+.preselectedCard:hover {
+  transform: scale(0.96);
+}
+
+.preselectedBadge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  z-index: 10;
+}
