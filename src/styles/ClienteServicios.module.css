@@ -291,22 +291,28 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 10050; /* Mayor que el z-index del modal de Bootstrap */
   cursor: zoom-out;
   padding: 20px;
   box-sizing: border-box;
+  backdrop-filter: blur(2px);
 }
 
 .zoomedImage {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 95%;
+  max-height: 95%;
   object-fit: contain;
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.zoomedImage:hover {
+  transform: scale(1.02);
 }
 
 /* Estilos para la información de costos */

@@ -196,8 +196,8 @@ export default function LandingPage() {
           steps={steps}
           onShowSteps={handleOpenStepsModal}
           loading={stepsLoading}
-          zoomed={isZoomed}
-          onZoomToggle={handleToggleZoom}
+          isZoomed={isZoomed}
+          onToggleZoom={handleToggleZoom}
         />
       )}
 
