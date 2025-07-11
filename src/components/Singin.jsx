@@ -82,21 +82,11 @@ const CountrySelect = ({ value, onChange, error }) => {
 };
 
 const handleDownloadTerminos = () => {
-  const link = document.createElement('a');
-  link.href = 'http://localhost:8080/api/pdf/download/terminos';
-  link.setAttribute('download', 'Terminos_y_Condiciones_Consultoria_JAS.pdf');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  window.open('http://localhost:8080/api/pdf/download/terminos', '_blank');
 };
 
 const handleDownloadPrivacidad = () => {
-  const link = document.createElement('a');
-  link.href = 'http://localhost:8080/api/pdf/download/privacidad';
-  link.setAttribute('download', 'Politica_de_Privacidad_Consultoria_JAS.pdf');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  window.open('http://localhost:8080/api/pdf/download/privacidad', '_blank');
 };
 
 const schema = yup.object().shape({
