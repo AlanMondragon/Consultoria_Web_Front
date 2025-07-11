@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../../img/logo_letras_negras.jpg';
+import logo from '../../img/logo_letras_negras.png';
 import { Login } from './../../api/api.js';
 import styles from './../../styles/Home.module.css'; // Importar el módulo CSS
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +11,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Aplicar fondo al body
-    document.body.style.backgroundColor = '#132E3C';
+    // Aplicar fondo al body (color azul rey como respaldo)
+    document.body.style.backgroundColor = '#1e40af';
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     localStorage.removeItem("token");
@@ -110,7 +110,7 @@ export default function Home() {
           <div className={styles.cardLeft}>
             <img
               src={logo}
-              alt="Logo Consultoría JAS"
+              alt="Logo Consultoría JAS - Servicios profesionales"
               className={styles.logoImg}
             />
           </div>
@@ -118,20 +118,20 @@ export default function Home() {
           <div className={styles.verticalLine}></div>
 
           <div className={styles.cardRight}>
-            <h2 className={styles.title}>Bienvenido</h2>
+            <h1 className={styles.title}>Bienvenido</h1>
             <form onSubmit={handleLogin} className={styles.form}>
               <input
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.formControl}
-                placeholder="Ingresa tu correo"
+                placeholder="✉️ Ingresa tu correo electrónico"
                 required
               />
               <input
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.formControl}
-                placeholder="Ingresa tu contraseña"
+                placeholder="🔒 Ingresa tu contraseña"
                 required
               />
               <div className={styles.forgotPasswordContainer}>
@@ -142,13 +142,13 @@ export default function Home() {
                 >
                   ¿Olvidaste tu contraseña?
                 </button>
-                <br></br>
+                <br/>
                 <button
                   type="button"
                   onClick={singint}
                   className={styles.forgotPassword}
                 >
-                  ¿No tienes una cuenta?
+                  Crear cuenta
                 </button>
               </div>
               <button type="submit" className={styles.btnLogin}>
