@@ -3,6 +3,7 @@ import { Home, Briefcase, Users, MessageSquare, HelpCircle, Mail } from "lucide-
 import { getAllProcess, getStepById } from './../../api/api.js';
 import ServiceDetailsModal from './../Cliente/Modals/ServiceDetailsModal.jsx';
 import StepsModal from './../Cliente/Modals/StepsModal.jsx';
+import PaymentModal from './../Cliente/Modals/PaymentModal.jsx';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'leaflet/dist/leaflet.css';
@@ -28,6 +29,8 @@ export default function LandingPage() {
   const [stepsLoading, setStepsLoading] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
   const [faqActiveIndex, setFaqActiveIndex] = useState(null);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [selectedServiceForPayment, setSelectedServiceForPayment] = useState(null);
 
   useEffect(() => {
     fetchServices();
@@ -76,6 +79,16 @@ export default function LandingPage() {
     setSelectedService(service);
     setDetailsModalOpen(true);
     await fetchStepsById(service.idTransact);
+  };
+
+  const handleOpenPaymentModal = (service) => {
+    setSelectedServiceForPayment(service);
+    setPaymentModalOpen(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setSelectedServiceForPayment(null);
+    setPaymentModalOpen(false);
   };
 
   const singint = () => {
@@ -160,7 +173,7 @@ export default function LandingPage() {
         services={services}
         handleOpenDetailsModal={handleOpenDetailsModal}
         handleOpenStepsModal={handleOpenStepsModal}
-        singint={singint}
+        singint={handleOpenPaymentModal}
       />
 
       <AboutSection />
@@ -194,6 +207,20 @@ export default function LandingPage() {
           onHide={handleCloseStepsModal}
           steps={steps}
           loading={stepsLoading}
+        />
+      )}
+
+      {paymentModalOpen && selectedServiceForPayment && (
+        <PaymentModal
+          show={paymentModalOpen}
+          onHide={handleClosePaymentModal}
+          service={selectedServiceForPayment}
+          userEmail={null}
+          userId={null}
+          onSuccess={() => {}}
+          onError={() => {}}
+          isPreviewMode={true}
+          onLoginRequired={singint}
         />
       )}
     </>

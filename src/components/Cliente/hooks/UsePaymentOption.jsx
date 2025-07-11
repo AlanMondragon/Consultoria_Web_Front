@@ -66,21 +66,27 @@ export const usePaymentOptions = (service) => {
       };
     }
 
+    // Determinar si el anticipo es igual al precio completo
+    const isFullPaymentOnly = service.cashAdvance === service.cost;
+    
     return {
       adelanto: {
         amount: service.cashAdvance,
-        description: 'Apartado (anticipo)',
-        processingTime: 'Reserva tu trámite',
-        timeType: 'deposit',
-        isDeposit: true
+        description: isFullPaymentOnly ? 'Pago único' : 'Apartado (anticipo)',
+        processingTime: isFullPaymentOnly ? 'Pago total del servicio' : 'Reserva tu trámite',
+        timeType: isFullPaymentOnly ? 'normal' : 'deposit',
+        isDeposit: !isFullPaymentOnly
       },
-      completo: {
-        amount: service.cost,
-        description: 'Servicio completo',
-        processingTime: 'Pago total del servicio',
-        timeType: 'normal',
-        isDeposit: false
-      },
+      // Solo incluir opción completo si es diferente al anticipo
+      ...(service.cashAdvance !== service.cost && {
+        completo: {
+          amount: service.cost,
+          description: 'Servicio completo',
+          processingTime: 'Pago total del servicio',
+          timeType: 'normal',
+          isDeposit: false
+        }
+      }),
       ...(haveOtherCost && {
         opcion: {
           amount: service.optionCost,

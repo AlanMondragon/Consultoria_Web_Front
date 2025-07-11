@@ -145,8 +145,8 @@ export default function ServicesSection({
                       <button
                         className={styles.cardButton}
                         onClick={() => {
-                          console.log('Obtener clicked');
-                          singint();
+                          console.log('Obtener clicked for service:', service);
+                          singint(service);
                         }}
                       >
                         Obtener
