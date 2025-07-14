@@ -4,7 +4,7 @@ import axios from 'axios';
 import { createProcessWithPayment, payDS160, actualizarTC } from './../api/api.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName, disabled = false, selectedDate, service, idTransactProgress }) {
+export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName, disabled = false, selectedDate, service, idTransactProgress, quantity = 1, totalAmount, onQuantityChange }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -65,16 +65,18 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         try {
           console.log("cliente : " + customer);
           const paymentData = {
-            total: amount, // Usa el monto original
+            total: amount * quantity, // Usa el monto original
             status: 1, //  1 para "pagado"
             idUser: parseInt(customer),
-            idTransact: parseInt(idProductoTransaccion, 10), // Asegúrate de que sea un número
+            quantity: parseInt(quantity) || 1, // Asegúrate de que sea un número
+            idTransact: parseInt(idProductoTransaccion),
           };
           console.log('Intentando crear PaymentIntent con:', {
             amount: amount * 100,
             currency: 'mxn',
             description: serviceName ? `${serviceName} - ${description}` : description,
             customerEmail: userEmail,
+            quantity : quantity,
             customerId: customer,
           });
 
@@ -135,8 +137,102 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
     <form onSubmit={handleSubmit} className="checkout-form">
       <div className="product-info" style={{ marginBottom: '20px' }}>
         <h4>{description}</h4>
-        <p>Monto a pagar: <strong>MX${amount}</strong></p>
-        <p>Cliente: {userEmail}</p>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: '12px',
+          padding: '12px',
+          backgroundColor: '#f8fafc',
+          borderRadius: '8px',
+          border: '1px solid #e2e8f0'
+        }}>
+          <div>
+            <p style={{ margin: '0 0 4px 0', fontWeight: '600' }}>Cliente: {userEmail}</p>
+            {quantity > 1 && (
+              <p style={{ margin: '0', fontSize: '0.875rem', color: '#64748b' }}>
+                Cantidad: {quantity} {quantity === 1 ? 'servicio' : 'servicios'}
+              </p>
+            )}
+          </div>
+          
+          {/* Contador de cantidad compacto */}
+          {onQuantityChange && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: 'white',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid #d1d5db'
+            }}>
+              <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
+                Cantidad:
+              </span>
+              <button
+                type="button"
+                onClick={() => onQuantityChange(quantity - 1)}
+                disabled={quantity <= 1}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '4px',
+                  border: '1px solid #3b82f6',
+                  backgroundColor: quantity <= 1 ? '#f1f5f9' : '#3b82f6',
+                  color: quantity <= 1 ? '#94a3b8' : 'white',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: quantity <= 1 ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                −
+              </button>
+              
+              <span style={{
+                minWidth: '20px',
+                textAlign: 'center',
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: '#1e293b'
+              }}>
+                {quantity}
+              </span>
+              
+              <button
+                type="button"
+                onClick={() => onQuantityChange(quantity + 1)}
+                disabled={quantity >= 10}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '4px',
+                  border: '1px solid #3b82f6',
+                  backgroundColor: quantity >= 10 ? '#f1f5f9' : '#3b82f6',
+                  color: quantity >= 10 ? '#94a3b8' : 'white',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: quantity >= 10 ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                +
+              </button>
+            </div>
+          )}
+        </div>
+        
+        <p>Monto a pagar: <strong>MX${totalAmount || amount}</strong></p>
+        {quantity > 1 && totalAmount && (
+          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '4px 0 0 0' }}>
+            MX${(totalAmount / quantity).toFixed(2)} × {quantity} {quantity === 1 ? 'servicio' : 'servicios'}
+          </p>
+        )}
         {selectedDate && (
           <p>Fecha seleccionada: <strong>{selectedDate.replace('T', ' ')}</strong></p>
         )}

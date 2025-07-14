@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL;
 import { useState } from 'react';
 
-const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalStatus }) => {
+const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalStatus, quantity = 1 }) => {
   const paypalRef = useRef();
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -60,7 +60,8 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
                 total: amount,     
                 status: 1,                 
                 idUser: parseInt(userId),  
-                idTransact: idTransact      
+                idTransact: idTransact,
+                quantity: parseInt(quantity) || 1 // Coincide exactamente con tu DTO
               };
               
               console.log('Enviando paymentData:', paymentData);

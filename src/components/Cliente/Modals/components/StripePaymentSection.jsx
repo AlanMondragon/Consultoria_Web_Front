@@ -21,6 +21,9 @@ const StripePaymentSection = ({
   haveOtherCost,
   userEmail,
   userId,
+  quantity = 1,
+  totalAmount,
+  onQuantityChange,
   onSuccess,
   onError
 }) => {
@@ -42,6 +45,13 @@ const StripePaymentSection = ({
   
   // Si es adelanto de cita visa americana, usar siempre las opciones del hook
   const shouldShowPaymentOptions = !showSinglePayment || isAdvanceVisaAmericana;
+
+  // Función para manejar cambio de cantidad (se pasa al CheckoutForm)
+  const handleQuantityChange = (newQuantity) => {
+    if (onQuantityChange) {
+      onQuantityChange(newQuantity);
+    }
+  };
 
   // Función para detectar si la hora seleccionada es después de las 17:00
   const handleDateSelected = (dateTime) => {
@@ -91,10 +101,13 @@ const StripePaymentSection = ({
           )}          <Elements stripe={stripePromise}>
             <CheckoutForm
               amount={(currentPaymentOption?.amount || 0) + extraFee}
+              totalAmount={totalAmount ? totalAmount + extraFee : (currentPaymentOption?.amount || 0) + extraFee}
               description={`Pago ${service?.name || ''}`}
               idProductoTransaccion={service?.idTransact}
               userEmail={userEmail}
               customer={userId}
+              quantity={quantity}
+              onQuantityChange={handleQuantityChange}
               onSuccess={onSuccess}
               onError={onError}
               serviceName={service?.name}
@@ -151,10 +164,13 @@ const StripePaymentSection = ({
           <Elements stripe={stripePromise}>
             <CheckoutForm
               amount={(currentPaymentOption?.amount || 0) + extraFee}
+              totalAmount={totalAmount ? totalAmount + extraFee : (currentPaymentOption?.amount || 0) + extraFee}
               description={currentPaymentOption?.description}
               idProductoTransaccion={service?.idTransact}
               userEmail={userEmail}
               customer={userId}
+              quantity={quantity}
+              onQuantityChange={handleQuantityChange}
               onSuccess={onSuccess}
               onError={onError}
               serviceName={service?.name}

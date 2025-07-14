@@ -3,7 +3,7 @@ import { MessageIcon } from './Icons.jsx';
 import InfoBox from './InfoBox.jsx';
 import StripePaymentSection from './StripePaymentSection.jsx';
 
-const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentOptions, selectedPaymentType, onPaymentTypeChange, currentPaymentOption }) => {
+const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentOptions, selectedPaymentType, onPaymentTypeChange, currentPaymentOption, quantity = 1, totalAmount, onQuantityChange }) => {
   return (
     <div>
       {/* Info Box */}
@@ -45,6 +45,18 @@ const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentO
           lineHeight: '1.5'}}>
             Correo electrónico: <strong>{userEmail}</strong>
           </p>
+
+        {quantity > 1 && (
+          <p style={{ 
+            color: '#2e7d32', 
+            margin: '0 0 15px 0',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            fontWeight: '600'
+          }}>
+            Cantidad de servicios: <strong>{quantity}</strong>
+          </p>
+        )}
       </div>
 
       {/* Stripe Payment Section */}
@@ -55,6 +67,9 @@ const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentO
         onPaymentTypeChange={onPaymentTypeChange}
         currentPaymentOption={currentPaymentOption}
         userEmail={userEmail}
+        quantity={quantity}
+        totalAmount={totalAmount}
+        onQuantityChange={onQuantityChange}
         onSuccess={onSuccess}
         onError={onError}
         onHide={onHide}
