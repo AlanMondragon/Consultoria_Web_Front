@@ -5,21 +5,22 @@ export const usePaymentOptions = (service) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState('adelanto');
 
   const serviceInfo = useMemo(() => {
-    if (!service) return { isDs160: false, isVisaAmericana: false, haveOtherCost: false };
+    if (!service) return { isDs160: false, isVisaAmericana: false, haveOtherCost: false, isTransportService: false };
 
     const name = service.name.toLowerCase();
+    const isTransportService = name === 'servicio de traslado para solicitantes de visa' || name.includes('traslado');
     const isDs160 = name === 'ds-160' || name === 'ds160' || name === 'Creación y generación de DS160' || name === 'elaboracion de formato ds-160' || name === 'ELABORACION DE FORMATO DS-160' || name.toLowerCase().includes('ds-160') || name.toLowerCase().includes('ds160');
     const isVisaAmericana = service.name === 'Visa Americana' || service.name === 'Visa Americana (4 meses)';
     const haveOtherCost = service.optionCost !== null && service.optionCost !== undefined && service.optionCost > 0;
     const isAdvanceVisaAmericana = name.includes('adelanto') && (name.includes('cita') || name.includes('anticipo')) && name.includes('visa') && name.includes('americana');
 
-    return { isDs160, isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost };
+    return { isDs160, isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost, isTransportService };
   }, [service]);
 
   const paymentOptions = useMemo(() => {
     if (!service) return {};
 
-    const { isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost } = serviceInfo;
+    const { isVisaAmericana, isAdvanceVisaAmericana, haveOtherCost, isTransportService } = serviceInfo;
 
     if (isVisaAmericana) {
       return {
@@ -63,6 +64,40 @@ export const usePaymentOptions = (service) => {
           timeType: 'extended',
           isDeposit: false
         }
+      };
+    }
+
+    if(isTransportService) {
+      // Determinar si el anticipo es igual al precio completo para servicios de traslado
+      const isFullPaymentOnly = service.cashAdvance === service.cost;
+      
+      return {
+        adelanto: {
+          amount: service.cashAdvance,
+          description: isFullPaymentOnly ? 'Pago único del traslado' : 'Apartado del servicio de traslado',
+          processingTime: isFullPaymentOnly ? 'Pago total del servicio de traslado' : 'Reserva tu servicio de traslado',
+          timeType: isFullPaymentOnly ? 'normal' : 'deposit',
+          isDeposit: !isFullPaymentOnly
+        },
+        // Solo incluir opción completo si es diferente al anticipo
+        ...(service.cashAdvance !== service.cost && {
+          completo: {
+            amount: service.cost,
+            description: 'Servicio de traslado completo',
+            processingTime: 'Pago total del servicio de traslado',
+            timeType: 'normal',
+            isDeposit: false
+          }
+        }),
+        ...(haveOtherCost && {
+          opcion: {
+            amount: service.optionCost,
+            description: service.nameOption || 'Opción adicional de traslado',
+            processingTime: service.nameOption || 'Servicio de traslado con opción adicional',
+            timeType: 'option',
+            isDeposit: false
+          }
+        })
       };
     }
 
