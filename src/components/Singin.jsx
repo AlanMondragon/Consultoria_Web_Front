@@ -109,7 +109,8 @@ export default function Signin({ onCancel }) {
   const [paso, setPaso] = useState(1);
   const [phonePrefix, setPhonePrefix] = useState('+52');
   const [acceptTerms, setAcceptTerms] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
   const {
     register,
     handleSubmit,
@@ -126,6 +127,25 @@ export default function Signin({ onCancel }) {
     } else {
       window.history.back();
     }
+  };
+ const handleViewPdf = async (tipo) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/pdf/download/${tipo}`);
+      if (!response.ok) throw new Error('Error al obtener PDF');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      setShowModal(true);
+    } catch (error) {
+      console.error(error);
+      alert('No se pudo cargar el PDF');
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    URL.revokeObjectURL(pdfUrl); // liberamos memoria
+    setPdfUrl('');
   };
 
   const onSubmit = async (data) => {
@@ -383,9 +403,13 @@ export default function Signin({ onCancel }) {
                   onChange={(e) => setAcceptTerms(e.target.checked)}
                 />{' '}
                 Acepto los{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>Términos y Condiciones</a>{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('terminos'); }}>
+                  Términos y Condiciones
+                </a>{' '}
                 y la{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>Política de Privacidad</a>.
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('privacidad'); }}>
+                  Política de Privacidad
+                </a>.
               </label>
             </div>
           )}
@@ -450,6 +474,56 @@ export default function Signin({ onCancel }) {
           </div>
         </form>
       </div>
+   {showModal && (
+        <div style={stylesS.overlay}>
+          <div style={stylesS.modal}>
+            <button onClick={closeModal} style={stylesS.closeButton}>
+              <MdClose size={24} />
+            </button>
+            <iframe
+              src={pdfUrl}
+              title="PDF Viewer"
+              style={stylesS.iframe}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+const stylesS = {
+  overlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,
+  },
+  modal: {
+    position: 'relative',
+    width: '80%',
+    height: '80%',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.25)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    zIndex: 10000,
+  },
+  iframe: {
+    flex: 1,
+    border: 'none',
+    borderRadius: '8px',
+    width: '100%',
+  },
+};
