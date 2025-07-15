@@ -14,10 +14,34 @@ import Logo from './../img/logo_letras_negras.png';
 import { Icon } from '@iconify/react';
 
 const countryOptions = [
+  { value: "+54", label: "Argentina", flag: "🇦🇷" },
+  { value: "+1", label: "Bahamas", flag: "🇧🇸" },
+  { value: "+1", label: "Barbados", flag: "🇧🇧" },
+  { value: "+501", label: "Belize", flag: "🇧🇿" },
+  { value: "+55", label: "Brazil", flag: "🇧🇷" },
+  { value: "+591", label: "Bolivia", flag: "🇧🇴" },
+  { value: "+1", label: "Canada", flag: "🇨🇦" },
+  { value: "+56", label: "Chile", flag: "🇨🇱" },
   { value: "+57", label: "Colombia", flag: "🇨🇴" },
+  { value: "+506", label: "Costa Rica", flag: "🇨🇷" },
+  { value: "+599", label: "Curacao", flag: "🇨🇼" },
+  { value: "+1", label: "República Dominicana", flag: "🇩🇴" },
+  { value: "+593", label: "Ecuador", flag: "🇪🇨" },
+  { value: "+503", label: "El Salvador", flag: "🇸🇻" },
+  { value: "+502", label: "Guatemala", flag: "🇬🇹" },
+  { value: "+592", label: "Guyana", flag: "🇬🇾" },
+  { value: "+509", label: "Haiti", flag: "🇭🇹" },
+  { value: "+1", label: "Jamaica", flag: "🇯🇲" },
   { value: "+52", label: "México", flag: "🇲🇽" },
-  // ... (resto de países como tienes)
+  { value: "+505", label: "Nicaragua", flag: "🇳🇮" },
+  { value: "+507", label: "Panamá", flag: "🇵🇦" },
+  { value: "+595", label: "Paraguay", flag: "🇵🇾" },
+  { value: "+51", label: "Perú", flag: "🇵🇪" },
+  { value: "+597", label: "Suriname", flag: "🇸🇷" },
+  { value: "+1", label: "Trinidad y Tobago", flag: "🇹🇹" },
+  { value: "+598", label: "Uruguay", flag: "🇺🇾" },
 ];
+
 
 const CountrySelect = ({ value, onChange, error }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,7 +133,8 @@ export default function Signin({ onCancel }) {
   const [paso, setPaso] = useState(1);
   const [phonePrefix, setPhonePrefix] = useState('+52');
   const [acceptTerms, setAcceptTerms] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
   const {
     register,
     handleSubmit,
@@ -126,6 +151,25 @@ export default function Signin({ onCancel }) {
     } else {
       window.history.back();
     }
+  };
+ const handleViewPdf = async (tipo) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/pdf/download/${tipo}`);
+      if (!response.ok) throw new Error('Error al obtener PDF');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      setShowModal(true);
+    } catch (error) {
+      console.error(error);
+      alert('No se pudo cargar el PDF');
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    URL.revokeObjectURL(pdfUrl); // liberamos memoria
+    setPdfUrl('');
   };
 
   const onSubmit = async (data) => {
@@ -393,9 +437,13 @@ export default function Signin({ onCancel }) {
                   onChange={(e) => setAcceptTerms(e.target.checked)}
                 />{' '}
                 Acepto los{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>Términos y Condiciones</a>{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('terminos'); }}>
+                  Términos y Condiciones
+                </a>{' '}
                 y la{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>Política de Privacidad</a>.
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('privacidad'); }}>
+                  Política de Privacidad
+                </a>.
               </label>
             </div>
           )}
@@ -462,6 +510,56 @@ export default function Signin({ onCancel }) {
           </div>
         </div>
       </div>
+   {showModal && (
+        <div style={stylesS.overlay}>
+          <div style={stylesS.modal}>
+            <button onClick={closeModal} style={stylesS.closeButton}>
+              <MdClose size={24} />
+            </button>
+            <iframe
+              src={pdfUrl}
+              title="PDF Viewer"
+              style={stylesS.iframe}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+const stylesS = {
+  overlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,
+  },
+  modal: {
+    position: 'relative',
+    width: '80%',
+    height: '80%',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.25)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    zIndex: 10000,
+  },
+  iframe: {
+    flex: 1,
+    border: 'none',
+    borderRadius: '8px',
+    width: '100%',
+  },
+};

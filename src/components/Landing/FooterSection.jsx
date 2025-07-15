@@ -1,23 +1,40 @@
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Icon } from '@iconify/react';
 import styles from '../../styles/Landing/FooterSection.module.css';
 import { redirect } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useState } from "react";
+import { MdClose } from 'react-icons/md';
 
 export default function FooterSection() {
+    const [showModal, setShowModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
   const navigate = useNavigate()
   const redirect = () => {
     navigate('/practicas');
   }
-  const handleDownloadTerminos = () => {
-    window.open('http://localhost:8080/api/pdf/download/terminos', '_blank');
+ const handleViewPdf = async (tipo) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/pdf/download/${tipo}`);
+      if (!response.ok) throw new Error('Error al obtener PDF');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      setShowModal(true);
+    } catch (error) {
+      console.error(error);
+      alert('No se pudo cargar el PDF');
+    }
   };
-  
-  const handleDownloadPrivacidad = () => {
-  window.open('http://localhost:8080/api/pdf/download/privacidad', '_blank');
+
+  const closeModal = () => {
+    setShowModal(false);
+    URL.revokeObjectURL(pdfUrl); // liberamos memoria
+    setPdfUrl('');
   };
-  
+
+
   return (
     <footer id="contacto" style={{
       width: '100vw',
@@ -448,11 +465,11 @@ export default function FooterSection() {
                 &copy; {new Date().getFullYear()} <span style={{ color: '#60A5FA', fontWeight: '600' }}>Consultoría JAS</span>.
                 Todos los derechos reservados.
 
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadTerminos(); }}>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('terminos'); }}>
                   Términos y Condiciones
                 </a>{' '}
-                y{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); handleDownloadPrivacidad(); }}>
+                y la{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); handleViewPdf('privacidad'); }}>
                   Política de Privacidad
                 </a>
 
@@ -461,6 +478,57 @@ export default function FooterSection() {
           </Col>
         </Row>
       </Container>
+      {showModal && (
+        <div style={stylesS.overlay}>
+          <div style={stylesS.modal}>
+            <button onClick={closeModal} style={stylesS.closeButton}>
+              <MdClose size={24} />
+            </button>
+            <iframe
+              src={pdfUrl}
+              title="PDF Viewer"
+              style={stylesS.iframe}
+            />
+          </div>
+        </div>
+      )}
     </footer>
+
   );
 }
+const stylesS = {
+  overlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,
+  },
+  modal: {
+    position: 'relative',
+    width: '80%',
+    height: '80%',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.25)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    zIndex: 10000,
+  },
+  iframe: {
+    flex: 1,
+    border: 'none',
+    borderRadius: '8px',
+    width: '100%',
+  },
+};
