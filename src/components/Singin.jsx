@@ -10,7 +10,7 @@ import {
   FaShieldAlt, FaChevronDown
 } from 'react-icons/fa';
 import { MdClose, MdArrowBack } from 'react-icons/md';
-import Logo from './../img/logo_letras_negras.jpg';
+import Logo from './../img/logo_letras_negras.png';
 import { Icon } from '@iconify/react';
 
 const countryOptions = [
@@ -213,7 +213,7 @@ export default function Signin({ onCancel }) {
   const passwordsMatch = password && confirmPassword && password === confirmPassword;
 
   return (
-    <div className="custom-container">
+    <div className={styles.customContainer}>
       <div className={styles.card}>
         <div className={styles.header}>
           <button
