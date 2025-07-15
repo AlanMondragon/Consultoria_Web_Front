@@ -57,9 +57,27 @@ const PaymentModal = ({
     currentPaymentOption
   } = usePaymentOptions(service);
 
+  // Estado para la cantidad de servicios
+  const [quantity, setQuantity] = React.useState(1);
+
   if (!service) return null;
 
   const { isDs160 } = serviceInfo;
+
+  // Función para cambiar la cantidad
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity >= 1 && newQuantity <= 15) { // Límite máximo de 15
+      setQuantity(newQuantity);
+    }
+  };
+
+  // Calcular el precio total basado en la cantidad
+  const getTotalAmount = () => {
+    if (currentPaymentOption) {
+      return currentPaymentOption.amount * quantity;
+    }
+    return (service.cost) * quantity;
+  };
 
   // Función para interceptar clics de pago en modo preview
   const handlePaymentAttempt = () => {
@@ -184,12 +202,22 @@ const PaymentModal = ({
                                 </div>
                               )}
                             </div>
-                            <div style={{ 
-                              fontSize: '1.25rem', 
-                              fontWeight: '700', 
-                              color: '#059669' 
-                            }}>
-                              ${option.amount} MX
+                            <div>
+                              <div style={{ 
+                                fontSize: '1.25rem', 
+                                fontWeight: '700', 
+                                color: '#059669' 
+                              }}>
+                                ${(option.amount * quantity).toLocaleString()} MX
+                              </div>
+                              {quantity > 1 && (
+                                <div style={{ 
+                                  fontSize: '0.75rem', 
+                                  color: '#64748b' 
+                                }}>
+                                  ${option.amount} x {quantity}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -224,8 +252,17 @@ const PaymentModal = ({
                           color: '#059669',
                           marginBottom: '8px'
                         }}>
-                          ${option.amount} MX
+                          ${(option.amount * quantity).toLocaleString()} MX
                         </div>
+                        {quantity > 1 && (
+                          <div style={{ 
+                            fontSize: '0.875rem', 
+                            color: '#059669',
+                            marginBottom: '8px'
+                          }}>
+                            ${option.amount} x {quantity} servicios
+                          </div>
+                        )}
                         <div style={{ 
                           fontWeight: '600', 
                           color: '#1e293b',
@@ -276,8 +313,16 @@ const PaymentModal = ({
                         fontWeight: '700', 
                         color: '#059669' 
                       }}>
-                        ${currentPaymentOption.amount} MX
+                        ${(currentPaymentOption.amount * quantity).toLocaleString()} MX
                       </span>
+                      {quantity > 1 && (
+                        <div style={{ 
+                          fontSize: '0.75rem', 
+                          color: '#64748b' 
+                        }}>
+                          ${currentPaymentOption.amount} x {quantity}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -335,6 +380,9 @@ const PaymentModal = ({
                 onPaymentTypeChange={setSelectedPaymentType}
                 currentPaymentOption={currentPaymentOption}
                 userEmail={userEmail}
+                quantity={quantity}
+                totalAmount={getTotalAmount()}
+                onQuantityChange={handleQuantityChange}
                 onSuccess={onSuccess}
                 onError={onError}
                 onHide={onHide}
@@ -348,6 +396,9 @@ const PaymentModal = ({
                 currentPaymentOption={currentPaymentOption}
                 userEmail={userEmail}
                 userId={userId}
+                quantity={quantity}
+                totalAmount={getTotalAmount()}
+                onQuantityChange={handleQuantityChange}
                 onSuccess={onSuccess}
                 onError={onError}
               />
@@ -364,13 +415,14 @@ const PaymentModal = ({
             <div style={{ marginTop: 24, marginBottom: 12 }}>
               <PayPalScriptLoader>
                 <PayPalButton 
-                  amount={currentPaymentOption?.amount || service.cost || 0} 
+                  amount={getTotalAmount()} 
                   onSuccess={onSuccess} 
                   onError={onError}
                   userId={userId}
+                  quantity={quantity}
                   service={{
                     ...service,
-                    cost: currentPaymentOption?.amount || service.cost || 0
+                    cost: getTotalAmount()
                   }}
                 />
               </PayPalScriptLoader>
