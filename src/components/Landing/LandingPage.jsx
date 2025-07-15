@@ -164,15 +164,16 @@ export default function LandingPage() {
   };
 
   return (
-    <>
-      <LandingNavbar
-        isScrolled={isScrolled}
-        activeSection={activeSection}
-        navSections={navSections}
-        handleNavClick={handleNavClick}
-        showNavbar={showNavbar}
-      />
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <LandingNavbar
+      isScrolled={isScrolled}
+      activeSection={activeSection}
+      navSections={navSections}
+      handleNavClick={handleNavClick}
+      showNavbar={showNavbar}
+    />
 
+    <main style={{ flex: 1 }}>
       <HeroSection />
 
       <ServicesSection
@@ -190,45 +191,46 @@ export default function LandingPage() {
         faqActiveIndex={faqActiveIndex}
         handleFaqToggle={handleFaqToggle}
       />
+    </main>
 
-      <FooterSection />
+    <FooterSection />
 
-      {/* Modales */}
-      {detailsModalOpen && selectedService && (
-        <ServiceDetailsModal
-          show={detailsModalOpen}
-          onHide={handleCloseDetailsModal}
-          service={selectedService}
-          steps={steps}
-          onShowSteps={handleOpenStepsModal}
-          loading={stepsLoading}
-          isZoomed={isZoomed}
-          onToggleZoom={handleToggleZoom}
-        />
-      )}
+    {/* Modales */}
+    {detailsModalOpen && selectedService && (
+      <ServiceDetailsModal
+        show={detailsModalOpen}
+        onHide={handleCloseDetailsModal}
+        service={selectedService}
+        steps={steps}
+        onShowSteps={handleOpenStepsModal}
+        loading={stepsLoading}
+        isZoomed={isZoomed}
+        onToggleZoom={handleToggleZoom}
+      />
+    )}
 
-      {stepsModalOpen && (
-        <StepsModal
-          show={stepsModalOpen}
-          onHide={handleCloseStepsModal}
-          steps={steps}
-          loading={stepsLoading}
-        />
-      )}
+    {stepsModalOpen && (
+      <StepsModal
+        show={stepsModalOpen}
+        onHide={handleCloseStepsModal}
+        steps={steps}
+        loading={stepsLoading}
+      />
+    )}
 
-      {paymentModalOpen && selectedServiceForPayment && (
-        <PaymentModal
-          show={paymentModalOpen}
-          onHide={handleClosePaymentModal}
-          service={selectedServiceForPayment}
-          userEmail={null}
-          userId={null}
-          onSuccess={() => {}}
-          onError={() => {}}
-          isPreviewMode={true}
-          onLoginRequired={() => singint(selectedServiceForPayment)}
-        />
-      )}
-    </>
-  );
+    {paymentModalOpen && selectedServiceForPayment && (
+      <PaymentModal
+        show={paymentModalOpen}
+        onHide={handleClosePaymentModal}
+        service={selectedServiceForPayment}
+        userEmail={null}
+        userId={null}
+        onSuccess={() => {}}
+        onError={() => {}}
+        isPreviewMode={true}
+        onLoginRequired={() => singint(selectedServiceForPayment)}
+      />
+    )}
+  </div>
+);
 }

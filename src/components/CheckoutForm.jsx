@@ -268,7 +268,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
           width: '100%'
         }}
       >
-        {loading ? 'Procesando...' : `Pagar MX$${amount}`}
+        {loading ? 'Procesando...' : `Pagar MX$${totalAmount || amount}`}
       </button>
 
       {message && (

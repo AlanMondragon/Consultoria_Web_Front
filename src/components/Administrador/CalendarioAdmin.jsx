@@ -16,6 +16,7 @@ export default function CalendarioAdmin() {
     const [filtroTipo, setFiltroTipo] = useState('');
     const [tiposUnicos, setTiposUnicos] = useState([]);
     const [coloresPorTramite, setColoresPorTramite] = useState({});
+    const [contadorCitas, setContadorCitas] = useState({}); 
 
     const obtenerColorPorId = (id) => {
         const coloresBase = [
@@ -68,13 +69,29 @@ export default function CalendarioAdmin() {
                 setTiposUnicos(tipos);
 
                 const colores = {};
+                const contador = {}; // Contador para cada trámite
+                
                 data.forEach(item => {
                     const idReal = item.transact.idTransact;
+                    const nombreTramite = item.transact.name;
+                    
                     if (!colores[idReal]) {
                         colores[idReal] = obtenerColorPorId(idReal);
                     }
+                    
+                    // Inicializar contador si no existe
+                    if (!contador[nombreTramite]) {
+                        contador[nombreTramite] = 0;
+                    }
+                    
+                    // Contar cada tipo de cita que existe
+                    if (item.dateCas) contador[nombreTramite]++;
+                    if (item.dateCon) contador[nombreTramite]++;
+                    if (item.dateSimulation) contador[nombreTramite]++;
                 });
+                
                 setColoresPorTramite(colores);
+                setContadorCitas(contador); // Establecer el contador
 
                 const eventosTransformados = data.flatMap((item) => {
                     const idReal = item.transact.idTransact;
@@ -123,11 +140,13 @@ export default function CalendarioAdmin() {
             } else {
                 setEventos([]);
                 setTiposUnicos([]);
+                setContadorCitas({});
             }
         } catch (error) {
             console.error("Error al obtener los trámites:", error);
             setEventos([]);
             setTiposUnicos([]);
+            setContadorCitas({});
         }
     };
 
@@ -220,8 +239,11 @@ export default function CalendarioAdmin() {
                     <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
                         {Object.entries(coloresPorTramite).map(([id, color]) => {
                             const descripcion = eventos.find(e => e.backgroundColor === color)?.transactDesc;
+                            const cantidadCitas = contadorCitas[descripcion] || 0;
                             return (
+                                
                                 <li key={id} style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+                                         ({cantidadCitas})
                                     <span style={{
                                         display: 'inline-block',
                                         width: '15px',
@@ -231,6 +253,14 @@ export default function CalendarioAdmin() {
                                         borderRadius: '3px'
                                     }}></span>
                                     {descripcion || `No hay fechas #${id}`}
+                                    <span style={{ 
+                                        marginLeft: '10px', 
+                                        fontSize: '14px', 
+                                        color: '#666',
+                                        fontWeight: 'bold'
+                                    }}>
+                                   
+                                    </span>
                                 </li>
                             );
                         })}

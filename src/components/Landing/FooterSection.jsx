@@ -8,13 +8,13 @@ import { useState } from "react";
 import { MdClose } from 'react-icons/md';
 
 export default function FooterSection() {
-    const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState('');
   const navigate = useNavigate()
   const redirect = () => {
     navigate('/practicas');
   }
- const handleViewPdf = async (tipo) => {
+  const handleViewPdf = async (tipo) => {
     try {
       const response = await fetch(`http://localhost:8080/api/pdf/download/${tipo}`);
       if (!response.ok) throw new Error('Error al obtener PDF');
@@ -34,7 +34,6 @@ export default function FooterSection() {
     setPdfUrl('');
   };
 
-
   return (
     <footer id="contacto" style={{
       width: '100vw',
@@ -43,9 +42,7 @@ export default function FooterSection() {
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
       padding: '60px 0 40px 0',
       color: '#FFFFFF',
-      marginBottom: '0',
-      position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}>
       {/* Decorative background elements */}
       <div style={{
@@ -223,7 +220,6 @@ export default function FooterSection() {
                 Síguenos
               </h5>
 
-
               {/* Social Media Links */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '30px' }}>
                 {[
@@ -265,8 +261,6 @@ export default function FooterSection() {
                     <Icon icon={social.icon} width="24" height="24" style={{ marginRight: '12px' }} />
                     <span>{social.name}</span>
                   </a>
-
-
                 ))}
                 <button
                   onClick={redirect}
@@ -299,7 +293,6 @@ export default function FooterSection() {
                 >
                   ¿Estás interesado en realizar tus prácticas con nosotros?
                 </button>
-
               </div>
 
               {/* Resources Section */}
@@ -493,9 +486,9 @@ export default function FooterSection() {
         </div>
       )}
     </footer>
-
   );
 }
+
 const stylesS = {
   overlay: {
     position: 'fixed',

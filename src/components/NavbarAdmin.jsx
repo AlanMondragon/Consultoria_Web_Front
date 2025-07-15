@@ -18,6 +18,7 @@ export default function NavbarAdmin({ title }) {
   const [id5, setId5] = useState("");
   const [id6, setId6] = useState("");
   const [id7, setId7] = useState("");
+  const [id8, setId8] = useState("");
 
   // Manejo de rutas responsivas
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function NavbarAdmin({ title }) {
         setId5("/Pagos");
         setId6("/Perfil");
         setId7("/Calendar");
-        setId7("/pdf");
+        setId8("/pdf");
 
       }
     };
@@ -98,7 +99,7 @@ export default function NavbarAdmin({ title }) {
           <a href={id5}><Icon icon="mdi:cash" className='icon' /> {collapsed && 'Pagos'}</a>
           <a href={id7}><Icon icon="mdi:calendar-month" className='icon' /> {collapsed && 'Calendario'}</a>
           <a href={id6}><Icon icon="mdi:account" className='icon' /> {collapsed && 'Mi Perfil'}</a>
-          <a href={id7}><Icon icon="mdi:document" className='icon' /> {collapsed && 'Documentos de la pagina'}</a>
+          <a href={id8}><Icon icon="mdi:document" className='icon' /> {collapsed && 'Documentos de la pagina'}</a>
 
           <a onClick={cerrarSesion}><Icon icon="line-md:logout" className='icon' /> {collapsed && 'Cerrar sesión'}</a>
         </nav>
