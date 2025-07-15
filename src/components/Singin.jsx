@@ -10,7 +10,7 @@ import {
   FaShieldAlt, FaChevronDown
 } from 'react-icons/fa';
 import { MdClose, MdArrowBack } from 'react-icons/md';
-import Logo from './../img/logo_letras_negras.jpg';
+import Logo from './../img/logo_letras_negras.png';
 import { Icon } from '@iconify/react';
 
 const countryOptions = [
