@@ -14,10 +14,34 @@ import Logo from './../img/logo_letras_negras.png';
 import { Icon } from '@iconify/react';
 
 const countryOptions = [
+  { value: "+54", label: "Argentina", flag: "🇦🇷" },
+  { value: "+1", label: "Bahamas", flag: "🇧🇸" },
+  { value: "+1", label: "Barbados", flag: "🇧🇧" },
+  { value: "+501", label: "Belize", flag: "🇧🇿" },
+  { value: "+55", label: "Brazil", flag: "🇧🇷" },
+  { value: "+591", label: "Bolivia", flag: "🇧🇴" },
+  { value: "+1", label: "Canada", flag: "🇨🇦" },
+  { value: "+56", label: "Chile", flag: "🇨🇱" },
   { value: "+57", label: "Colombia", flag: "🇨🇴" },
+  { value: "+506", label: "Costa Rica", flag: "🇨🇷" },
+  { value: "+599", label: "Curacao", flag: "🇨🇼" },
+  { value: "+1", label: "República Dominicana", flag: "🇩🇴" },
+  { value: "+593", label: "Ecuador", flag: "🇪🇨" },
+  { value: "+503", label: "El Salvador", flag: "🇸🇻" },
+  { value: "+502", label: "Guatemala", flag: "🇬🇹" },
+  { value: "+592", label: "Guyana", flag: "🇬🇾" },
+  { value: "+509", label: "Haiti", flag: "🇭🇹" },
+  { value: "+1", label: "Jamaica", flag: "🇯🇲" },
   { value: "+52", label: "México", flag: "🇲🇽" },
-  // ... (resto de países como tienes)
+  { value: "+505", label: "Nicaragua", flag: "🇳🇮" },
+  { value: "+507", label: "Panamá", flag: "🇵🇦" },
+  { value: "+595", label: "Paraguay", flag: "🇵🇾" },
+  { value: "+51", label: "Perú", flag: "🇵🇪" },
+  { value: "+597", label: "Suriname", flag: "🇸🇷" },
+  { value: "+1", label: "Trinidad y Tobago", flag: "🇹🇹" },
+  { value: "+598", label: "Uruguay", flag: "🇺🇾" },
 ];
+
 
 const CountrySelect = ({ value, onChange, error }) => {
   const [isOpen, setIsOpen] = useState(false);
