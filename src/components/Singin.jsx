@@ -214,30 +214,40 @@ export default function Signin({ onCancel }) {
 
   return (
     <div className={styles.customContainer}>
-      <div className={styles.card}>
-        <div className={styles.header}>
+      <div className={styles.bodySignin}>
+        <div className={styles.card}>
+          {/* Botón volver */}
           <button
             type="button"
-            className={`${styles.button} ${styles.buttonOutline}`}
+            className={styles.volver}
             onClick={cancel}
+            value="Volver"
           >
-            <Icon icon="mdi:arrow-left" width="20" height="20" />
-            Volver
+            <Icon icon="mdi:arrow-left" width="16" height="16" />
           </button>
-          <div className={styles.headerIcon}>
-            <img src={Logo} alt="Logo" height={125} width={125} />
+          
+          {/* Sección izquierda - Logo */}
+          <div className={styles.cardLeft}>
+            <img src={Logo} alt="Logo Consultoría JAS" className={styles.logoImg} />
           </div>
-          <h1 className={styles.title}>
-            {paso === 1 ? 'Crear cuenta' : 'Verificar correo'}
-          </h1>
-          <p className={styles.subtitle}>
-            {paso === 1
-              ? 'Bienvenido a Consultoría JAS. Completa tus datos para registrarte.'
-              : 'Ingresa el código que enviamos a tu correo electrónico'}
-          </p>
-        </div>
+          
+          {/* Línea divisoria */}
+          <div className={styles.verticalLine}></div>
+          
+          {/* Sección derecha - Formulario */}
+          <div className={styles.cardRight}>
+            <div className={styles.header}>
+              <h1 className={styles.title}>
+                {paso === 1 ? 'Crear cuenta' : 'Verificar correo'}
+              </h1>
+              <p className={styles.subtitle}>
+                {paso === 1
+                  ? 'Bienvenido a Consultoría JAS. Completa tus datos para registrarte.'
+                  : 'Ingresa el código que enviamos a tu correo electrónico'}
+              </p>
+            </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+            <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           {paso === 1 && (
             <div className={styles.formGrid}>
               {/* Nombre */}
@@ -358,7 +368,7 @@ export default function Signin({ onCancel }) {
                   <div className={styles.phoneInputWrapper}>
                     <input
                       type="tel"
-                      placeholder="1234567890"
+                      placeholder="777 555 3344"
                       {...register('phone')}
                       className={`${styles.input} ${styles.phoneNumberInput} ${errors.phone ? styles.inputError : ''}`}
                       maxLength={10}
@@ -449,6 +459,8 @@ export default function Signin({ onCancel }) {
             </button>
           </div>
         </form>
+          </div>
+        </div>
       </div>
     </div>
   );
