@@ -1,3 +1,4 @@
+/* Contenedor principal */
 .clientContainer {
   margin-top: 100px;
   padding: 0 20px;
@@ -6,37 +7,194 @@
   justify-content: center;
 }
 
+/* Contenedor de tarjetas mejorado */
 .ContenedorG {
-  background-color: #012b40;
-  width: 900px;
-  min-height: 400px;
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 50%, #012b40 100%);
+  width: 100%;
+  max-width: 1100px;
+  min-height: 450px;
   border-radius: 40px;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 40px;
   align-items: center;
-  padding: 40px 20px;
+  padding: 50px 40px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+/* Tarjetas mejoradas pero más parecidas al original */
+.tarjeta {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 15px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 35px 30px;
+  text-align: center;
+  flex: 1;
+  max-width: 300px;
+  min-width: 250px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Efecto hover mejorado */
+.tarjeta:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(30, 58, 138, 0.2);
+  border-color: #3b82f6;
+}
+
+/* Efecto hover mejorado */
+.tarjeta:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(30, 58, 138, 0.2);
+  border-color: #3b82f6;
+}
+
+/* Estilos para las imágenes */
+.tarjeta img {
+  max-width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.tarjeta:hover img {
+  transform: scale(1.1);
+}
+
+/* Títulos de las tarjetas */
+.tarjeta h3 {
+  color: #1e40af;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 15px 0 10px;
+  letter-spacing: -0.5px;
+}
+
+/* Descripción de las tarjetas */
+.tarjeta p {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Estilos responsive */
+@media (max-width: 1024px) {
+  .ContenedorG {
+    max-width: 900px;
+    gap: 30px;
+    padding: 40px 30px;
+  }
+  
+  .tarjeta {
+    max-width: 280px;
+    min-width: 220px;
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .clientContainer {
+    padding: 0 15px;
+  }
+  
+  .ContenedorG {
+    flex-direction: column;
+    max-width: 500px;
+    gap: 25px;
+    padding: 40px 25px;
+    border-radius: 30px;
+  }
+  
+  .tarjeta {
+    max-width: 100%;
+    width: 100%;
+    min-width: auto;
+    flex: none;
+    padding: 30px 25px;
+  }
+  
+  .tarjeta img {
+    max-width: 70px;
+    height: 70px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ContenedorG {
+    border-radius: 25px;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+  
+  .tarjeta {
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+  
+  .tarjeta img {
+    max-width: 60px;
+    height: 60px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 18px;
+    margin: 12px 0 8px;
+  }
+  
+  .tarjeta p {
+    font-size: 13px;
+  }
+}
+
+/* Animaciones suaves */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tarjeta {
-  background-color: #F0F8FF;
-  border-radius: 10px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  max-width: 220px;
-  min-width: 200px;
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.tarjeta:hover {
-  transform: scale(1.05);
+.tarjeta:nth-child(1) {
+  animation-delay: 0.1s;
 }
 
-.tarjeta img {
-  max-width: 100%;
-  height: auto;
+.tarjeta:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.tarjeta:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Mejoras para accesibilidad */
+.tarjeta:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
