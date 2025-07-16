@@ -233,6 +233,9 @@ export default function AdministradorPagos() {
                                 <div className={styles.cardTelefono}><strong>Teléfono:</strong> 
                                  <p>{pago.user?.phone || 'N/A'}</p>
                                 </div>
+                                <div className={styles.cardCantidad}><strong>Cantidad:</strong>
+                                    <p>{pago.quantity}</p>
+                                </div>
                                 <div className={styles.cardEstado}>
                                     <div className={styles.statusSwitch}>
                                         <strong>Estado:</strong>
