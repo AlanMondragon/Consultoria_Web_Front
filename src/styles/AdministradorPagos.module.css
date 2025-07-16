@@ -3,7 +3,7 @@
 .pagosContainer {
   margin-top: 100px;
   width: 100%;
-  max-width: 1000px;
+  max-width: 100rem;
   overflow-x: hidden;
 }
 
@@ -85,6 +85,12 @@
 .cardTotal {
   min-width: 80px;
   margin-left: 10px;
+}
+
+.cardCantidad {
+  min-width: 80px;
+  align-items: center;
+  margin-left: 15px;
 }
 
 .cardTextCash{
