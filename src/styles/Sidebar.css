@@ -60,8 +60,8 @@
 }
 
 .navbar-logo img {
-  height: 80px;
-  width: 80px;
+  height: 90px;
+  width: 90px;
   object-fit: cover;
   border-radius: 30%;
   transition: transform 0.2s ease;
@@ -238,8 +238,8 @@
   }
 
   .navbar-logo img {
-    height: 50px;
-    width: 50px;
+    height: 55px;
+    width: 55px;
   }
 
   .navbar-title h1 {
@@ -309,8 +309,8 @@
   }
 
   .navbar-logo img {
-    height: 45px;
-    width: 45px;
+    height: 50px;
+    width: 50px;
   }
 
   .navbar-title h1 {
