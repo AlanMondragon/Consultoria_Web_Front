@@ -10,7 +10,15 @@ export const usePaymentOptions = (service) => {
 
     const name = service.name.toLowerCase();
     const isTransportService = name === 'servicio de traslado para solicitantes de visa' || name.includes('traslado');
-    const isDs160 = name === 'ds-160' || name === 'ds160' || name === 'Creación y generación de DS160' || name === 'elaboracion de formato ds-160' || name === 'ELABORACION DE FORMATO DS-160' || name.toLowerCase().includes('ds-160') || name.toLowerCase().includes('ds160');
+    
+    // Lógica mejorada para DS-160
+    const nameForDs = name.trim();
+    const hasElaboracion = nameForDs.includes('elaboracion') || nameForDs.includes('elaboración');
+    const hasCreacion = nameForDs.includes('creacion') || nameForDs.includes('creación');
+    const hasDs = nameForDs.includes('ds');
+    // Debe tener DS obligatoriamente Y al menos una de las otras dos (elaboracion o creacion)
+    const isDs160 = hasDs && (hasElaboracion || hasCreacion);
+    
     const isVisaAmericana = service.name === 'Visa Americana' || service.name === 'Visa Americana (4 meses)';
     const haveOtherCost = service.optionCost !== null && service.optionCost !== undefined && service.optionCost > 0;
     const isAdvanceVisaAmericana = name.includes('adelanto') && (name.includes('cita') || name.includes('anticipo')) && name.includes('visa') && name.includes('americana');
