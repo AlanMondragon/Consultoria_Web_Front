@@ -64,20 +64,56 @@ export default function ClienteHome() {
         <Navbar />
       </div>
       <div className={styles.ContenedorG}>
-        <div className={styles.tarjeta} onClick={() => navigate("/ClienteServicios")}>
-          <img src={servicios} alt="Servicios" />
+        <div 
+          className={styles.tarjeta} 
+          onClick={() => navigate("/ClienteServicios")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate("/ClienteServicios");
+            }
+          }}
+          aria-label="Acceder a servicios disponibles"
+        >
+          <img src={servicios} alt="Icono de servicios" />
           <h3>Servicios</h3>
           <p>Servicios disponibles</p>
         </div>
-        <div className={styles.tarjeta} onClick={() => navigate("/MisTramites")}>
-          <img src={tramites} alt="Clientes" />
-          <h3>Tramites</h3>
-          <p>Gestión de mis tramites</p>
+        <div 
+          className={styles.tarjeta} 
+          onClick={() => navigate("/MisTramites")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate("/MisTramites");
+            }
+          }}
+          aria-label="Gestionar mis trámites"
+        >
+          <img src={tramites} alt="Icono de trámites" />
+          <h3>Trámites</h3>
+          <p>Gestión de mis trámites</p>
         </div>
-        <div className={styles.tarjeta} onClick={() => navigate("/Calendario")}>
-          <img src={calendario} alt="Clientes" />
+        <div 
+          className={styles.tarjeta} 
+          onClick={() => navigate("/Calendario")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate("/Calendario");
+            }
+          }}
+          aria-label="Ver calendario de citas"
+        >
+          <img src={calendario} alt="Icono de calendario" />
           <h3>Calendario</h3>
-          <p>Gestión de mis tramites</p>
+          <p>Gestión de citas</p>
         </div>
       </div>
     </div>

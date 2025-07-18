@@ -178,7 +178,7 @@ export default function ActualizarServicio() {
                 type='number' 
                 id='cost' 
                 name='cost' 
-                step='0.01'
+                step='any'
                 defaultValue={service?.cost}
                 required
                 onChange={(e) => {
@@ -244,7 +244,7 @@ export default function ActualizarServicio() {
                   type='number' 
                   id='anticipoEfectivo' 
                   name='cashAdvance' 
-                  step='0.01'
+                  step='any'
                   defaultValue={service?.cashAdvance}
                   required={tieneAnticipo}
                 />
@@ -291,7 +291,7 @@ export default function ActualizarServicio() {
                     type='number' 
                     id='optionCost' 
                     name='optionCost' 
-                    step='0.01'
+                    step='any'
                     defaultValue={service?.optionCost}
                     required={tieneOtroCosto}
                   />

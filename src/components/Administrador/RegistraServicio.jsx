@@ -194,7 +194,7 @@ export default function RegistrarServicio() {
                 type='number' 
                 id='totalPayment' 
                 name='totalPayment' 
-                step='0.01'
+                step='any'
                 required
                 onChange={(e) => {
                   if (!tieneAnticipo) {
@@ -253,7 +253,7 @@ export default function RegistrarServicio() {
                   type='number' 
                   id='anticipoEfectivo' 
                   name='cashAdvance' 
-                  step='0.01'
+                  step='any'
                   required={tieneAnticipo}
                 />
               </div>
@@ -297,7 +297,7 @@ export default function RegistrarServicio() {
                     type='number' 
                     id='optionCost' 
                     name='optionCost' 
-                    step='0.01'
+                    step='any'
                     required={tieneOtroCosto}
                   />
                 </div>

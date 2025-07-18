@@ -1,3 +1,4 @@
+/* Contenedor principal para móviles */
 .clientContainer {
   margin-top: 80px;
   padding: 0 20px;
@@ -6,37 +7,146 @@
   justify-content: center;
 }
 
+/* Contenedor de tarjetas para móviles */
 .ContenedorG {
-  background-color: #012b40;
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 50%, #012b40 100%);
   width: 100%;
-  max-width: 400px;
-  min-height: 600px;
-  border-radius: 20px;
+  max-width: 550px;
+  min-height: 700px;
+  border-radius: 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
   align-items: center;
-  padding: 30px 15px;
+  padding: 40px 30px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Tarjetas para móviles */
 .tarjeta {
-  background-color: #F0F8FF;
-  border-radius: 10px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
-  padding: 15px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 12px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 25px;
   text-align: center;
   width: 100%;
-  max-width: 280px;
+  max-width: 400px;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.tarjeta:hover {
-  transform: scale(1.05);
+/* Efecto hover para móviles */
+.tarjeta:hover,
+.tarjeta:active {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(30, 58, 138, 0.2);
+  border-color: #3b82f6;
 }
 
+/* Estilos para las imágenes en móviles */
 .tarjeta img {
   max-width: 100%;
   height: auto;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.tarjeta:hover img,
+.tarjeta:active img {
+  transform: scale(1.1);
+}
+
+/* Títulos de las tarjetas para móviles */
+.tarjeta h3 {
+  color: #1e40af;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 12px 0 8px;
+  letter-spacing: -0.5px;
+}
+
+/* Descripción de las tarjetas para móviles */
+.tarjeta p {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Animaciones suaves para móviles */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tarjeta {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.tarjeta:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.tarjeta:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.tarjeta:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Responsive adicional para pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .ContenedorG {
+    max-width: 480px;
+    min-height: 650px;
+    padding: 35px 20px;
+    border-radius: 20px;
+  }
+  
+  .tarjeta {
+    padding: 18px 20px;
+    border-radius: 10px;
+    max-width: 350px;
+  }
+  
+  .tarjeta h3 {
+    font-size: 18px;
+  }
+  
+  .tarjeta p {
+    font-size: 12px;
+  }
+}
+
+/* Mejoras para accesibilidad en móviles */
+.tarjeta:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Mejoras para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .tarjeta:hover {
+    transform: none;
+  }
+  
+  .tarjeta:active {
+    transform: translateY(-3px) scale(1.01);
+  }
 }
