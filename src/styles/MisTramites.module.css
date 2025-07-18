@@ -1,447 +1,543 @@
-/* Agregar estos estilos al body y html para eliminar el fondo negro */
-html,
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background-color: #f8fafc;
-  /* O el color de fondo que prefieras */
-  overflow-x: hidden;
-  /* Evita scroll horizontal */
-}
-
-/* Alternativa: aplicar al div principal de tu app */
-#root {
-  min-height: 100vh;
-  background-color: #f8fafc;
-  width: 100%;
-}
-
-/* Container principal optimizado - RESPONSIVE */
+/* Container principal */
 .container {
-  margin: 1rem auto;
   margin-top: 80px;
-  padding: 1rem;
-  max-width: 100%;
-  min-height: calc(100vh - 80px);
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
   background-color: #f8fafc;
-  width: 100%;
-  box-sizing: border-box;
+  border-radius: 12px;
+  min-height: calc(100vh - 100px);
 }
 
-/* Media queries para móviles */
-@media (max-width: 768px) {
-  .container {
-    margin: 0.5rem;
-    margin-top: 70px;
-    padding: 0.5rem;
-    min-height: calc(100vh - 70px);
-  }
-}
-
-/* Barra de búsqueda RESPONSIVE */
+/* Barra de búsqueda */
 .searchContainer {
   display: flex;
-  flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.5rem;
-  padding: 0.75rem;
+  padding: 1rem;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(1, 43, 64, 0.1);
+  border: 1px solid #e2e8f0;
 }
 
-@media (min-width: 768px) {
-  .searchContainer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-  }
+.searchSection {
+  flex: 2;
+}
+
+.searchInputWrapper {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #012b40;
 }
 
 .searchInput {
   width: 100%;
-  padding: 0.6rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  transition: border-color 0.3s;
-}
-
-@media (min-width: 768px) {
-  .searchInput {
-    width: 75%;
-  }
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
 }
 
 .searchInput:focus {
-  border-color: #38b2ac;
   outline: none;
+  border-color: #012b40;
+  box-shadow: 0 0 0 3px rgba(1, 43, 64, 0.1);
+}
+
+.filterSection {
+  flex: 1;
+}
+
+.filterWrapper {
+  position: relative;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #012b40;
 }
 
 .selectState {
   width: 100%;
-  padding: 0.6rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  background-color: white;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  transition: border-color 0.3s;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
 }
 
-@media (min-width: 768px) {
-  .selectState {
-    width: 20%;
-    margin-bottom: 10px;
-  }
+.selectState:focus {
+  outline: none;
+  border-color: #012b40;
+  box-shadow: 0 0 0 3px rgba(1, 43, 64, 0.1);
 }
 
-/* Tabla COMPLETAMENTE RESPONSIVE */
-.tablaDatos {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+.statsSection {
+  display: flex;
+  align-items: center;
+}
+
+.statsCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 50%, #012b40 100%);
+  color: white;
+  border-radius: 8px;
+  min-width: 70px;
+  box-shadow: 0 2px 8px rgba(1, 43, 64, 0.2);
+}
+
+.statsNumber {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.statsLabel {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Tabla */
+.tableContainer {
+  background: white;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e3e6e9;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  background: white;
-  font-size: 0.8rem;
-}
-
-@media (min-width: 768px) {
-  .tablaDatos {
-    font-size: 1rem;
-    min-width: 1000px;
-  }
-}
-
-/* Encabezado responsive */
-.tablaDatos thead th {
-  background-color: #004c72;
-  color: white;
-  font-weight: 600;
-  padding: 0.5rem 0.3rem;
-  text-align: center;
-  border: none;
-  font-size: 0.7rem;
-}
-
-@media (min-width: 768px) {
-  .tablaDatos thead th {
-    padding: 0.9rem;
-    font-size: 0.9rem;
-  }
-}
-
-/* Celdas responsive */
-.tablaDatos td {
-  padding: 0.5rem 0.3rem;
-  text-align: center;
-  border-bottom: 1px solid #f1f5f9;
-  color: #444;
-  font-size: 0.7rem;
-  word-wrap: break-word;
-}
-
-@media (min-width: 768px) {
-  .tablaDatos td {
-    padding: 0.9rem;
-    font-size: 0.9rem;
-  }
-}
-
-/* Hover más sutil */
-.tablaDatos tbody tr:hover {
-  background-color: #f8fafc;
-}
-
-/* Imágenes responsive */
-.tableImage {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(1, 43, 64, 0.1);
   border: 1px solid #e2e8f0;
 }
 
-@media (min-width: 768px) {
-  .tableImage {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-  }
+.tablaDatos {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Botón responsive */
-.actionButton {
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  background-color: #2d87d0;
+.tableHeader {
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 50%, #012b40 100%);
   color: white;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 0.7rem;
 }
 
-@media (min-width: 768px) {
-  .actionButton {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-  }
+.tableHeader th {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
-.actionButton:hover {
-  background-color: rgb(83, 174, 219);
+.tableRow {
+  border-bottom: 1px solid #f3f4f6;
 }
 
-/* Paginación responsive */
-.paginationContainer {
+.tableRow:hover {
+  background-color: #f8fafc;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tdNumber,
+.tdImage,
+.tdDescription,
+.tdDate,
+.tdAmount,
+.tdAction,
+.tdStatus {
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.numberBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.imageContainer {
   display: flex;
   justify-content: center;
-  gap: 0.3rem;
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
 }
 
-@media (min-width: 768px) {
-  .paginationContainer {
-    gap: 0.5rem;
-  }
-}
-
-.paginationContainer button {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #6fabfb;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 6px;
-  cursor: pointer;
-  color: #6fabfb;
-  transition: all 0.2s;
-  font-size: 0.8rem;
-}
-
-@media (min-width: 768px) {
-  .paginationContainer button {
-    padding: 0.5rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-  }
-}
-
-.paginationContainer button:hover {
-  background: #cde6ff;
-}
-
-/* Container de carga */
-.loadingContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  background-color: transparent;
-}
-
-/* Scroll horizontal solo cuando sea necesario */
-@media (max-width: 767px) {
-  .tablaDatos {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .tablaDatos thead,
-  .tablaDatos tbody,
-  .tablaDatos th,
-  .tablaDatos td,
-  .tablaDatos tr {
-    display: block;
-  }
-
-  .tablaDatos thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  .tablaDatos tr {
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    background: white;
-  }
-
-  .tablaDatos td {
-    border: none;
-    position: relative;
-    padding-left: 50% !important;
-    text-align: left !important;
-    white-space: normal;
-  }
-
-  .tablaDatos td:before {
-    content: attr(data-label) ": ";
-    position: absolute;
-    left: 6px;
-    width: 45%;
-    text-align: left;
-    font-weight: bold;
-    color: #004c72;
-  }
-}
-
-/* Estilos para vista móvil */
-.cardsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  background: #f8f9fa;
-}
-
-.cardImage {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+.tableImage {
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  margin-right: 1rem;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.cardHeaderInfo {
-  flex: 1;
+.tableImage:hover {
+  border-color: #012b40;
 }
 
-.cardHeaderInfo h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #2d3748;
+.tramiteInfo {
+  text-align: left;
+  max-width: 200px;
+}
+
+.tramiteTitle {
+  font-weight: 600;
+  color: #012b40;
+  margin-bottom: 0.25rem;
+}
+
+.tramiteDesc {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.dateInfo {
+  font-weight: 500;
+  color: #374151;
+}
+
+.noDate {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.amountBadge {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 70px;
+}
+
+.paidAmount {
+  background: linear-gradient(135deg, #116c99 0%, #2291b6 100%);
+  color: white;
+}
+
+.paidComplete {
+  background: #059669;
+  color: white;
+}
+
+.pendingAmount {
+  background: #dc2626;
+  color: white;
 }
 
 .statusBadge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-top: 0.5rem;
-}
-
-.status1 { background: #ebf8ff; color: #2b6cb0; } /* En proceso */
-.status2 { background: #f0fff4; color: #2f855a; } /* En espera */
-.status3 { background: #fff5f5; color: #c53030; } /* Falta de pago */
-.status4 { background: #f0fff4; color: #2f855a; } /* Terminado */
-.status5 { background: #fff5f5; color: #c53030; } /* Cancelado */
-.status6 { background: #fffaf0; color: #c05621; } /* Revisar */
-
-.cardBody {
-  padding: 1rem;
-}
-
-.infoRow {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.infoRow:last-child {
-  border-bottom: none;
-}
-
-.infoLabel {
-  color: #718096;
-  font-weight: 500;
-}
-
-.infoValue {
-  color: #2d3748;
-}
-
-.paymentInfo {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.paymentRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.paymentRow:last-child {
-  margin-bottom: 0;
-}
-
-.paymentLabel {
-  color: #718096;
-  font-weight: 500;
-}
-
-.paymentValue {
+  padding: 0.5rem 0.75rem;
+  border-radius: 15px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
+  min-width: 100px;
 }
 
-.cardFooter {
-  padding: 1rem;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: center;
+.statusProcess {
+  background: #f59e0b;
+  color: white;
+}
+
+.statusWaiting {
+  background: linear-gradient(135deg, #06699b 0%, #5493a8 100%);
+  color: white;
+}
+
+.statusPayment {
+  background: #dc2626;
+  color: white;
+}
+
+.statusComplete {
+  background: #059669;
+  color: white;
+}
+
+.statusCancelled {
+  background: #6b7280;
+  color: white;
+}
+
+.statusReview {
+  background: #f59e0b;
+  color: white;
+}
+
+.statusUnknown {
+  background: #6b7280;
+  color: white;
+}
+
+.liquidarButton {
+  background: linear-gradient(135deg, #012b40 0%, #3e7b8f 0%, #012b40 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 
+    0 4px 15px rgba(1, 43, 64, 0.4),
+    0 2px 8px rgba(1, 43, 64, 0.3),
+    inset 0 1px 0 rgba(167, 163, 163, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: all 0.9s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.liquidarButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.liquidarButton:hover::before {
+  left: 100%;
+}
+
+.liquidarButton:hover {
+  background: linear-gradient(135deg, #1a4b5c 0%, #2d5a6b 50%, #1a4b5c 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(1, 43, 64, 0.5),
+    0 4px 12px rgba(1, 43, 64, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.liquidarButton:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 8px rgba(1, 43, 64, 0.4),
+    0 1px 4px rgba(1, 43, 64, 0.3);
+}
+
+.paidBadge {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  background: #059669;
+  color: white;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .infoButton {
-  width: 100%;
-  max-width: 200px;
-  padding: 0.5rem 1rem;
+  background: rgba(1, 43, 64, 0.05);
+  border: 1px solid #012b40;
   border-radius: 8px;
-  background: #004c72;
-  border: none;
-  color: white;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  color: #012b40;
+  cursor: pointer;
 }
 
 .infoButton:hover {
-  background: #003d5c;
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 100%);
+  color: white;
 }
 
-/* Mejoras en responsive */
-@media (min-width: 640px) {
-  .cardsContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    padding: 1.5rem;
+/* Paginación */
+.paginationContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(1, 43, 64, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.paginationInfo {
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #012b40;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #012b40;
+  cursor: pointer;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 100%);
+  color: white;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 1rem;
+}
+
+.pageButton {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #012b40;
+  background: white;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #012b40;
+  cursor: pointer;
+}
+
+.pageButton:hover {
+  background: #f8fafc;
+}
+
+.pageButtonActive {
+  background: linear-gradient(135deg, #012b40 0%, #1a4b5c 100%);
+  border-color: #012b40;
+  color: white;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(1, 43, 64, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 70px;
+    padding: 1rem;
+  }
+
+  .searchContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .searchSection,
+  .filterSection,
+  .statsSection {
+    flex: none;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .tablaDatos {
+    min-width: 600px;
+  }
+
+  .tableHeader th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .tdNumber,
+  .tdImage,
+  .tdDescription,
+  .tdDate,
+  .tdAmount,
+  .tdAction,
+  .tdStatus {
+    padding: 0.5rem;
+  }
+
+  .tramiteInfo {
+    max-width: 150px;
+  }
+
+  .tramiteTitle,
+  .tramiteDesc {
+    font-size: 0.8rem;
+  }
+
+  .tableImage {
+    width: 40px;
+    height: 40px;
+  }
+
+  .numberBadge {
+    width: 25px;
+    height: 25px;
+    font-size: 0.75rem;
+  }
+
+  .amountBadge,
+  .statusBadge {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: 60px;
+  }
+
+  .liquidarButton,
+  .infoButton {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .paginationContainer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .pageNumbers {
+    margin: 0;
+  }
+
+  .pageButton {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  .paginationButton {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
   }
 }
 

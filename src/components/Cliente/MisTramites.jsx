@@ -208,26 +208,44 @@ export default function MisTramites() {
       </div>
 
       <div className={styles.searchContainer}>
-        <Form.Control
-          type="text"
-          placeholder="Buscar trámite o email..."
-          className={styles.searchInput}
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
-        <Form.Select
-          value={estadoSeleccionado}
-          className={styles.selectState}
-          onChange={(e) => setEstadoSeleccionado(e.target.value)}
-        >
-          <option value="">Todos</option>
-          <option value="1">En proceso</option>
-          <option value="2">En espera</option>
-          <option value="3">Falta de pago</option>
-          <option value="4">Terminado</option>
-          <option value="5">Cancelado</option>
-          <option value="6">Revisar</option>
-        </Form.Select>
+        <div className={styles.searchSection}>
+          <div className={styles.searchInputWrapper}>
+            <span className={styles.searchIcon}>🔍</span>
+            <Form.Control
+              type="text"
+              placeholder="Buscar por trámite, descripción o email..."
+              className={styles.searchInput}
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </div>
+        </div>
+        
+        <div className={styles.filterSection}>
+          <div className={styles.filterWrapper}>
+            <span className={styles.filterIcon}>🏷️</span>
+            <Form.Select
+              value={estadoSeleccionado}
+              className={styles.selectState}
+              onChange={(e) => setEstadoSeleccionado(e.target.value)}
+            >
+              <option value="">Todos los estados</option>
+              <option value="1">⏳ En proceso</option>
+              <option value="2">⏸️ En espera</option>
+              <option value="3">💳 Falta de pago</option>
+              <option value="4">✅ Terminado</option>
+              <option value="5">❌ Cancelado</option>
+              <option value="6">🔍 Revisar</option>
+            </Form.Select>
+          </div>
+        </div>
+        
+        <div className={styles.statsSection}>
+          <div className={styles.statsCard}>
+            <span className={styles.statsNumber}>{filtrados.length}</span>
+            <span className={styles.statsLabel}>Trámites</span>
+          </div>
+        </div>
       </div>
 
       <ModalActualizarTramite
@@ -242,118 +260,184 @@ export default function MisTramites() {
           <Spinner animation="border" />
         </div>
       ) : (
-        <Table striped hover responsive className={styles.tablaDatos}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Imagen</th>
-              <th>Trámite</th>
-              <th>Inicio del trámite</th>
-              <th>Cita CAS</th>
-              <th>Cita CON</th>
-              <th>Pago</th>
-              <th>Restante</th>
-              <th>Liquidar</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datosPaginados.map((cliente, index) => (
-              <tr key={cliente.idTransactProgress}>
-                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-                <td>
-                  <Image
-                    src={cliente.transact.image}
-                    className={styles.tableImage}
-                    rounded
-                  />
-                </td>
-                <td>{cliente.transact.description}</td>
-                <td>{cliente.dateStart}</td>
-                <td>{cliente.dateCas ? cliente.dateCas : "No aplica/En espera"}</td>
-                <td>{cliente.dateCon ? cliente.dateCon : "No aplica/En espera"}</td>
-                <td style={{ color: '#38b2ac', fontWeight: 'bold' }}>${cliente.paid}</td>
-                <td style={{ color: (cliente.paidAll - cliente.paid) === 0 ? '#11a553' : '#e53e3e', fontWeight: 'bold' }}>
-                  {(cliente.paidAll) === 0 ? "0" : `$${cliente.paidAll - cliente.paid}`}
-                </td>
-                <td>
-                  {(cliente.paidAll - cliente.paid) > 0 ? (
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={() => handleLiquidar(cliente)}
-                    >
-                      Liquidar
-                    </Button>
-                  ) : (
-                    <span style={{ color: '#11a553', fontWeight: 'bold' }}>Pagado</span>
-                  )}
-                </td>
-
-                <td>
-                  <span style={{
-                    color: cliente.status === 1 ? '#f59e0b' :
-                      cliente.status === 2 ? '#3b82f6' :
-                        cliente.status === 3 ? '#e53e3e' :
-                          cliente.status === 4 ? '#11a553' :
-                            cliente.status === 5 ? '#6b7280' :
-                              cliente.status === 6 ? '#f59e0b' : '#6b7280',
-                    fontWeight: 'bold'
-                  }}>
-                    {cliente.status === 1 ? 'En proceso' :
-                      cliente.status === 2 ? 'En espera' :
-                        cliente.status === 3 ? 'Falta de pago' :
-                          cliente.status === 4 ? 'Terminado' :
-                            cliente.status === 5 ? 'Cancelado' :
-                              cliente.status === 6 ? 'Revisar' : 'Desconocido'}
-                  </span>
-                </td>
-                <td>
-                  <Button
-                    variant="success"
-                    size="sm"
-                    className={styles.actionButton}
-                    onClick={() => {
-                      setClienteSeleccionado(cliente);
-                      setShowModalA(true);
-                    }}
-                  >
-                    Más info
-                  </Button>
-                </td>
+        <div className={styles.tableContainer}>
+          <Table hover responsive className={styles.tablaDatos}>
+            <thead className={styles.tableHeader}>
+              <tr>
+                <th className={styles.thNumber}>#</th>
+                <th className={styles.thImage}>Imagen</th>
+                <th className={styles.thDescription}>Trámite</th>
+                <th className={styles.thDate}>Fecha Inicio</th>
+                <th className={styles.thDate}>Cita CAS</th>
+                <th className={styles.thDate}>Cita CON</th>
+                <th className={styles.thAmount}>Pagado</th>
+                <th className={styles.thAmount}>Restante</th>
+                <th className={styles.thAction}>Liquidar</th>
+                <th className={styles.thStatus}>Estado</th>
+                <th className={styles.thAction}>Acción</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {datosPaginados.map((cliente, index) => (
+                <tr key={cliente.idTransactProgress} className={styles.tableRow}>
+                  <td className={styles.tdNumber}>
+                    <div className={styles.numberBadge}>
+                      {(paginaActual - 1) * itemsPorPagina + index + 1}
+                    </div>
+                  </td>
+                  <td className={styles.tdImage}>
+                    <div className={styles.imageContainer}>
+                      <Image
+                        src={cliente.transact.image}
+                        className={styles.tableImage}
+                        rounded
+                      />
+                    </div>
+                  </td>
+                  <td className={styles.tdDescription}>
+                    <div className={styles.tramiteInfo}>
+                      <span className={styles.tramiteTitle}>{cliente.transact.description}</span>
+                    </div>
+                  </td>
+                  <td className={styles.tdDate}>
+                    <div className={styles.dateInfo}>
+                      {new Date(cliente.dateStart).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                      })}
+                    </div>
+                  </td>
+                  <td className={styles.tdDate}>
+                    <div className={styles.dateInfo}>
+                      {cliente.dateCas ? 
+                        new Date(cliente.dateCas).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        }) : 
+                        <span className={styles.noDate}>No programada</span>
+                      }
+                    </div>
+                  </td>
+                  <td className={styles.tdDate}>
+                    <div className={styles.dateInfo}>
+                      {cliente.dateCon ? 
+                        new Date(cliente.dateCon).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        }) : 
+                        <span className={styles.noDate}>No programada</span>
+                      }
+                    </div>
+                  </td>
+                  <td className={styles.tdAmount}>
+                    <div className={styles.amountBadge + ' ' + styles.paidAmount}>
+                      ${cliente.paid.toLocaleString('es-ES')}
+                    </div>
+                  </td>
+                  <td className={styles.tdAmount}>
+                    <div className={`${styles.amountBadge} ${
+                      (cliente.paidAll - cliente.paid) === 0 ? styles.paidComplete : styles.pendingAmount
+                    }`}>
+                      {(cliente.paidAll) === 0 ? "$0" : `$${(cliente.paidAll - cliente.paid).toLocaleString('es-ES')}`}
+                    </div>
+                  </td>
+                  <td className={styles.tdAction}>
+                    {(cliente.paidAll - cliente.paid) > 0 ? (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        className={styles.liquidarButton}
+                        onClick={() => handleLiquidar(cliente)}
+                      >
+                        💳 Liquidar
+                      </Button>
+                    ) : (
+                      <div className={styles.paidBadge}>
+                        ✅ Pagado
+                      </div>
+                    )}
+                  </td>
+                  <td className={styles.tdStatus}>
+                    <div className={`${styles.statusBadge} ${
+                      cliente.status === 1 ? styles.statusProcess :
+                      cliente.status === 2 ? styles.statusWaiting :
+                      cliente.status === 3 ? styles.statusPayment :
+                      cliente.status === 4 ? styles.statusComplete :
+                      cliente.status === 5 ? styles.statusCancelled :
+                      cliente.status === 6 ? styles.statusReview : styles.statusUnknown
+                    }`}>
+                      {cliente.status === 1 ? '⏳ En proceso' :
+                       cliente.status === 2 ? '⏸️ En espera' :
+                       cliente.status === 3 ? '💳 Falta de pago' :
+                       cliente.status === 4 ? '✅ Terminado' :
+                       cliente.status === 5 ? '❌ Cancelado' :
+                       cliente.status === 6 ? '🔍 Revisar' : '❓ Desconocido'}
+                    </div>
+                  </td>
+                  <td className={styles.tdAction}>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className={styles.infoButton}
+                      onClick={() => {
+                        setClienteSeleccionado(cliente);
+                        setShowModalA(true);
+                      }}
+                    >
+                      📋 Detalles
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       )}
 
       <div className={styles.paginationContainer}>
-        <Button
-          variant="outline-primary"
-          onClick={() => cambiarPagina(paginaActual - 1)}
-          disabled={paginaActual === 1}
-        >
-          Anterior
-        </Button>
-
-        {[...Array(totalPaginas)].map((_, i) => (
+        <div className={styles.paginationInfo}>
+          <span className={styles.paginationText}>
+            Mostrando {datosPaginados.length} de {filtrados.length} trámites
+          </span>
+        </div>
+        
+        <div className={styles.paginationControls}>
           <Button
-            key={i}
-            variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
-            onClick={() => cambiarPagina(i + 1)}
+            variant="outline-primary"
+            className={styles.paginationButton}
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
           >
-            {i + 1}
+            ← Anterior
           </Button>
-        ))}
 
-        <Button
-          variant="outline-primary"
-          onClick={() => cambiarPagina(paginaActual + 1)}
-          disabled={paginaActual === totalPaginas}
-        >
-          Siguiente
-        </Button>
+          <div className={styles.pageNumbers}>
+            {[...Array(totalPaginas)].map((_, i) => (
+              <Button
+                key={i}
+                variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
+                className={`${styles.pageButton} ${
+                  paginaActual === i + 1 ? styles.pageButtonActive : ''
+                }`}
+                onClick={() => cambiarPagina(i + 1)}
+              >
+                {i + 1}
+              </Button>
+            ))}
+          </div>
+
+          <Button
+            variant="outline-primary"
+            className={styles.paginationButton}
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+          >
+            Siguiente →
+          </Button>
+        </div>
       </div>
 
       {/* ✅ CORRECCIÓN: Solo mostrar el modal cuando hay datos válidos */}
