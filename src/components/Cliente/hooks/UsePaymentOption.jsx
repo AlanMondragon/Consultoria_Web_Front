@@ -2,7 +2,8 @@
 import { useState, useMemo } from 'react';
 
 export const usePaymentOptions = (service) => {
-  const [selectedPaymentType, setSelectedPaymentType] = useState('adelanto');
+  const [selectedPaymentType, setSelectedPaymentType] = useState('');
+  const [selectedLiquidationPlan, setSelectedLiquidationPlan] = useState('4meses'); // Nuevo estado para el plazo
 
   const serviceInfo = useMemo(() => {
     if (!service) return { isDs160: false, isVisaAmericana: false, haveOtherCost: false, isTransportService: false };
@@ -29,21 +30,31 @@ export const usePaymentOptions = (service) => {
           description: 'Apartado (anticipo)',
           processingTime: 'Reserva tu trámite de Visa Americana',
           timeType: 'deposit',
-          isDeposit: true
+          isDeposit: true,
+          // IMPORTANTE: Aquí agregamos la información del plazo seleccionado
+          liquidationAmount: selectedLiquidationPlan === '4meses' ? service.cost : service.optionCost,
+          liquidationDescription: selectedLiquidationPlan === '4meses' ? 'Liquidación plazo 4 meses' : 'Liquidación plazo 8 meses',
+          selectedPlan: selectedLiquidationPlan
         },
         '4meses': {
           amount: service.cost,
           description: 'Visa Americana - Procesamiento en 4 meses',
           processingTime: 'Servicio completo con procesamiento en 4 meses',
           timeType: 'normal',
-          isDeposit: false
+          isDeposit: false,
+          liquidationAmount: service.cost,
+          liquidationDescription: 'Pago completo 4 meses',
+          selectedPlan: '4meses'
         },
         '8meses': {
           amount: service.optionCost,
           description: service.nameOption || 'Visa Americana - Procesamiento en 8 meses',
           processingTime: 'Servicio completo con procesamiento en 8 meses',
           timeType: 'extended',
-          isDeposit: false
+          isDeposit: false,
+          liquidationAmount: service.optionCost,
+          liquidationDescription: 'Pago completo 8 meses',
+          selectedPlan: '8meses'
         }
       };
     }
@@ -68,7 +79,6 @@ export const usePaymentOptions = (service) => {
     }
 
     if(isTransportService) {
-      // Determinar si el anticipo es igual al precio completo para servicios de traslado
       const isFullPaymentOnly = service.cashAdvance === service.cost;
       
       return {
@@ -79,7 +89,6 @@ export const usePaymentOptions = (service) => {
           timeType: isFullPaymentOnly ? 'normal' : 'deposit',
           isDeposit: !isFullPaymentOnly
         },
-        // Solo incluir opción completo si es diferente al anticipo
         ...(service.cashAdvance !== service.cost && {
           completo: {
             amount: service.cost,
@@ -101,7 +110,6 @@ export const usePaymentOptions = (service) => {
       };
     }
 
-    // Determinar si el anticipo es igual al precio completo
     const isFullPaymentOnly = service.cashAdvance === service.cost;
     
     return {
@@ -112,7 +120,6 @@ export const usePaymentOptions = (service) => {
         timeType: isFullPaymentOnly ? 'normal' : 'deposit',
         isDeposit: !isFullPaymentOnly
       },
-      // Solo incluir opción completo si es diferente al anticipo
       ...(service.cashAdvance !== service.cost && {
         completo: {
           amount: service.cost,
@@ -132,29 +139,59 @@ export const usePaymentOptions = (service) => {
         }
       })
     };
-  }, [service, serviceInfo]);
+  }, [service, serviceInfo, selectedLiquidationPlan]); // Agregamos selectedLiquidationPlan como dependencia
 
   const validatedPaymentType = useMemo(() => {
     const availableOptions = Object.keys(paymentOptions);
     if (availableOptions.includes(selectedPaymentType)) {
       return selectedPaymentType;
     }
-    // Si es adelanto de cita visa americana, empezar con 3meses
     if (serviceInfo.isAdvanceVisaAmericana && availableOptions.includes('3meses')) {
       return '3meses';
     }
-    // De lo contrario, usar la primera opción disponible
     return availableOptions[0];
   }, [paymentOptions, selectedPaymentType, serviceInfo]);
 
   const currentPaymentOption = paymentOptions[validatedPaymentType];
+  console.log('Current Payment Option:', currentPaymentOption);
+
+  // Función para obtener el costo total correcto basado en el plazo seleccionado
+  const costoTotal = () => {
+    //AQUI SE OBTIENE EL MONTO TOTAL DEL SERVICIO DEPENDIENDO DE LA SELECCION DEL PLAZO
+    if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
+      return currentPaymentOption?.liquidationAmount;
+    }
+    
+    // Para adelanto de Visa Americana, devolver el costo según el plazo
+    return selectedLiquidationPlan === '4meses' ? service.cost : service.optionCost;
+  };
+  console.log('Total del costo del tramite:',  costoTotal());
+
+  // AQUI SE OBTIENE EL MONTO PENDIENTE DE LIQUIDACION
+  const pendienteLiquidar = () => {
+    if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
+      return 0;
+    }
+    
+    const totalCost = costoTotal();
+    const advanceAmount = currentPaymentOption.amount || 0;
+    
+    return Math.max(0, totalCost - advanceAmount);
+  };
+    console.log('Lo que se tiene que liquidar:', pendienteLiquidar());
+
+ 
 
   return {
     serviceInfo,
     paymentOptions,
     selectedPaymentType,
     setSelectedPaymentType,
+    selectedLiquidationPlan,
+    setSelectedLiquidationPlan,
     validatedPaymentType,
-    currentPaymentOption
+    currentPaymentOption,
+    costoTotal,
+    pendienteLiquidar,
   };
 };

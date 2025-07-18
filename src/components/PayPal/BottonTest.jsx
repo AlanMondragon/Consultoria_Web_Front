@@ -26,7 +26,7 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
         return actions.order.create({
           purchase_units: [{
             amount: {
-              value: formattedAmount 
+              value: formattedAmount
             }
           }]
         });
@@ -34,14 +34,14 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
       onApprove: (data, actions) => {
         return actions.order.capture().then(async function (details) {
           console.log("Service:", service, "Id Usuario:", userId, "Status:", details.status);
-          
+
           setPaymentStatus(details.status);
-          
+
 
           if (setPaypalStatus) {
             setPaypalStatus(details.status);
           }
-          
+
           if (details.status === "COMPLETED") {
             try {
 
@@ -54,27 +54,40 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
                 console.error('No se encontró idTransact en service:', service);
                 throw new Error('idTransact no encontrado en service');
               }
-              
+              let paymentData = {}; // Declarar afuera
 
-              const paymentData = {
-                total: amount,     
-                status: 1,                 
-                idUser: parseInt(userId),  
-                idTransact: idTransact,
-                quantity: parseInt(quantity) || 1 // Coincide exactamente con tu DTO
-              };
-              
+              if (quantity > 1) {
+                paymentData = {
+                  total: parseFloat(amount) / parseInt(quantity), 
+                  status: 1,
+                  idUser: parseInt(userId),
+                  idTransact: idTransact,
+                  quantity: parseInt(quantity) || 1
+                };
+              } else {
+                paymentData = {
+                  total: parseFloat(amount), 
+                  status: 1,
+                  idUser: parseInt(userId),
+                  idTransact: idTransact,
+                  quantity: parseInt(quantity) || 1
+                };
+              }
+
               console.log('Enviando paymentData:', paymentData);
-              
-    
-              const response = await axios.post(`${API_URL}/payment`, paymentData);
-              
 
-              await createProcessWithPayment(paymentData);
-              
+              const response = await axios.post(`${API_URL}/payment`, paymentData);
+
+              for (let i = 0; i < paymentData.quantity; i++) {
+                console.log(`Creando trámite ${i + 1} de ${paymentData.quantity}`);
+                await createProcessWithPayment(paymentData);
+              }
+
+
+
               console.log('Respuesta backend:', response.data);
-              
-             
+
+
               if (response.data.success) {
                 console.log('Pago registrado correctamente');
                 if (onSuccess) onSuccess(details);

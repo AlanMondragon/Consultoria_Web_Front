@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { createProcessWithPayment, payDS160, actualizarTC } from './../api/api.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function CheckoutForm({ amount, description, idProductoTransaccion, userEmail, customer, onSuccess, onError, serviceName, disabled = false, selectedDate, service, idTransactProgress, quantity = 1, totalAmount, onQuantityChange }) {
+export default function CheckoutForm({
+  amount,
+  description,
+  idProductoTransaccion,
+  userEmail,
+  liquidationPlan,
+  costoTotal,
+  pendienteLiquidar,
+  customer,
+  onSuccess,
+  onError,
+  serviceName,
+  disabled = false,
+  selectedDate,
+  service,
+  idTransactProgress,
+  quantity = 1,
+  totalAmount,
+  onQuantityChange
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Determinar si es Visa Americana
+  const isVisaAmericana = service?.name === 'Visa Americana' || service?.name === 'Visa Americana (4 meses)';
+  const isAdvancePayment = description && description.includes('Apartado');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +41,6 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
     if (idProductoTransaccion === undefined || idProductoTransaccion === null || isNaN(parseInt(idProductoTransaccion, 10))) {
       setMessage('Error: Identificador de transacción del producto no válido o no proporcionado.');
       console.error("Error: idProductoTransaccion no es válido:", idProductoTransaccion);
-
       setLoading(false);
       onError && onError({ message: 'ID de transacción de producto inválido.' });
       return;
@@ -32,8 +54,6 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         customerEmail: userEmail,
         customerId: customer
       });
-
-
 
       const clientSecret = data.clientSecret;
       const cardElement = elements.getElement(CardElement);
@@ -61,29 +81,47 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
         setMessage('¡Pago exitoso!');
         onSuccess && onSuccess(result.paymentIntent);
 
-        // Guardar el registro del pago en la base de datos y enviar correo DS-160 si aplica
+        // Guardar el registro del pago en la base de datos
         try {
-          console.log("cliente : " + customer);
+          // CLAVE: Determinar el costo total correcto para el trámite
+
+
+
+
           const paymentData = {
-            total: amount * quantity, // Usa el monto original
-            status: 1, //  1 para "pagado"
+            total: costoTotal,  // Usar el costo total correcto
+            paid: amount* quantity , // Monto total pagado
+            status: 1,
             idUser: parseInt(customer),
-            quantity: parseInt(quantity) || 1, // Asegúrate de que sea un número
+            quantity: parseInt(quantity) || 1,
             idTransact: parseInt(idProductoTransaccion),
+            liquidationPlan: liquidationPlan || null,
+
           };
-          console.log('Intentando crear PaymentIntent con:', {
-            amount: amount * 100,
-            currency: 'mxn',
-            description: serviceName ? `${serviceName} - ${description}` : description,
-            customerEmail: userEmail,
-            quantity : quantity,
-            customerId: customer,
-          });
+
+          console.log('Datos del pago a guardar:', paymentData);
 
           await axios.post(`${API_URL}/payment`, paymentData);
-          await createProcessWithPayment(paymentData);
 
-          // --- AGENDAR CITA EN EL CAMPO CORRECTO ---
+          // Crear los procesos
+          for (let i = 0; i < paymentData.quantity; i++) {
+            console.log(`Creando trámite ${i + 1} de ${paymentData.quantity}`);
+
+            // Crear una copia de paymentData con el monto realmente pagado
+            const processPaymentData = {
+              total: costoTotal, // Monto total del trámite
+              paid: amount, // Monto total pagado
+              status: 1,
+              idUser: parseInt(customer),
+              idTransact: parseInt(idProductoTransaccion),
+            };
+
+            await createProcessWithPayment(processPaymentData);
+          }
+
+          console.log('Todos los procesos creados exitosamente.');
+
+          // Agendar cita si es necesario
           if (selectedDate && service && idTransactProgress) {
             let payload = {};
             if (service.cas) {
@@ -96,7 +134,7 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
             await actualizarTC(idTransactProgress, payload);
           }
 
-          // Enviar el correo DS-160 solo si el nombre real del servicio es DS-160 (validación por nombre)
+          // Enviar correo DS-160 si aplica
           const ds160Names = [
             'ds-160',
             'ds160',
@@ -110,16 +148,15 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
               console.error('Error al enviar correo de confirmación DS-160:', mailError);
             }
           }
+
         } catch (dbError) {
-          console.error("Error en la llamada para guardar el pago en la base de datos:", dbError);
-          console.error("Detalles del error de red/axios:", dbError.response?.data || dbError.message);
+          console.error("Error al guardar el pago en la base de datos:", dbError);
+          console.error("Detalles del error:", dbError.response?.data || dbError.message);
           setMessage(`Pago en Stripe exitoso, pero hubo un problema al guardar su registro. Por favor, contacte a soporte.`);
         }
       }
     } catch (err) {
       console.error("Error creando PaymentIntent:", err.response?.data || err.message);
-
-      console.error("Error en proceso de pago (Stripe):", err);
       let errorMessage = 'Error al procesar el pago.';
       if (err.response && err.response.data && err.response.data.message) {
         errorMessage = err.response.data.message;
@@ -137,152 +174,146 @@ export default function CheckoutForm({ amount, description, idProductoTransaccio
     <form onSubmit={handleSubmit} className="checkout-form">
       <div className="product-info" style={{ marginBottom: '20px' }}>
         <h4>{description}</h4>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '12px',
-          padding: '12px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          border: '1px solid #e2e8f0'
-        }}>
-          <div>
-            <p style={{ margin: '0 0 4px 0', fontWeight: '600' }}>Cliente: {userEmail}</p>
-            {quantity > 1 && (
-              <p style={{ margin: '0', fontSize: '0.875rem', color: '#64748b' }}>
-                Cantidad: {quantity} {quantity === 1 ? 'servicio' : 'servicios'}
-              </p>
-            )}
+
+        {/* Información especial para Visa Americana con adelanto */}
+        {isVisaAmericana && isAdvancePayment && (
+          <div style={{
+            padding: '12px',
+            backgroundColor: '#e3f2fd',
+            border: '1px solid #2196f3',
+            borderRadius: '8px',
+            marginBottom: '12px'
+          }}>
+            <p style={{ margin: '0 0 8px 0', fontWeight: '600', color: '#1976d2' }}>
+              Visa Americana - Adelanto ({liquidationPlan})
+            </p>
+            <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
+              Pagando ahora: ${amount} MXN (Adelanto)
+            </p>
+            <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
+              Total del trámite:  MXN
+            </p>
+            <p style={{ margin: '0', fontSize: '14px' }}>
+              Pendiente:MXN
+            </p>
           </div>
-          
-          {/* Contador de cantidad compacto */}
-          {onQuantityChange && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: 'white',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: '1px solid #d1d5db'
-            }}>
-              <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
-                Cantidad:
-              </span>
-              <button
-                type="button"
-                onClick={() => onQuantityChange(quantity - 1)}
-                disabled={quantity <= 1}
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  border: '1px solid #3b82f6',
-                  backgroundColor: quantity <= 1 ? '#f1f5f9' : '#3b82f6',
-                  color: quantity <= 1 ? '#94a3b8' : 'white',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: quantity <= 1 ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                −
-              </button>
-              
-              <span style={{
-                minWidth: '20px',
-                textAlign: 'center',
-                fontSize: '1rem',
-                fontWeight: '600',
-                color: '#1e293b'
-              }}>
-                {quantity}
-              </span>
-              
-              <button
-                type="button"
-                onClick={() => onQuantityChange(quantity + 1)}
-                disabled={quantity >= 10}
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  border: '1px solid #3b82f6',
-                  backgroundColor: quantity >= 10 ? '#f1f5f9' : '#3b82f6',
-                  color: quantity >= 10 ? '#94a3b8' : 'white',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: quantity >= 10 ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                +
-              </button>
-            </div>
-          )}
-        </div>
-        
-        <p>Monto a pagar: <strong>MX${totalAmount || amount}</strong></p>
-        {quantity > 1 && totalAmount && (
-          <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '4px 0 0 0' }}>
-            MX${(totalAmount / quantity).toFixed(2)} × {quantity} {quantity === 1 ? 'servicio' : 'servicios'}
-          </p>
         )}
-        {selectedDate && (
-          <p>Fecha seleccionada: <strong>{selectedDate.replace('T', ' ')}</strong></p>
+
+        {/* Información general del producto */}
+        <div style={{
+          padding: '12px',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '8px',
+          marginBottom: '12px'
+        }}>
+          <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
+            Servicio: {serviceName || 'Servicio general'}
+          </p>
+          <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
+            Cantidad: {quantity}
+          </p>
+          <p style={{ margin: '0', fontSize: '16px', fontWeight: '600' }}>
+            Total a pagar: ${amount} MXN
+          </p>
+        </div>
+
+        {/* Selector de cantidad si es necesario */}
+        {onQuantityChange && (
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>
+              Cantidad:
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={quantity}
+              onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
+              style={{
+                width: '100px',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
         )}
       </div>
 
-      <div className="card-element-container" style={{ padding: '10px', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '20px' }}>
+      {/* Elemento de tarjeta de Stripe */}
+      <div style={{
+        padding: '12px',
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        marginBottom: '16px',
+        backgroundColor: '#fff'
+      }}>
         <CardElement
           options={{
             style: {
               base: {
                 fontSize: '16px',
                 color: '#424770',
-                '::placeholder': { color: '#aab7c4' },
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
               },
-              invalid: { color: '#c23d4b' },
+              invalid: {
+                color: '#9e2146',
+              },
             },
-            hidePostalCode: true,
           }}
         />
       </div>
 
+      {/* Botón de pago */}
       <button
         type="submit"
         disabled={!stripe || loading || disabled}
         style={{
-          backgroundColor: disabled ? '#cccccc' : '#007bff',
+          width: '100%',
+          padding: '12px',
+          backgroundColor: disabled || loading ? '#ccc' : '#007bff',
           color: 'white',
-          padding: '10px 15px',
           border: 'none',
-          borderRadius: '4px',
+          borderRadius: '8px',
           fontSize: '16px',
-          cursor: loading || disabled ? 'not-allowed' : 'pointer',
-          width: '100%'
+          fontWeight: '600',
+          cursor: disabled || loading ? 'not-allowed' : 'pointer',
+          transition: 'background-color 0.3s ease'
         }}
       >
-        {loading ? 'Procesando...' : `Pagar MX$${totalAmount || amount}`}
+        {loading ? 'Procesando...' : `Pagar $${amount} MXN`}
       </button>
 
+      {/* Mensaje de estado */}
       {message && (
         <div style={{
-          marginTop: '15px',
-          padding: '10px',
+          marginTop: '12px',
+          padding: '8px 12px',
+          borderRadius: '4px',
           backgroundColor: message.includes('exitoso') ? '#d4edda' : '#f8d7da',
           color: message.includes('exitoso') ? '#155724' : '#721c24',
-          borderRadius: '4px',
-          textAlign: 'center'
+          border: `1px solid ${message.includes('exitoso') ? '#c3e6cb' : '#f5c6cb'}`,
+          fontSize: '14px'
         }}>
           {message}
         </div>
       )}
+
+      {/* Información adicional de seguridad */}
+      <div style={{
+        marginTop: '16px',
+        padding: '8px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '4px',
+        fontSize: '12px',
+        color: '#6c757d',
+        textAlign: 'center'
+      }}>
+        🔒 Pago seguro procesado por Stripe. Sus datos están protegidos.
+      </div>
     </form>
   );
 }

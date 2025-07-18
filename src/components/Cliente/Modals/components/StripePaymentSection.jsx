@@ -21,6 +21,7 @@ const StripePaymentSection = ({
   haveOtherCost,
   userEmail,
   userId,
+  costoTotal,
   quantity = 1,
   totalAmount,
   onQuantityChange,
@@ -36,13 +37,13 @@ const StripePaymentSection = ({
     'creacion y generacion de ds160'
   ].some(name => service.name.trim().toLowerCase() === name);
   const showSinglePayment = service?.cashAdvance !== undefined && service?.cost !== undefined && Number(service.cashAdvance) === Number(service.cost);
-  
+
   // Detectar si es adelanto de cita visa americana
-  const isAdvanceVisaAmericana = service?.name?.toLowerCase().includes('adelanto') && 
-                                  (service?.name?.toLowerCase().includes('cita') || service?.name?.toLowerCase().includes('anticipo')) && 
-                                  service?.name?.toLowerCase().includes('visa') && 
-                                  service?.name?.toLowerCase().includes('americana');
-  
+  const isAdvanceVisaAmericana = service?.name?.toLowerCase().includes('adelanto') &&
+    (service?.name?.toLowerCase().includes('cita') || service?.name?.toLowerCase().includes('anticipo')) &&
+    service?.name?.toLowerCase().includes('visa') &&
+    service?.name?.toLowerCase().includes('americana');
+
   // Si es adelanto de cita visa americana, usar siempre las opciones del hook
   const shouldShowPaymentOptions = !showSinglePayment || isAdvanceVisaAmericana;
 
@@ -63,7 +64,10 @@ const StripePaymentSection = ({
       setExtraFee(0);
     }
   };
-
+  const selectedLiquidationPlan = selectedPaymentType;
+  const liquidationTotal = (paymentOptions && paymentOptions[selectedLiquidationPlan]?.amount) || 0;
+  const totalWithExtraFee = (liquidationTotal * quantity) + extraFee;
+  console.log('Total con cargo extra:', totalWithExtraFee);
   return (
     <div className={stylesModal.modalContainer}>
       {showSinglePayment && !isAdvanceVisaAmericana ? (
@@ -98,7 +102,8 @@ const StripePaymentSection = ({
                 </div>
               )}
             </div>
-          )}          <Elements stripe={stripePromise}>
+          )}
+          <Elements stripe={stripePromise}>
             <CheckoutForm
               amount={(currentPaymentOption?.amount || 0) + extraFee}
               totalAmount={totalAmount ? totalAmount + extraFee : (currentPaymentOption?.amount || 0) + extraFee}
@@ -115,6 +120,9 @@ const StripePaymentSection = ({
               selectedDate={selectedDate}
               service={service}
               idTransactProgress={service?.idTransactProgress}
+              liquidationPlan={selectedLiquidationPlan}
+          
+              
             />
           </Elements>
         </div>
@@ -161,7 +169,9 @@ const StripePaymentSection = ({
               )}
             </div>
           )}
+
           <Elements stripe={stripePromise}>
+
             <CheckoutForm
               amount={(currentPaymentOption?.amount || 0) + extraFee}
               totalAmount={totalAmount ? totalAmount + extraFee : (currentPaymentOption?.amount || 0) + extraFee}
@@ -178,6 +188,10 @@ const StripePaymentSection = ({
               selectedDate={selectedDate}
               service={service}
               idTransactProgress={service?.idTransactProgress}
+              liquidationPlan={selectedLiquidationPlan}
+              costoTotal={costoTotal}
+       
+
             />
           </Elements>
         </>
@@ -186,4 +200,4 @@ const StripePaymentSection = ({
   );
 };
 
-export default StripePaymentSection; // No olvides exportar el componente
+export default StripePaymentSection; // No olvides exportar el componente 
