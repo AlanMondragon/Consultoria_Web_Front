@@ -188,13 +188,13 @@ export default function CheckoutForm({
               Visa Americana - Adelanto ({liquidationPlan})
             </p>
             <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
-              Pagando ahora: ${amount} MXN (Adelanto)
+              Pagando ahora: ${amount*quantity} MXN (Adelanto)
             </p>
             <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
-              Total del trámite:  MXN
+              Total del trámite: ${costoTotal*quantity} MXN
             </p>
             <p style={{ margin: '0', fontSize: '14px' }}>
-              Pendiente:MXN
+              Pendiente: ${(costoTotal*quantity)-(amount*quantity)} MXN
             </p>
           </div>
         )}
@@ -210,10 +210,10 @@ export default function CheckoutForm({
             Servicio: {serviceName || 'Servicio general'}
           </p>
           <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>
-            Cantidad: {quantity}
+            Cantidad: {quantity} X {amount} MXN
           </p>
           <p style={{ margin: '0', fontSize: '16px', fontWeight: '600' }}>
-            Total a pagar: ${amount} MXN
+            Total a pagar: ${amount*quantity} MXN
           </p>
         </div>
 
@@ -226,7 +226,7 @@ export default function CheckoutForm({
             <input
               type="number"
               min="1"
-              max="10"
+              max="15"
               value={quantity}
               onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
               style={{
@@ -284,7 +284,7 @@ export default function CheckoutForm({
           transition: 'background-color 0.3s ease'
         }}
       >
-        {loading ? 'Procesando...' : `Pagar $${amount} MXN`}
+        {loading ? 'Procesando...' : `Pagar $${amount*quantity} MXN`}
       </button>
 
       {/* Mensaje de estado */}

@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL;
 import { useState } from 'react';
 
-const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalStatus, quantity = 1 }) => {
+const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalStatus, quantity =1 , costoTotal }) => {
   const paypalRef = useRef();
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -58,7 +58,8 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
 
               if (quantity > 1) {
                 paymentData = {
-                  total: parseFloat(amount) / parseInt(quantity), 
+                  total: parseFloat(costoTotal) , 
+                  paid: parseFloat(amount) / quantity,
                   status: 1,
                   idUser: parseInt(userId),
                   idTransact: idTransact,
@@ -66,7 +67,8 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
                 };
               } else {
                 paymentData = {
-                  total: parseFloat(amount), 
+                  total: parseFloat(costoTotal), 
+                  paid: parseFloat(amount),
                   status: 1,
                   idUser: parseInt(userId),
                   idTransact: idTransact,

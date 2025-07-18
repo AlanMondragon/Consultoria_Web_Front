@@ -254,10 +254,12 @@ const PaymentModal = ({
                 amount={getTotalAmount()}
                 onSuccess={onSuccess}
                 onError={onError}
+                costoTotal={costoTotal()}
                 userId={userId}
                 quantity={quantity}
                 service={{ ...service, cost: getTotalAmount() }}
                 liquidationPlan={selectedLiquidationPlan}
+                
               />
             </PayPalScriptLoader>
           </>
