@@ -11,7 +11,6 @@ export default function CheckoutForm({
   userEmail,
   liquidationPlan,
   costoTotal,
-  pendienteLiquidar,
   customer,
   onSuccess,
   onError,
@@ -21,7 +20,6 @@ export default function CheckoutForm({
   service,
   idTransactProgress,
   quantity = 1,
-  totalAmount,
   onQuantityChange
 }) {
   const stripe = useStripe();
@@ -135,17 +133,19 @@ export default function CheckoutForm({
           }
 
           // Enviar correo DS-160 si aplica
-          const ds160Names = [
-            'ds-160',
-            'ds160',
-            'creación y generación de ds160',
-            'creacion y generacion de ds160'
-          ];
-          if (serviceName && ds160Names.some(name => serviceName.trim().toLowerCase() === name)) {
-            try {
-              await payDS160(userEmail);
-            } catch (mailError) {
-              console.error('Error al enviar correo de confirmación DS-160:', mailError);
+          if (serviceName) {
+            const serviceNameLower = serviceName.trim().toLowerCase();
+            const hasElaboracion = serviceNameLower.includes('elaboracion') || serviceNameLower.includes('elaboración');
+            const hasCreacion = serviceNameLower.includes('creacion') || serviceNameLower.includes('creación');
+            const hasDs = serviceNameLower.includes('ds');
+            
+            // Debe tener DS obligatoriamente Y al menos una de las otras dos (elaboracion o creacion)
+            if (hasDs && (hasElaboracion || hasCreacion)) {
+              try {
+                await payDS160(userEmail);
+              } catch (mailError) {
+                console.error('Error al enviar correo de confirmación DS-160:', mailError);
+              }
             }
           }
 
