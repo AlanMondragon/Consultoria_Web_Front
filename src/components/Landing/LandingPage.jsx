@@ -164,7 +164,7 @@ export default function LandingPage() {
   };
 
   return (
-  <div style={{ display: 'flex', flexDirection: 'column' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, marginTop: '25px' }}>
     <LandingNavbar
       isScrolled={isScrolled}
       activeSection={activeSection}
@@ -191,7 +191,6 @@ export default function LandingPage() {
         faqActiveIndex={faqActiveIndex}
         handleFaqToggle={handleFaqToggle}
       />
-    </main>
 
     <FooterSection />
 
@@ -231,6 +230,8 @@ export default function LandingPage() {
         onLoginRequired={() => singint(selectedServiceForPayment)}
       />
     )}
+        </main>
+
   </div>
 );
 }
