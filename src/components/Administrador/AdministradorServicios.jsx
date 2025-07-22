@@ -6,9 +6,9 @@ import { getAllProcess, getStepById } from './../../api/api.js';
 import Navbar from '../NavbarAdmin.jsx';
 import Slider from 'react-slick';
 import { Icon } from '@iconify/react';
-import { Button } from 'react-bootstrap';
 import ServicePreviewModal from './ServicePreviewModal.jsx';
 import StepsModal from './StepsModal.jsx';
+import AdminServiceCard from './AdminServiceCard.jsx';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -17,6 +17,7 @@ import styles from './../../styles/AdminServicios.module.css';
 export default function AdministradorServicios() {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
   
   // Service Preview Modal states
   const [previewModalIsOpen, setPreviewModalIsOpen] = useState(false);
@@ -61,6 +62,12 @@ export default function AdministradorServicios() {
       document.body.className = '';
     };
   }, [navigate]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchServices = async () => {
     try {
@@ -150,17 +157,18 @@ export default function AdministradorServicios() {
 
   const sliderSettings = {
     dots: false,
-    infinite: true,
-    speed: 500,
+    infinite: services.length > 3,
+    speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 2000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } }
+      { breakpoint: 1200, settings: { slidesToShow: 3, infinite: services.length > 3 } },
+      { breakpoint: 900, settings: { slidesToShow: 1, infinite: services.length > 1, centerMode: true, centerPadding: '0px' } },
+      { breakpoint: 600, settings: { slidesToShow: 1, infinite: services.length > 1, centerMode: true, centerPadding: '0px', arrows: false, dots: true } }
     ]
   };
 
@@ -173,53 +181,45 @@ export default function AdministradorServicios() {
 
   return (
     <div className={styles.container}>
-      <div className='fixed-top'>
-        <Navbar title={"- Servicios"} />
+      <div className="fixed-top">
+        <Navbar title="- Servicios" />
       </div>
-      
+
       <div className={styles.servicesSlider}>
         <h1 className={styles.title}>Servicios disponibles</h1>
-        <Slider {...sliderSettings}>
-          {services.map((service, index) => (
-            <div key={index} className={styles.serviceCard}>
-              <img 
-                src={service.image} 
-                alt={service.name} 
-                className={styles.serviceCardImage} 
+        {isMobile ? (
+          <div className={styles.mobileContainer}>
+            {services.map((service, index) => (
+              <AdminServiceCard
+                key={index}
+                service={service}
+                onEdit={handleEditClick}
+                onViewSteps={openStepsModal}
+                onPreview={openPreviewModal}
+                formatPrice={formatPrice}
+                truncateDescription={truncateDescription}
               />
-              <h2 className={styles.serviceCardTitle}>{service.name}</h2>
-              <p className={styles.serviceCardDescription}>
-                {truncateDescription(service.description, 150)}
-              </p>
-              <p className={styles.costInfoLabel}>Pago inicial:</p>
-              <p className={styles.price}>MX${formatPrice(service.cashAdvance)}</p>
-              
-              <Button
-                className='btn-primary'
-                style={{ backgroundColor: '#007bff', borderColor: '#0056b3' }}
-                onClick={() => handleEditClick(service)}
-              >
-                Editar
-              </Button>
-              
-              <Button
-                className='btn-secondary m-1'
-                style={{ backgroundColor: '#17a2b8', borderColor: '#117a8b' }}
-                onClick={() => openStepsModal(service.idTransact)}
-              >
-                Ver pasos
-              </Button>
-              
-              <Button
-                className='btn-info'
-                style={{ backgroundColor: '#17a2b8', borderColor: '#117a8b' }}
-                onClick={() => openPreviewModal(service)}
-              >
-                Vista previa
-              </Button>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.desktopSlider}>
+            <Slider {...sliderSettings}>
+              {services.map((service, index) => (
+                <div key={index} className={styles.sliderItem}>
+                  <AdminServiceCard
+                    key={index}
+                    service={service}
+                    onEdit={handleEditClick}
+                    onViewSteps={openStepsModal}
+                    onPreview={openPreviewModal}
+                    formatPrice={formatPrice}
+                    truncateDescription={truncateDescription}
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        )}
       </div>
       
       <div>
