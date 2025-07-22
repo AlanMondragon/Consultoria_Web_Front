@@ -341,7 +341,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10050;
+  z-index: 10060; /* Mayor que otros modales */
   cursor: zoom-out;
   padding: 20px;
   box-sizing: border-box;
@@ -903,4 +903,62 @@
   .mobileContainer {
     padding: 0 8px;
   }
+}
+
+/* Solución para problemas de modal */
+/* Asegurar que el backdrop se remueva correctamente */
+:global(.modal-backdrop) {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1040 !important;
+}
+
+/* Prevenir scroll del body cuando el modal está abierto */
+:global(body.modal-open) {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+/* Asegurar que los modales tengan el z-index correcto */
+:global(.modal) {
+  z-index: 1050 !important;
+}
+
+/* Prevenir que elementos queden flotando */
+:global(.modal.fade:not(.show)) {
+  display: none !important;
+}
+
+/* Limpiar cualquier transformación residual */
+:global(.modal.fade.show) {
+  display: block !important;
+}
+
+/* Asegurar que el overlay de zoom tenga prioridad */
+.imageZoomOverlay {
+  z-index: 10060 !important;
+}
+
+/* Prevenir conflictos de transformación */
+:global(.modal-dialog) {
+  transform: none !important;
+  transition: transform 0.3s ease-out !important;
+}
+
+:global(.modal.show .modal-dialog) {
+  transform: translate(0, 0) !important;
+}
+
+/* Forzar limpieza de estilos inline problemáticos */
+:global(body:not(.modal-open)) {
+  padding-right: 0 !important;
+  overflow: auto !important;
+}
+
+/* Asegurar que no queden múltiples backdrops */
+:global(.modal-backdrop + .modal-backdrop) {
+  display: none !important;
 }
