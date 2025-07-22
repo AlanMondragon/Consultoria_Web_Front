@@ -118,6 +118,14 @@ export default function AdministradorServicios() {
     setSelectedService(null);
     setPreviewModalIsOpen(false);
     setSteps([]); // Clear the steps list
+    // Forzar limpieza del DOM
+    setTimeout(() => {
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+    }, 100);
   };
 
   // Steps Modal handlers
@@ -135,7 +143,14 @@ export default function AdministradorServicios() {
 
   const closeStepsModal = () => {
     setShowStepsModal(false);
-    // Don't clear idService here to maintain it for navigation
+    // Forzar limpieza del DOM
+    setTimeout(() => {
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+    }, 100);
   };
 
   const clearSteps = () => {

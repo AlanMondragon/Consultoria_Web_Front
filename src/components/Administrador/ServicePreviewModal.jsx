@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import styles from './../../styles/AdminServicios.module.css';
 
@@ -10,11 +10,40 @@ export default function ServicePreviewModal({
 }) {
   const [isZoomed, setIsZoomed] = useState(false);
 
+  // Limpiar estados cuando el modal se cierre
+  useEffect(() => {
+    if (!show) {
+      setIsZoomed(false);
+    }
+  }, [show]);
+
+  // Función mejorada para cerrar modal
+  const handleClose = () => {
+    setIsZoomed(false);
+    onHide();
+    
+    // Limpiar cualquier backdrop residual
+    setTimeout(() => {
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+    }, 150);
+  };
+
   if (!service) return null;
 
   return (
     <>
-      <Modal show={show} onHide={onHide} centered size="lg" className={styles.previewModal}>
+      <Modal 
+        show={show} 
+        onHide={handleClose} 
+        centered 
+        size="lg" 
+        className={styles.previewModal}
+        backdrop="static"
+        keyboard={true}
+      >
         <Modal.Header closeButton className={styles.modalHeader}>
           <Modal.Title className={styles.modalTitle}>{service.name}</Modal.Title>
         </Modal.Header>
@@ -68,7 +97,7 @@ export default function ServicePreviewModal({
           </Button>
           <Button 
             variant="outline-secondary" 
-            onClick={onHide}
+            onClick={handleClose}
             className={styles.closeButton}
           >
             Cerrar

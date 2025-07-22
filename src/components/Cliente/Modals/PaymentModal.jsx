@@ -61,6 +61,15 @@ const PaymentModal = ({
     currentPaymentOption,
   } = usePaymentOptions(service);
 
+  // Debug temporal para verificar tipos de servicio
+  React.useEffect(() => {
+    if (service && serviceInfo) {
+      console.log('🔍 Servicio:', service.name);
+      console.log('📋 ServiceInfo:', serviceInfo);
+      console.log('💰 PaymentOptions:', paymentOptions);
+    }
+  }, [service, serviceInfo, paymentOptions]);
+
   const [quantity, setQuantity] = React.useState(1);
 
   if (!service) return null;
@@ -73,8 +82,84 @@ const PaymentModal = ({
 
   // Calcular total pago inicial
   const getTotalAmount = () => {
-    if (!currentPaymentOption) return service.cost * quantity;
+    if (!currentPaymentOption) return (service?.cost || service?.cashAdvance || 0) * quantity;
     return currentPaymentOption.amount * quantity;
+  };
+
+  // Funciones para obtener precios con valores por defecto usando la lógica del hook
+  const getCashAdvance = () => {
+    // Para Visa Americana, usar el adelanto
+    if (serviceInfo.isVisaAmericana && paymentOptions.adelanto) {
+      return paymentOptions.adelanto.amount || 0;
+    }
+    // Para otros servicios, usar cashAdvance del servicio
+    return service?.cashAdvance || 0;
+  };
+
+  const getCost = () => {
+    // Para Visa Americana, usar el costo del plan de 4 meses
+    if (serviceInfo.isVisaAmericana && paymentOptions['4meses']) {
+      return paymentOptions['4meses'].amount || 0;
+    }
+    // Para otros servicios, usar cost del servicio
+    return service?.cost || service?.cashAdvance || 0;
+  };
+
+  const getOptionCost = () => {
+    // Para Visa Americana, usar el costo del plan de 8 meses
+    if (serviceInfo.isVisaAmericana && paymentOptions['8meses']) {
+      return paymentOptions['8meses'].amount || 0;
+    }
+    // Para otros servicios, usar optionCost del servicio
+    return service?.optionCost || 0;
+  };
+
+  // Función para obtener las opciones de pago disponibles para mostrar
+  const getAvailablePaymentOptions = () => {
+    const options = [];
+    
+    if (serviceInfo.isVisaAmericana) {
+      // Para Visa Americana, mostrar adelanto y planes
+      if (paymentOptions.adelanto) {
+        options.push({
+          label: 'Adelanto inicial',
+          amount: paymentOptions.adelanto.amount,
+          description: paymentOptions.adelanto.description
+        });
+      }
+      if (paymentOptions['4meses']) {
+        options.push({
+          label: 'Plan 4 meses',
+          amount: paymentOptions['4meses'].amount,
+          description: paymentOptions['4meses'].description
+        });
+      }
+      if (paymentOptions['8meses']) {
+        options.push({
+          label: 'Plan 8 meses',
+          amount: paymentOptions['8meses'].amount,
+          description: paymentOptions['8meses'].description
+        });
+      }
+    } else if (serviceInfo.isDs160) {
+      // Para DS-160, mostrar opciones específicas
+      Object.entries(paymentOptions).forEach(([key, option]) => {
+        options.push({
+          label: option.description || key,
+          amount: option.amount,
+          description: option.processingTime || ''
+        });
+      });
+    } else {
+      // Para otros servicios, mostrar precio básico
+      options.push({
+        label: 'Precio del servicio',
+        amount: service?.cashAdvance || service?.cost || 0,
+        description: 'Pago único'
+      });
+    }
+    
+    return options;
   };
 
   // Preview intercept
@@ -100,9 +185,17 @@ const PaymentModal = ({
           <div>
             <div className={paymentStyles.serviceTitle}>{service.name}</div>
             <div className={paymentStyles.serviceSubtitle}>
-              {isPreviewMode ?
-                'Vista previa - Opciones de pago disponibles'
-                : isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'}
+              {isPreviewMode ? (
+                serviceInfo.isVisaAmericana ? 
+                  `Vista previa - Desde $${getCashAdvance()} MXN` :
+                serviceInfo.isDs160 ?
+                  `Vista previa - Formulario DS-160` :
+                serviceInfo.isTransportService ?
+                  `Vista previa - Servicio de Traslado` :
+                  `Vista previa - Desde $${getCashAdvance()} MXN`
+              ) : (
+                isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'
+              )}
             </div>
           </div>
         </Modal.Title>
@@ -150,7 +243,7 @@ const PaymentModal = ({
                   transition: 'all 0.2s ease'
                 }}
               >
-                4 Meses - ${service.cost} MXN
+                4 Meses - ${getCost()} MXN
               </button>
               
               <button
@@ -167,7 +260,7 @@ const PaymentModal = ({
                   transition: 'all 0.2s ease'
                 }}
               >
-                8 Meses - ${service.optionCost} MXN
+                8 Meses - ${getOptionCost()} MXN
               </button>
             </div>
 
@@ -183,7 +276,7 @@ const PaymentModal = ({
                 Resumen del pago:
               </p>
               <p style={{ margin: '0 0 4px 0' }}>
-                • Adelanto ahora: ${service.cashAdvance * quantity} MXN
+                • Adelanto ahora: ${getCashAdvance() * quantity} MXN
               </p>
               <p style={{ margin: '0 0 4px 0' }}>
                 • Total del trámite: ${costoTotal()*quantity} MXN
@@ -198,6 +291,48 @@ const PaymentModal = ({
         {/* Contenido principal */}
         {isPreviewMode ? (
           <div style={{ textAlign: 'center', marginTop: 20 }}>
+            {/* Información de precios en modo preview */}
+            <div style={{ 
+              marginBottom: 20, 
+              padding: '16px', 
+              backgroundColor: '#f8f9fa', 
+              borderRadius: '8px',
+              border: '1px solid #dee2e6'
+            }}>
+              <h6 style={{ marginBottom: 12, fontWeight: 'bold', color: '#495057' }}>
+                {serviceInfo.isVisaAmericana ? 'Opciones de Pago - Visa Americana' : 
+                 serviceInfo.isDs160 ? 'Opciones de Pago - DS-160' :
+                 serviceInfo.isTransportService ? 'Servicio de Traslado' :
+                 'Información de Precios'}
+              </h6>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {getAvailablePaymentOptions().map((option, index) => (
+                  <div key={index} style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    padding: '8px 0',
+                    borderBottom: index < getAvailablePaymentOptions().length - 1 ? '1px solid #e9ecef' : 'none'
+                  }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 'bold' }}>{option.label}</div>
+                      {option.description && (
+                        <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+                          {option.description}
+                        </div>
+                      )}
+                    </div>
+                    <span style={{ 
+                      fontWeight: 'bold', 
+                      color: index === 0 ? '#28a745' : '#495057',
+                      fontSize: '1.1rem'
+                    }}>
+                      ${option.amount} MXN
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
             <button className={paymentStyles.previewButton} onClick={handlePaymentAttempt}>
               Iniciar Sesión para Pagar
             </button>
