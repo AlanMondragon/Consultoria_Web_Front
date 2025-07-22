@@ -26,13 +26,13 @@ export default function NavbarAdmin({ title }) {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      
+
       if (mobile) {
         setId1("/ClienteServicios-sm");
         setId2("/MisTramites-sm");
         setId3("/ClienteHome-sm");
-        setId4("/MiPerfil-sm");
-        setId5("/Calendario-sm");
+        setId4("/MiPerfil");
+        setId5("/Calendario");
         setSidebarOpen(false); // Cerrar sidebar en mobile al redimensionar
       } else {
         setId1("/ClienteServicios");
@@ -101,23 +101,22 @@ export default function NavbarAdmin({ title }) {
             <img src={Logo} alt="logo" />
           </div>
         </div>
-        
+
         <div className="navbar-title">
           <h1>Consultoría JAS {title}</h1>
         </div>
-        
+
         <div className="navbar-logout" onClick={cerrarSesion}>
           <Icon icon="line-md:logout" className='icono' />
         </div>
       </div>
 
       {/* Sidebar */}
-      <div className={`sidebar ${
-        isMobile 
+      <div className={`sidebar ${isMobile
           ? (sidebarOpen ? 'mobile-open' : 'mobile-closed')
           : (collapsed ? '' : 'collapsed')
-      }`}>
-        
+        }`}>
+
         {!isMobile && (
           <button className="collapse-btn" onClick={handleMenuToggle}>
             <Icon icon="mdi:menu" color="#fff" width="35" />
@@ -126,27 +125,27 @@ export default function NavbarAdmin({ title }) {
 
         <nav className="sidebar-nav">
           <a href={id3} onClick={handleLinkClick}>
-            <Icon icon="material-symbols:dashboard" className='icon' /> 
+            <Icon icon="material-symbols:dashboard" className='icon' />
             <span className="nav-text">Inicio</span>
           </a>
           <a href={id1} onClick={handleLinkClick}>
-            <Icon icon="mdi:shopping-outline" className='icon' /> 
+            <Icon icon="mdi:shopping-outline" className='icon' />
             <span className="nav-text">Servicios</span>
           </a>
           <a href={id2} onClick={handleLinkClick}>
-            <Icon icon="carbon:document" className='icon' /> 
+            <Icon icon="carbon:document" className='icon' />
             <span className="nav-text">Mis Trámites</span>
           </a>
           <a href={id5} onClick={handleLinkClick}>
-            <Icon icon="mdi:calendar-month" className='icon' /> 
+            <Icon icon="mdi:calendar-month" className='icon' />
             <span className="nav-text">Calendario</span>
           </a>
           <a href={id4} onClick={handleLinkClick}>
-            <Icon icon="mdi:account" className='icon' /> 
+            <Icon icon="mdi:account" className='icon' />
             <span className="nav-text">Mi Perfil</span>
           </a>
           <a onClick={() => { handleLinkClick(); cerrarSesion(); }}>
-            <Icon icon="line-md:logout" className='icon' /> 
+            <Icon icon="line-md:logout" className='icon' />
             <span className="nav-text">Cerrar sesión</span>
           </a>
         </nav>

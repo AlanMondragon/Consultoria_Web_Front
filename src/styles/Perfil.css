@@ -113,3 +113,36 @@
 .input-error {
     border-color: #e74c3c;
 }
+
+/* RESPONSIVO */
+@media (max-width: 1024px) {
+    .profile-container {
+        width: 90%;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        width: 95%;
+        margin: 80px auto 30px;
+        padding: 20px;
+    }
+
+    .profile-title {
+        font-size: 20px;
+    }
+
+    .form-subtitle {
+        font-size: 16px;
+    }
+
+    .profile-input {
+        font-size: 13px;
+    }
+
+    .submit-button {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
