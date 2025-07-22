@@ -74,6 +74,7 @@ export default function AdministradorPagos() {
                             const clienteResponse = await clientePorId(payment.idUser);
                             const cliente = clienteResponse.success ? clienteResponse.response.user : null;
                             const nombreTramite = await getNameService(payment.idTransact);
+                            console.log(`Detalles del pago ${payment.idPayment}:`, nombreTramite, clienteResponse);
                             return {
                                 ...payment,
                                 user: cliente,

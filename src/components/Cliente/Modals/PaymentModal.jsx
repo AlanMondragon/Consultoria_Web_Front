@@ -66,7 +66,6 @@ const PaymentModal = ({
   if (!service) return null;
   const { isDs160, isVisaAmericana, haveOtherCost } = serviceInfo;
 
-  // Manejo cantidad
   const handleQuantityChange = (newQty) => {
     if (newQty >= 1 && newQty <= 15) setQuantity(newQty);
   };
@@ -102,7 +101,7 @@ const PaymentModal = ({
             <div className={paymentStyles.serviceSubtitle}>
               {isPreviewMode ?
                 'Vista previa - Opciones de pago disponibles'
-                : isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'}
+                : isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe y PayPal' : 'Pago seguro con Stripe y PayPal'}
             </div>
           </div>
         </Modal.Title>
