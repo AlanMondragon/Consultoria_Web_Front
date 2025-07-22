@@ -46,7 +46,7 @@ export default function CheckoutForm({
 
     try {
       const { data } = await axios.post(`${API_URL}/pay/payint`, {
-        amount: amount * 100,
+        amount: (amount * 100)* quantity, 
         currency: 'mxn',
         description: serviceName ? `${serviceName} - ${description}` : description,
         customerEmail: userEmail,
@@ -87,17 +87,14 @@ export default function CheckoutForm({
 
 
           const paymentData = {
-            total: costoTotal,  // Usar el costo total correcto
-            paid: amount* quantity , // Monto total pagado
+            total: amount* quantity , // Monto total pagado
             status: 1,
             idUser: parseInt(customer),
             quantity: parseInt(quantity) || 1,
-            idTransact: parseInt(idProductoTransaccion),
-            liquidationPlan: liquidationPlan || null,
-
+            idTransact: parseInt(idProductoTransaccion)
           };
 
-          console.log('Datos del pago a guardar:', paymentData);
+
 
           await axios.post(`${API_URL}/payment`, paymentData);
 

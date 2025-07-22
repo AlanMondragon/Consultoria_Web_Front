@@ -10,7 +10,7 @@ export default function SimpleCheckoutForm({
   description,
   userEmail,
   customer,
-  onSuccess // ✅ Acepta el callback del padre
+  onSuccess 
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -73,9 +73,8 @@ export default function SimpleCheckoutForm({
           title: 'Pago exitoso',
           text: 'El cobro extra ha sido procesado exitosamente.'
         });
-        // ✅ AVISA AL PADRE
         if (onSuccess) {
-          onSuccess(result); // 🔑 aquí sí se informa al padre
+          onSuccess(result); 
         }
       }
     } catch (err) {

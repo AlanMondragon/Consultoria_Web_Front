@@ -54,7 +54,7 @@ const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentO
             lineHeight: '1.5',
             fontWeight: '600'
           }}>
-            Cantidad de servicios: <strong>{quantity}</strong>
+            Cantidad de Solicitantes: <strong>{quantity}</strong>
           </p>
         )}
       </div>

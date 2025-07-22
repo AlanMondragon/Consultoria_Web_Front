@@ -11,14 +11,44 @@ import CheckoutForm from '../Pagos.jsx';
 import PayPalScriptLoader from '../PayPal/PayPalScriptLoader.jsx';
 import PayPalButton from '../PayPal/BottonTest.jsx';
 import * as yup from 'yup';
+import { LockIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
 import { FaCheck } from 'react-icons/fa';
+import paymentStyles from './../../styles/servicios/client/PaymentModal.module.css';
+
 
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 const stripePromise = loadStripe(stripeKey);
+const VisaSVG = () => (
+    <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="14" rx="2" fill="#fff" />
+        <text x="7" y="11" fontSize="10" fontWeight="bold" fill="#1a1f71">VISA</text>
+    </svg>
+);
+const MastercardSVG = () => (
+    <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="7" r="6" fill="#eb001b" />
+        <circle cx="25" cy="7" r="6" fill="#f79e1b" />
+        <text x="5" y="12" fontSize="7" fontWeight="bold" fill="#222">MC</text>
+    </svg>
+);
+const StripeSVG = () => (
+    <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="14" rx="2" fill="#635bff" />
+        <text x="6" y="11" fontSize="10" fontWeight="bold" fill="#fff">Stripe</text>
+    </svg>
+);
+const ShieldSVG = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L20 6V12C20 17 16 21 12 22C8 21 4 17 4 12V6L12 2Z" fill="#2563eb" stroke="#2563eb" strokeWidth="1.5" />
+        <path d="M9 12L11 14L15 10" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+
 
 const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clienteInfo, pendingDateTime }) => {
     const [isProcessing, setIsProcessing] = useState(false);
@@ -49,6 +79,8 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
         console.log('Pago exitoso:', paymentResult);
         setIsProcessing(false);
         onHide();
+        
+        // Solo pasamos la información del pago exitoso al componente padre
         if (onPaymentSuccess) {
             onPaymentSuccess(paymentResult, pendingDateTime);
         }
@@ -60,15 +92,23 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
     };
 
     return (
-        <Modal show={show} onHide={onHide} size="lg" centered>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    <FaCreditCard className="me-2" />
-                    Cobro Extra - Cita después de las 21:00
+        <Modal show={show} onHide={onHide} centered dialogClassName={paymentStyles.customDialog} backdropClassName={paymentStyles.modalBackdrop}>
+            <Modal.Header closeButton className={paymentStyles.modalHeader}>
+                <Modal.Title className={paymentStyles.paymentModalTitle}>
+                    <div className={paymentStyles.serviceIcon}><LockIcon size={32} /></div>
+                    <div>
+                        <div className={paymentStyles.serviceTitle}>Cobro extra - Cita despues de las 21:00</div>
+                        <div className={paymentStyles.serviceSubtitle}>
+                            Pago seguro con Stripe y PayPal
+                        </div>
+                    </div>
                 </Modal.Title>
             </Modal.Header>
 
-            <Modal.Body>
+            <Modal.Body className={paymentStyles.modalBody}>
+                <div className={paymentStyles.securitySection}>
+                    <div className={paymentStyles.securityBadge}><ShieldSVG /> Pago 100% seguro</div>
+                </div>
                 <div className="alert alert-info">
                     <strong>Cobro adicional:</strong> $99 MXN por cita programada después de las 21:00 horas.
                 </div>
@@ -94,6 +134,11 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
                         idTransactProgress={clienteInfo?.idTransactProgress || 'N/A'}
                     />
                 </Elements>
+                <div className={paymentStyles.paymentSeparator}>
+                    <div className={paymentStyles.separatorLine} />
+                    <span className={paymentStyles.separatorText}>o paga con</span>
+                    <div className={paymentStyles.separatorLine} />
+                </div>
 
                 <div style={{ marginTop: 24, marginBottom: 12 }}>
                     <PayPalScriptLoader>
@@ -106,6 +151,18 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
                         />
                     </PayPalScriptLoader>
                 </div>
+
+                {/* Logos */}
+                <div className={paymentStyles.paymentMethods}>
+                    <VisaSVG />
+                    <MastercardSVG />
+                    <StripeSVG />
+                </div>
+
+                {/* Nota */}
+                <div className={paymentStyles.privacyNote}>
+                    Nunca almacenamos datos de tu tarjeta.
+                </div>
             </Modal.Body>
 
             <Modal.Footer>
@@ -117,25 +174,20 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
     );
 };
 
-const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired, disabled 
-}) => {
+const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, onExtraChargeRequired, disabled }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
     const [availableHours, setAvailableHours] = useState([]);
     const [allHours, setAllHours] = useState([]);
 
     useEffect(() => {
-     
         if (value) {
-            // CORRECCIÓN: Manejo más simple y directo de fecha/hora
             if (typeof value === 'string' && value.includes('T')) {
-                // Si es una cadena ISO, extraer directamente fecha y hora
                 const [datePart, timePart] = value.split('T');
-                const timeOnly = timePart.split(':').slice(0, 2).join(':'); // Solo HH:MM
+                const timeOnly = timePart.split(':').slice(0, 2).join(':'); 
                 setSelectedDate(datePart);
                 setSelectedTime(timeOnly);
             } else {
-                // Si es un objeto Date, usar métodos locales
                 const date = new Date(value);
                 const dateStr = date.getFullYear() + '-' +
                     String(date.getMonth() + 1).padStart(2, '0') + '-' +
@@ -152,7 +204,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         if (!selectedDateStr) return [];
 
         const today = new Date();
-        // CORRECCIÓN: Crear fecha sin desplazamiento de zona horaria
         const selectedDateObj = new Date(selectedDateStr + 'T00:00:00');
         const isToday = selectedDateObj.toDateString() === today.toDateString();
 
@@ -183,16 +234,13 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         fechasOcupadas.forEach(fechaOcupada => {
             if (!fechaOcupada) return;
 
-
             let fechaOcupadaDate, fechaOcupadaHour;
 
             if (typeof fechaOcupada === 'string' && fechaOcupada.includes('T')) {
-                // Formato ISO string
                 const [datePart, timePart] = fechaOcupada.split('T');
                 fechaOcupadaDate = datePart;
                 fechaOcupadaHour = timePart.split(':').slice(0, 2).join(':');
             } else if (typeof fechaOcupada === 'string' && fechaOcupada.includes(' ')) {
-                // Formato "YYYY-MM-DD HH:MM:SS"
                 const [datePart, timePart] = fechaOcupada.split(' ');
                 fechaOcupadaDate = datePart;
                 fechaOcupadaHour = timePart.split(':').slice(0, 2).join(':');
@@ -279,7 +327,6 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
             }
         }
     };
-
 
     const getMinDate = () => {
         const today = new Date();
@@ -370,8 +417,8 @@ const DateTimeSelector = ({ value, onChange, fechasOcupadas, className, error, o
         </div>
     );
 };
-export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
 
+export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado, cliente }) {
     const [nombreDelPaso, setNombreDelPaso] = useState('');
     const [descripcionDelPaso, setDescripcionDelPaso] = useState('');
     const [fechasOcupadas, setFechasOcupadas] = useState([]);
@@ -408,6 +455,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
     const advanceValue = watch('advance');
     const currentDateSimulation = watch('dateSimulation');
+
     useEffect(() => {
         const obtenerFechasOcupadas = async () => {
             try {
@@ -436,7 +484,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }, [show]);
 
     useEffect(() => {
-           console.log('Cliente recibido:', cliente);
+        console.log('Cliente recibido:', cliente);
         console.log('WasUpdated:', cliente?.wasUpdated);
         if (cliente) {
             const formattedCas = cliente.dateCas
@@ -508,32 +556,94 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         setShowStripeModal(true);
     };
 
-    const handlePaymentSuccess = (paymentResult, confirmedDateTime) => {
+    // FUNCIÓN CORREGIDA: Actualizar trámite después del pago exitoso
+    const handlePaymentSuccess = async (paymentResult, confirmedDateTime) => {
         console.log('✅ Pago exitoso:', paymentResult);
         console.log('✅ Fecha/hora confirmada:', confirmedDateTime);
 
-        if (confirmedDateTime) {
-
-            setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
-            setPendingDateTime(null);
-        }
-
-        setIsPaymentRequired(false);
-        setExtraChargeClientInfo(null);
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Pago exitoso',
-            text: 'El cobro extra ha sido procesado exitosamente y tu cita ha sido agendada (Guarda los datos).',
-            confirmButtonText: 'Aceptar'
-        }).then(() => {
+        try {
+            // Actualizar el formulario con la nueva fecha
             if (confirmedDateTime) {
                 setValue('dateSimulation', confirmedDateTime, { shouldValidate: true });
             }
-        });
 
-        setShowStripeModal(false);
+            // Preparar los datos actuales del formulario para la actualización
+            const currentFormData = watch(); // Obtener todos los datos actuales del formulario
+            
+            const formatDate = (date) => {
+                if (!date) return null;
+                const d = new Date(date);
+                const yyyy = d.getFullYear();
+                const MM = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const hh = String(d.getHours()).padStart(2, '0');
+                const mm = String(d.getMinutes()).padStart(2, '0');
+                return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
+            };
+
+            const payload = {
+                advance: currentFormData.advance,
+                dateCas: formatDate(currentFormData.dateCas),
+                dateCon: formatDate(currentFormData.dateCon),
+                dateSimulation: formatDate(confirmedDateTime || currentFormData.dateSimulation),
+                dateStart: currentFormData.dateStart,
+                emailAcces: currentFormData.emailAcces,
+                haveSimulation: currentFormData.haveSimulation,
+                paid: currentFormData.paid,
+                paidAll: currentFormData.paidAll,
+                status: currentFormData.status,
+                passwordAcces: currentFormData.passwordAcces,
+                stepProgress: currentFormData.stepProgress,
+            };
+
+            console.log('Payload para actualización:', payload);
+
+            // Realizar la actualización del trámite
+            const response = await actualizarTCS(cliente.idTransactProgress, payload);
+
+            console.log('Respuesta de actualización:', response);
+
+            if (response.success) {
+                // Resetear estados de pago
+                setIsPaymentRequired(false);
+                setPendingDateTime(null);
+                setExtraChargeClientInfo(null);
+                setShowStripeModal(false);
+
+                // Mostrar mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pago y actualización exitosos',
+                    text: 'El cobro extra ha sido procesado y tu cita ha sido agendada exitosamente.',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    // Llamar callback si existe
+                    if (typeof onClienteRegistrado === 'function') {
+                        onClienteRegistrado();
+                    }
+                    // Cerrar modal
+                    onHide();
+                });
+
+            } else {
+                throw new Error(response.message || 'Error al actualizar el trámite');
+            }
+
+        } catch (error) {
+            console.error('❌ Error al actualizar el trámite después del pago:', error);
+            
+            // Cerrar modal de pago pero mostrar error
+            setShowStripeModal(false);
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al actualizar',
+                text: 'El pago se procesó correctamente, pero hubo un error al actualizar el trámite. Por favor contacta soporte.',
+                confirmButtonText: 'Aceptar'
+            });
+        }
     };
+
     const formatDate = (date, maintainLocalTime = false) => {
         if (!date) return null;
 
@@ -553,6 +663,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     };
 
     const onSubmit = async (data) => {
+        // Verificar si se requiere pago y no se ha completado
         if (data.dateSimulation && isPaymentRequired) {
             const selectedHour = new Date(data.dateSimulation).getHours();
             if (selectedHour >= 21) {
@@ -566,6 +677,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
 
+        // Validación de fechas ocupadas (código existente)
         if (data.dateSimulation) {
             const nuevaFecha = new Date(data.dateSimulation);
 
@@ -610,6 +722,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             }
         }
 
+        // Actualización normal del trámite (sin cobro extra)
         try {
             const formatDate = (date) => {
                 if (!date) return null;
@@ -636,6 +749,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 passwordAcces: data.passwordAcces,
                 stepProgress: data.stepProgress,
             };
+
             const response = await actualizarTCS(cliente.idTransactProgress, payload);
 
             console.log('Datos actualizados:', response.message);
@@ -676,7 +790,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
         const result = await Swal.fire({
             icon: 'warning',
             title: '¿Estás seguro que quieres cancelar la cita?',
-            text: 'Solamente puedes cancelar la cita una vez',
+            text: 'Solamente puedes cancelar la cita una vez, el pago anterior no será reembolsado, en caso de que la cita ya haya sido pagada. -',
             showCancelButton: true,
             confirmButtonText: 'Sí, cancelar cita',
             cancelButtonText: 'No',
@@ -843,7 +957,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                                             fechasOcupadas={fechasOcupadas}
                                             error={errors.dateSimulation}
                                             onExtraChargeRequired={handleExtraChargeRequired}
-                                            disabled={cliente?.wasUpdated} // ✅ Deshabilita si ya se actualizó una vez
+                                            disabled={cliente?.wasUpdated}
                                         />
                                     )}
                                 />

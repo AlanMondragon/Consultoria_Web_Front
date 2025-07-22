@@ -243,7 +243,7 @@ export default function CalendarioAdmin() {
                             return (
                                 
                                 <li key={id} style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
-                                         ({cantidadCitas})
+                                        
                                     <span style={{
                                         display: 'inline-block',
                                         width: '15px',
@@ -252,7 +252,7 @@ export default function CalendarioAdmin() {
                                         marginRight: '10px',
                                         borderRadius: '3px'
                                     }}></span>
-                                    {descripcion || `No hay fechas #${id}`}
+                                    {descripcion|| `No hay fechas #${id}`}
                                     <span style={{ 
                                         marginLeft: '10px', 
                                         fontSize: '14px', 
@@ -261,6 +261,7 @@ export default function CalendarioAdmin() {
                                     }}>
                                    
                                     </span>
+                                     ({cantidadCitas})
                                 </li>
                             );
                         })}
