@@ -1,0 +1,213 @@
+/* AdminServiceCard.module.css - Estilos similares al cliente pero para admin */
+
+.serviceCard {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 1, 1, 0.2);
+  background-color: #fff;
+  text-align: center;
+  transition: transform 0.3s ease;
+  margin: 0 auto 15px auto;
+  box-sizing: border-box;
+}
+
+.serviceCard:hover {
+  transform: scale(0.94);
+}
+
+.serviceCardImage {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.serviceCardTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #000;
+  width: 100%;
+}
+
+.serviceCardDescription {
+  color: #333;
+  font-size: 13px;
+  margin-bottom: 6px;
+  line-height: 1.3;
+  width: 100%;
+}
+
+.costInfoLabel {
+  color: #000;
+  font-weight: bold;
+  font-size: 13px;
+  margin: 4px 0 2px 0;
+  width: 100%;
+}
+
+.price {
+  color: #4dbf0f;
+  font-weight: bold;
+  font-size: 15px;
+  margin: 4px 0 8px 0;
+  width: 100%;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.cardButton {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  background-color: #007bff;
+  min-height: 40px;
+}
+
+.cardButton:hover {
+  background-color: #0056b3;
+}
+
+.btnSecondary {
+  background-color: #17a2b8;
+  border-color: #117a8b;
+}
+
+.btnSecondary:hover {
+  background-color: #138496;
+}
+
+.btnInfo {
+  background-color: #17a2b8;
+  border-color: #117a8b;
+}
+
+.btnInfo:hover {
+  background-color: #138496;
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+  .serviceCard {
+    max-width: 280px;
+  }
+  
+  .buttonContainer {
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .cardButton {
+    width: auto;
+    min-width: 80px;
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .serviceCard {
+    max-width: 300px;
+  }
+}
+
+/* Mobile específico */
+@media (max-width: 767px) {
+  .serviceCard {
+    min-height: unset;
+    padding: 6px 2px 8px 2px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+  }
+  
+  .serviceCardImage {
+    height: 36px;
+    margin-bottom: 2px;
+    border-radius: 7px;
+  }
+  
+  .serviceCardTitle {
+    font-size: 11.5px;
+    margin-bottom: 1px;
+  }
+  
+  .serviceCardDescription {
+    font-size: 9.5px;
+    margin-bottom: 1px;
+  }
+  
+  .price {
+    font-size: 10.5px;
+  }
+  
+  .costInfoLabel {
+    font-size: 9.5px;
+  }
+  
+  .cardButton, .btnSecondary, .btnInfo {
+    font-size: 10.5px;
+    padding: 5px 1px;
+    width: 98%;
+    margin-bottom: 1px;
+    border-radius: 7px;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 375px) {
+  .serviceCard {
+    min-height: unset;
+    padding: 2px 1px 4px 1px;
+  }
+  
+  .serviceCardImage {
+    height: 24px;
+  }
+  
+  .serviceCardTitle {
+    font-size: 9.5px;
+  }
+  
+  .serviceCardDescription {
+    font-size: 8px;
+  }
+  
+  .price {
+    font-size: 9px;
+  }
+  
+  .costInfoLabel {
+    font-size: 8px;
+  }
+  
+  .cardButton, .btnSecondary, .btnInfo {
+    font-size: 9px;
+    padding: 4px 1px;
+  }
+}

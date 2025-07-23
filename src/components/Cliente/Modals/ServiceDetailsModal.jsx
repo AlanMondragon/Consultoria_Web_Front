@@ -18,50 +18,64 @@ const ServiceDetailsModal = ({
         show={show}
         onHide={onHide}
         centered
-        dialogClassName={styles.wideModal}
+        className={styles.previewModal}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>{service.name}</Modal.Title>
+        <Modal.Header closeButton className={styles.modalHeader}>
+          <Modal.Title className={styles.modalTitle}>{service.name}</Modal.Title>
         </Modal.Header>
         
-        <Modal.Body className={styles.modalBody}>
-          <div className={styles.modalBodyContent}>
-            <img
-              src={service.image}
-              alt={service.name}
-              className={styles.modalImage}
-            />
-            <div className={styles.modalInfo}>
-              <p style={{ whiteSpace: 'pre-line' }}>
-                {service.description}
-              </p>
-              <p className={styles.costInfoLabel}>Pago inicial:</p>
-              <p className={styles.price} style={{ color: "blue" }}>
-                MX$ {service.cashAdvance}.00
-              </p>
-              <p className={styles.costInfoLabel}>Información de costos:</p>
+        <Modal.Body className={styles.previewModalBody}>
+          <div className={styles.previewContent}>
+            {/* Sección de imagen */}
+            <div className={styles.imageSection}>
               <img
-                src={service.imageDetail}
-                alt="Detalle"
-                onClick={onToggleZoom}
-                style={{
-                  width: '100%',
-                  marginTop: '10px',
-                  cursor: 'pointer'
-                }}
+                src={service.image}
+                alt={service.name}
+                className={styles.previewImage}
               />
+            </div>
+
+            {/* Sección de información */}
+            <div className={styles.infoSection}>
+              <div className={styles.descriptionContainer}>
+                <h6 className={styles.sectionTitle}>Descripción</h6>
+                <p className={styles.description} style={{ whiteSpace: 'pre-line' }}>
+                  {service.description}
+                </p>
+              </div>
+
+              <div className={styles.priceContainer}>
+                <span className={styles.priceLabel}>Pago inicial:</span>
+                <span className={styles.priceValue}>MX$ {service.cashAdvance}.00</span>
+              </div>
+
+              <div className={styles.detailSection}>
+                <h6 className={styles.sectionTitle}>Información de costos</h6>
+                <img
+                  src={service.imageDetail}
+                  alt="Detalle de costos"
+                  className={styles.detailImage}
+                  onClick={onToggleZoom}
+                />
+                <small className={styles.clickHint}>Haz clic para ampliar</small>
+              </div>
             </div>
           </div>
         </Modal.Body>
         
-        <Modal.Footer>
+        <Modal.Footer className={styles.previewModalFooter}>
           <Button 
             variant="info" 
             onClick={() => onShowSteps(service.idTransact)}
+            className={styles.stepsButton}
           >
             Ver pasos
           </Button>
-          <Button variant="secondary" onClick={onHide}>
+          <Button 
+            variant="secondary" 
+            onClick={onHide}
+            className={styles.closeButton}
+          >
             Cerrar
           </Button>
         </Modal.Footer>

@@ -8,6 +8,13 @@ import { useState } from "react";
 import { MdClose } from 'react-icons/md';
 
 export default function FooterSection() {
+  // Mostrar cards solo en móvil
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [showModal, setShowModal] = useState(false);
   const [pdfUrl, setPdfUrl] = useState('');
   const navigate = useNavigate()
@@ -84,14 +91,7 @@ export default function FooterSection() {
         <Row>
           {/* Contact Section */}
           <Col lg={6} className="mb-4">
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '20px',
-              padding: '30px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              height: '100%'
-            }}>
+            <div className={styles.socialContainer}>
               <h5 style={{
                 fontSize: '1.5rem',
                 fontWeight: '600',
@@ -100,7 +100,7 @@ export default function FooterSection() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px'
-              }}>
+              }} className={styles.socialTitle}>
                 <Icon icon="material-symbols:contact-phone" width="28" height="28" />
                 Contacto
               </h5>
@@ -129,7 +129,7 @@ export default function FooterSection() {
               {/* Email */}
               <div style={{ marginBottom: '25px' }}>
                 <a
-                  href="mailto:consultoriacomercializacionjas@gmail.com"
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=consultoriacomercializacionjas@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -222,77 +222,33 @@ export default function FooterSection() {
 
               {/* Social Media Links */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '30px' }}>
-                {[
-                  { icon: 'logos:facebook', url: 'https://www.facebook.com/AsesoriaEspecializadaConsultoriaJAS', name: 'Facebook' },
-                  { icon: 'skill-icons:instagram', url: 'https://www.instagram.com/somosconsultoriajas', name: 'Instagram' },
-                  { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajas', name: 'TikTok Principal' },
-                  { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajhonric', name: 'TikTok Secundario' },
-                  { icon: 'logos:whatsapp-icon', url: 'https://wa.me/message/KXGI4YPWAQ3GC1', name: 'WhatsApp' },
-                  { icon: 'bi:threads-fill', url: 'https://www.threads.net/@somosconsultoriajas', name: 'Threads' },
-                ].map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '12px 16px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px',
-                      textDecoration: 'none',
-                      color: '#E2E8F0',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      transition: 'all 0.3s ease',
-                      fontSize: '0.9rem'
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.background = 'rgba(96, 165, 250, 0.2)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(96, 165, 250, 0.3)';
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                <div className={styles.socialGrid}>
+                  {[
+                    { icon: 'logos:facebook', url: 'https://www.facebook.com/AsesoriaEspecializadaConsultoriaJAS', name: 'Facebook' },
+                    { icon: 'skill-icons:instagram', url: 'https://www.instagram.com/somosconsultoriajas', name: 'Instagram' },
+                    { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajas', name: 'TikTok Principal' },
+                    { icon: 'logos:tiktok-icon', url: 'https://www.tiktok.com/@consultoriajhonric', name: 'TikTok Secundario' },
+                    { icon: 'logos:whatsapp-icon', url: 'https://wa.me/message/KXGI4YPWAQ3GC1', name: 'WhatsApp' },
+                    { icon: 'bi:threads-fill', url: 'https://www.threads.net/@somosconsultoriajas', name: 'Threads' },
+                  ].map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.socialLink}
+                    >
+                      <Icon icon={social.icon} width="24" height="24" style={{ marginRight: '12px' }} />
+                      <span>{social.name}</span>
+                    </a>
+                  ))}
+                  <button
+                    onClick={redirect}
+                    className={styles.practicasBtn}
                   >
-                    <Icon icon={social.icon} width="24" height="24" style={{ marginRight: '12px' }} />
-                    <span>{social.name}</span>
-                  </a>
-                ))}
-                <button
-                  onClick={redirect}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '12px 16px',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '12px',
-                    textDecoration: 'none',
-                    color: '#E2E8F0',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    transition: 'all 0.3s ease',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    width: '100%',
-                    gridColumn: 'span 2'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.background = 'rgba(96, 165, 250, 0.2)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(96, 165, 250, 0.3)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  ¿Estás interesado en realizar tus prácticas con nosotros?
-                </button>
+                    ¿Estás interesado en realizar tus prácticas con nosotros?
+                  </button>
+                </div>
               </div>
 
               {/* Resources Section */}
@@ -381,60 +337,101 @@ export default function FooterSection() {
                       <Icon icon="material-symbols:schedule" width="20" height="20" />
                       Horarios de Atención
                     </h6>
-
-                    <div className={styles.tableWrapper}>
-                      <table className={styles.scheduleTable}>
-                        <thead>
-                          <tr className={styles.tableHeader}>
-                            <th className={styles.headerCellLeft}>
-                              Día
-                            </th>
-                            <th className={styles.headerCellCenter}>
-                              Horario de Oficinas
-                            </th>
-                            <th className={styles.headerCellCenter}>
-                              Horario Online
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[
-                            { dia: 'Lunes', oficina: '9:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
-                            { dia: 'Martes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
-                            { dia: 'Miércoles', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
-                            { dia: 'Jueves', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
-                            { dia: 'Viernes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
-                            { dia: 'Sábado', oficina: '8:00 am - 12:00 pm', online: 'Cerrado' }
-                          ].map((horario, index) => (
-                            <tr key={index} className={styles.tableRow}>
-                              <td className={styles.dayCell}>
-                                <div className={horario.dia === 'Sábado' ? styles.dayIndicatorSpecial : styles.dayIndicatorActive}></div>
-                                {horario.dia}
-                              </td>
-                              <td className={styles.timeCell}>
-                                <div className={styles.officeBadge}>
-                                  <Icon icon="material-symbols:business" width="16" height="16" style={{ color: '#60A5FA' }} />
-                                  {horario.oficina}
-                                </div>
-                              </td>
-                              <td className={styles.timeCell}>
+                    {isMobile ? (
+                      <div className={styles.cardsWrapper}>
+                        {[
+                          { dia: 'Lunes', oficina: '9:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                          { dia: 'Martes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                          { dia: 'Miércoles', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                          { dia: 'Jueves', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                          { dia: 'Viernes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                          { dia: 'Sábado', oficina: '8:00 am - 12:00 pm', online: 'Cerrado' }
+                        ].map((horario, index) => (
+                          <div key={index} className={styles.dayCard}>
+                            <div className={styles.dayCardHeader}>
+                              <div className={horario.dia === 'Sábado' ? styles.dayIndicatorSpecial : styles.dayIndicatorActive}></div>
+                              <span className={styles.dayCardTitle}>{horario.dia}</span>
+                            </div>
+                            <div className={styles.dayCardBody}>
+                              <div className={styles.dayCardSection}>
+                                <Icon icon="material-symbols:business" width="20" height="20" style={{ color: '#60A5FA', marginRight: '8px' }} />
+                                <span className={styles.dayCardLabel}>Oficina:</span>
+                                <span className={styles.dayCardTime}>{horario.oficina}</span>
+                              </div>
+                              <div className={styles.dayCardSection}>
                                 {horario.online !== 'Cerrado' ? (
-                                  <div className={styles.onlineBadge}>
-                                    <Icon icon="material-symbols:wifi" width="16" height="16" />
-                                    {horario.online}
-                                  </div>
+                                  <>
+                                    <Icon icon="material-symbols:wifi" width="20" height="20" style={{ color: '#22C55E', marginRight: '8px' }} />
+                                    <span className={styles.dayCardLabel}>Online:</span>
+                                    <span className={styles.dayCardTimeOnline}>{horario.online}</span>
+                                  </>
                                 ) : (
-                                  <div className={styles.closedBadge}>
-                                    <Icon icon="material-symbols:close" width="16" height="16" />
-                                    Cerrado
-                                  </div>
+                                  <>
+                                    <Icon icon="material-symbols:close" width="20" height="20" style={{ color: '#EF4444', marginRight: '8px' }} />
+                                    <span className={styles.dayCardLabel}>Online:</span>
+                                    <span className={styles.dayCardTimeClosed}>Cerrado</span>
+                                  </>
                                 )}
-                              </td>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className={styles.tableWrapper}>
+                        <table className={styles.scheduleTable}>
+                          <thead>
+                            <tr className={styles.tableHeader}>
+                              <th className={styles.headerCellLeft}>
+                                Día
+                              </th>
+                              <th className={styles.headerCellCenter}>
+                                Horario de Oficinas
+                              </th>
+                              <th className={styles.headerCellCenter}>
+                                Horario Online
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                          </thead>
+                          <tbody>
+                            {[
+                              { dia: 'Lunes', oficina: '9:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Martes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Miércoles', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Jueves', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Viernes', oficina: '8:00 am - 4:00 pm', online: '8:00 am - 11:00 pm' },
+                              { dia: 'Sábado', oficina: '8:00 am - 12:00 pm', online: 'Cerrado' }
+                            ].map((horario, index) => (
+                              <tr key={index} className={styles.tableRow}>
+                                <td className={styles.dayCell}>
+                                  <div className={horario.dia === 'Sábado' ? styles.dayIndicatorSpecial : styles.dayIndicatorActive}></div>
+                                  {horario.dia}
+                                </td>
+                                <td className={styles.timeCell}>
+                                  <div className={styles.officeBadge}>
+                                    <Icon icon="material-symbols:business" width="16" height="16" style={{ color: '#60A5FA' }} />
+                                    {horario.oficina}
+                                  </div>
+                                </td>
+                                <td className={styles.timeCell}>
+                                  {horario.online !== 'Cerrado' ? (
+                                    <div className={styles.onlineBadge}>
+                                      <Icon icon="material-symbols:wifi" width="16" height="16" />
+                                      {horario.online}
+                                    </div>
+                                  ) : (
+                                    <div className={styles.closedBadge}>
+                                      <Icon icon="material-symbols:close" width="16" height="16" />
+                                      Cerrado
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
 
                     {/* Nota adicional */}
                     <div className={styles.infoNote}>
