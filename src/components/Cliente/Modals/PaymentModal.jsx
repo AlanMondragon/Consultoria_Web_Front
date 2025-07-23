@@ -116,7 +116,7 @@ const PaymentModal = ({
   // Función para obtener las opciones de pago disponibles para mostrar
   const getAvailablePaymentOptions = () => {
     const options = [];
-    
+
     if (serviceInfo.isVisaAmericana) {
       // Para Visa Americana, mostrar adelanto y planes
       if (paymentOptions.adelanto) {
@@ -157,7 +157,7 @@ const PaymentModal = ({
         description: 'Pago único'
       });
     }
-    
+
     return options;
   };
 
@@ -185,13 +185,13 @@ const PaymentModal = ({
             <div className={paymentStyles.serviceTitle}>{service.name}</div>
             <div className={paymentStyles.serviceSubtitle}>
               {isPreviewMode ? (
-                serviceInfo.isVisaAmericana ? 
+                serviceInfo.isVisaAmericana ?
                   `Vista previa - Desde $${getCashAdvance()} MXN` :
-                serviceInfo.isDs160 ?
-                  `Vista previa - Formulario DS-160` :
-                serviceInfo.isTransportService ?
-                  `Vista previa - Servicio de Traslado` :
-                  `Vista previa - Desde $${getCashAdvance()} MXN`
+                  serviceInfo.isDs160 ?
+                    `Vista previa - Formulario DS-160` :
+                    serviceInfo.isTransportService ?
+                      `Vista previa - Servicio de Traslado` :
+                      `Vista previa - Desde $${getCashAdvance()} MXN`
               ) : (
                 isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'
               )}
@@ -207,26 +207,26 @@ const PaymentModal = ({
 
         {/* Selector de Plazo para Adelanto de Visa Americana */}
         {validatedPaymentType === 'adelanto' && isVisaAmericana && (
-          <div style={{ 
-            marginTop: 20, 
-            padding: '20px', 
-            backgroundColor: '#f8f9fa', 
+          <div style={{
+            marginTop: 20,
+            padding: '20px',
+            backgroundColor: '#f8f9fa',
             borderRadius: '8px',
             border: '1px solid #dee2e6'
           }}>
-            <h4 style={{ 
-              marginBottom: '16px', 
-              fontSize: '18px', 
+            <h4 style={{
+              marginBottom: '16px',
+              fontSize: '18px',
               fontWeight: '600',
               color: '#495057'
             }}>
               Selecciona el plazo para liquidar tu trámite:
             </h4>
-            
-            <div style={{ 
-              display: 'flex', 
-              gap: '12px', 
-              marginBottom: '16px' 
+
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              marginBottom: '16px'
             }}>
               <button
                 onClick={() => setSelectedLiquidationPlan('4meses')}
@@ -244,7 +244,7 @@ const PaymentModal = ({
               >
                 4 Meses - ${getCost()} MXN
               </button>
-              
+
               <button
                 onClick={() => setSelectedLiquidationPlan('8meses')}
                 style={{
@@ -264,9 +264,9 @@ const PaymentModal = ({
             </div>
 
             {/* Información del pago */}
-            <div style={{ 
-              padding: '12px', 
-              backgroundColor: '#d4edda', 
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#d4edda',
               border: '1px solid #c3e6cb',
               borderRadius: '4px',
               fontSize: '14px'
@@ -278,10 +278,10 @@ const PaymentModal = ({
                 • Adelanto ahora: ${getCashAdvance() * quantity} MXN
               </p>
               <p style={{ margin: '0 0 4px 0' }}>
-                • Total del trámite: ${costoTotal()*quantity} MXN
+                • Total del trámite: ${costoTotal() * quantity} MXN
               </p>
               <p style={{ margin: '0', fontWeight: '600', color: '#155724' }}>
-                • Pendiente por liquidar: ${pendienteLiquidar()*quantity} MXN
+                • Pendiente por liquidar: ${pendienteLiquidar() * quantity} MXN
               </p>
             </div>
           </div>
@@ -291,23 +291,23 @@ const PaymentModal = ({
         {isPreviewMode ? (
           <div style={{ textAlign: 'center', marginTop: 20 }}>
             {/* Información de precios en modo preview */}
-            <div style={{ 
-              marginBottom: 20, 
-              padding: '16px', 
-              backgroundColor: '#f8f9fa', 
+            <div style={{
+              marginBottom: 20,
+              padding: '16px',
+              backgroundColor: '#f8f9fa',
               borderRadius: '8px',
               border: '1px solid #dee2e6'
             }}>
               <h6 style={{ marginBottom: 12, fontWeight: 'bold', color: '#495057' }}>
-                {serviceInfo.isVisaAmericana ? 'Opciones de Pago - Visa Americana' : 
-                 serviceInfo.isDs160 ? 'Opciones de Pago - DS-160' :
-                 serviceInfo.isTransportService ? 'Servicio de Traslado' :
-                 'Información de Precios'}
+                {serviceInfo.isVisaAmericana ? 'Opciones de Pago - Visa Americana' :
+                  serviceInfo.isDs160 ? 'Opciones de Pago - DS-160' :
+                    serviceInfo.isTransportService ? 'Servicio de Traslado' :
+                      'Información de Precios'}
               </h6>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {getAvailablePaymentOptions().map((option, index) => (
-                  <div key={index} style={{ 
-                    display: 'flex', 
+                  <div key={index} style={{
+                    display: 'flex',
                     justifyContent: 'space-between',
                     padding: '8px 0',
                     borderBottom: index < getAvailablePaymentOptions().length - 1 ? '1px solid #e9ecef' : 'none'
@@ -320,8 +320,8 @@ const PaymentModal = ({
                         </div>
                       )}
                     </div>
-                    <span style={{ 
-                      fontWeight: 'bold', 
+                    <span style={{
+                      fontWeight: 'bold',
                       color: index === 0 ? '#28a745' : '#495057',
                       fontSize: '1.1rem'
                     }}>
@@ -331,13 +331,13 @@ const PaymentModal = ({
                 ))}
               </div>
             </div>
-            
+
             <button className={paymentStyles.previewButton} onClick={handlePaymentAttempt}>
               Iniciar Sesión para Pagar
             </button>
           </div>
         ) : (
-          <>            
+          <>
             {isDs160 ? (
               <DS160Section
                 service={service}
@@ -347,6 +347,7 @@ const PaymentModal = ({
                 currentPaymentOption={currentPaymentOption}
                 userEmail={userEmail}
                 quantity={quantity}
+                userId={userId}
                 totalAmount={getTotalAmount()}
                 onQuantityChange={handleQuantityChange}
                 onSuccess={onSuccess}
@@ -370,18 +371,18 @@ const PaymentModal = ({
                 onSuccess={onSuccess}
                 onError={onError}
                 costoTotal={costoTotal()}
-                
-            
+
+
               />
             )}
-            
+
             {/* Separador */}
             <div className={paymentStyles.paymentSeparator}>
               <div className={paymentStyles.separatorLine} />
               <span className={paymentStyles.separatorText}>o paga con</span>
               <div className={paymentStyles.separatorLine} />
             </div>
-            
+
             {/* PayPal */}
             <PayPalScriptLoader>
               <PayPalButton
@@ -393,19 +394,19 @@ const PaymentModal = ({
                 quantity={quantity}
                 service={{ ...service, cost: getTotalAmount() }}
                 liquidationPlan={selectedLiquidationPlan}
-                
+
               />
             </PayPalScriptLoader>
           </>
         )}
-        
+
         {/* Logos */}
         <div className={paymentStyles.paymentMethods}>
           <VisaSVG />
           <MastercardSVG />
           <StripeSVG />
         </div>
-        
+
         {/* Nota */}
         <div className={paymentStyles.privacyNote}>
           Nunca almacenamos datos de tu tarjeta.

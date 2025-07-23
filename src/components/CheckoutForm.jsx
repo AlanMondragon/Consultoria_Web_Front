@@ -106,6 +106,7 @@ export default function CheckoutForm({
             const processPaymentData = {
               total: costoTotal, // Monto total del trámite
               paid: amount, // Monto total pagado
+              date: selectedDate || null,
               status: 1,
               idUser: parseInt(customer),
               idTransact: parseInt(idProductoTransaccion),
@@ -113,22 +114,6 @@ export default function CheckoutForm({
 
             await createProcessWithPayment(processPaymentData);
           }
-
-          console.log('Todos los procesos creados exitosamente.');
-
-          // Agendar cita si es necesario
-          if (selectedDate && service && idTransactProgress) {
-            let payload = {};
-            if (service.cas) {
-              payload.dateCas = selectedDate.replace('T', ' ');
-            } else if (service.con) {
-              payload.dateCon = selectedDate.replace('T', ' ');
-            } else {
-              payload.dateSimulation = selectedDate.replace('T', ' ');
-            }
-            await actualizarTC(idTransactProgress, payload);
-          }
-
           // Enviar correo DS-160 si aplica
           if (serviceName) {
             const serviceNameLower = serviceName.trim().toLowerCase();
