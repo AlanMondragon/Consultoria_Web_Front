@@ -1,46 +1,415 @@
-.estado-badge {
-  display: inline-flex;  /* Esto se mantiene para que los íconos en el estado se alineen */
+/* Estilos base para el contenedor principal */
+.tramites-container {
+  margin-top: 100px;
+  padding: 0 15px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Estilos para la barra de navegación fija */
+.fixed-top {
+  z-index: 1030;
+}
+
+/* Contenedor de controles superiores */
+.controles-superiores {
+  display: flex;
+  gap: 15px;
   align-items: center;
-  padding: 4px 10px;
-  font-weight: bold;
-  font-size: 0.8rem;
+  padding: 20px;
+  flex-wrap: wrap;
+  background: #f8f9fa;
   border-radius: 12px;
-  border: 1px solid #ccc;
-  min-width: 60px;
-  justify-content: space-between;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.estado-badge.on {
-  background-color: #e0ffe0;
-  color: green;
+.busqueda-input {
+  flex: 1;
+  min-width: 200px;
+  border-radius: 12px !important;
+  border: 2px solid #dee2e6 !important;
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
-.estado-badge.on::after {
-  content: '●';
-  color: green;
-  margin-left: 8px;
-  font-size: 0.7rem;
+.busqueda-input:focus {
+  border-color:  #132E3C !important;
+  box-shadow: 0 0 0 0.2rem #132E3C;
 }
 
-.estado-badge.off {
-  background-color: #ffe0e0;
-  color: red;
+.estado-select {
+  min-width: 150px;
+  border-radius: 12px !important;
+  border: 2px solid #dee2e6 !important;
+  padding: 12px 16px;
+  font-size: 14px;
 }
 
-.estado-badge.off::before {
-  content: '●';
-  color: red;
-  margin-right: 8px;
-  font-size: 0.7rem;
+.btn-agregar {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 20px !important;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3) !important;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
-/* Nueva clase para separar el botón de la "badge" */
-.estado-badge + .btn-success {
-  margin-top: 10px;  /* Separación entre la badge y el botón */
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
 }
-.card {
-  transition: transform 0.2s ease-in-out;
+
+/* Contenedor de tabla responsivo */
+.tabla-responsiva {
+  background: white;
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
 }
-.card:hover {
-  transform: scale(1.02);
+
+/* Estilos para tabla en escritorio */
+.tabla-tramites {
+  margin: 0;
+  width: 100%;
+}
+
+.tabla-tramites th {
+  background:  #132E3C;;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  padding: 15px 12px;
+  border: none;
+  font-size: 14px;
+}
+
+.tabla-tramites td {
+  padding: 15px 12px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+}
+
+.tabla-tramites tbody tr {
+  transition: all 0.3s ease;
+}
+
+.tabla-tramites tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+}
+
+/* Estilos para select de estado */
+.status-select {
+  border-radius: 8px !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 8px 12px;
+  font-size: 13px;
+  background: white;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.status-select:focus {
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25) !important;
+}
+
+/* Botón editar */
+.btn-editar {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3) !important;
+  transition: all 0.3s ease;
+  color: white !important;
+}
+
+.btn-editar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Enlaces de email */
+.email-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Spinner de carga */
+.spinner-container {
+  text-align: center;
+  padding: 40px;
+}
+
+/* Paginación */
+.paginacion-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.btn-paginacion {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* RESPONSIVIDAD */
+
+/* Tablets (768px - 991px) */
+@media (max-width: 991px) {
+  .controles-superiores {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .busqueda-input {
+    min-width: 100%;
+  }
+  
+  .estado-select {
+    min-width: 100%;
+  }
+  
+  .btn-agregar {
+    align-self: center;
+    min-width: 150px;
+  }
+  
+  .tabla-tramites th,
+  .tabla-tramites td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .status-select {
+    min-width: 100px;
+    font-size: 12px;
+  }
+  
+  .btn-editar {
+    padding: 6px 12px !important;
+    font-size: 11px;
+  }
+}
+
+/* Móviles (hasta 767px) */
+@media (max-width: 767px) {
+  .tramites-container {
+    padding: 0 10px;
+  }
+  
+  .controles-superiores {
+    padding: 15px;
+    gap: 10px;
+  }
+  
+  /* Ocultar tabla tradicional en móviles */
+  .tabla-tramites {
+    display: none;
+  }
+  
+  /* Vista de tarjetas para móviles */
+  .vista-movil {
+    display: block;
+  }
+  
+  .tarjeta-tramite {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid #007bff;
+  }
+  
+  .tarjeta-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .numero-tramite {
+    background: #007bff;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  
+  .nombre-tramite {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    flex: 1;
+    margin-left: 10px;
+  }
+  
+  .tarjeta-body {
+    display: grid;
+    gap: 12px;
+  }
+  
+  .campo-movil {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  
+  .campo-movil:last-child {
+    border-bottom: none;
+  }
+  
+  .label-movil {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 13px;
+  }
+  
+  .valor-movil {
+    font-size: 14px;
+    color: #333;
+    text-align: right;
+    flex: 1;
+    margin-left: 10px;
+  }
+  
+  .status-movil {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .acciones-movil {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .btn-editar-movil {
+    width: 100%;
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-weight: 600;
+    color: white !important;
+  }
+  
+  .paginacion-container {
+    padding: 0 10px;
+  }
+  
+  .btn-paginacion {
+    padding: 6px 10px !important;
+    font-size: 13px;
+  }
+}
+
+/* Vista por defecto (ocultar vista móvil en escritorio) */
+@media (min-width: 768px) {
+  .vista-movil {
+    display: none;
+  }
+}
+
+/* Móviles muy pequeños (hasta 479px) */
+@media (max-width: 479px) {
+  .tramites-container {
+    margin-top: 90px;
+    padding: 0 5px;
+  }
+  
+  .controles-superiores {
+    padding: 10px;
+  }
+  
+  .tarjeta-tramite {
+    padding: 15px;
+  }
+  
+  .nombre-tramite {
+    font-size: 14px;
+  }
+  
+  .campo-movil {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .valor-movil {
+    text-align: left;
+    margin-left: 0;
+  }
+  
+  .paginacion-container {
+    gap: 4px;
+  }
+  
+  .btn-paginacion {
+    padding: 4px 8px !important;
+    font-size: 12px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tarjeta-tramite {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Estados de los trámites con colores */
+.status-1 { border-left-color: #007bff; } /* En proceso - Azul */
+.status-2 { border-left-color: #ffc107; } /* En espera - Amarillo */
+.status-3 { border-left-color: #dc3545; } /* Falta de pago - Rojo */
+.status-4 { border-left-color: #28a745; } /* Terminado - Verde */
+.status-5 { border-left-color: #6c757d; } /* Cancelado - Gris */
+.status-6 { border-left-color: #fd7e14; } /* Revisar - Naranja */
+
+/* Scroll horizontal para tablas en tablets */
+@media (max-width: 991px) and (min-width: 768px) {
+  .tabla-responsiva {
+    overflow-x: auto;
+  }
+  
+  .tabla-tramites {
+    min-width: 800px;
+  }
 }

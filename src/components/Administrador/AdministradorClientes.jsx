@@ -6,11 +6,10 @@ import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
 import { FaLess, FaPlus } from 'react-icons/fa';
 import { clientes, actualizarStatusCliente } from './../../api/api.js';
-import '../../styles/Clientes.css'
+import '../../styles/Clientes.css'; 
 import ModalRegistrarCliente from './RegistrarCliente.jsx';
-import ModalActualizarCliente from './ActualizarCliente.jsx'
+import ModalActualizarCliente from './ActualizarCliente.jsx';
 import ModalRegistrarTramite from './RegistrarTramite.jsx';
-
 
 export default function AdministradorClientes() {
   const navigate = useNavigate();
@@ -60,9 +59,6 @@ export default function AdministradorClientes() {
       const response = await clientes();
       if (response.success && Array.isArray(response.response.users)) {
         setDatos(response.response.users);
-        <ModalRegistrarTramite
-          clientes={datos}
-        />
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -85,7 +81,6 @@ export default function AdministradorClientes() {
     }
   };
 
-
   const filtrados = datos.filter(d =>
     `${d.name ?? ''} ${d.apellidos ?? ''}`.toLowerCase().includes(busqueda.toLowerCase()) ||
     d.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -103,6 +98,7 @@ export default function AdministradorClientes() {
       setPaginaActual(numero);
     }
   };
+
   function mensaje(nuevoEstado) {
     Swal.fire({
       icon: 'success',
@@ -110,115 +106,193 @@ export default function AdministradorClientes() {
       text: `Estado actualizado: ${nuevoEstado ? 'Activado' : 'Desactivado'}`,
     });
   }
-  <ModalRegistrarTramite
-    clientes={datos}
-  />
-
-
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div className="tramites-container">
       <div className='fixed-top'>
         <Navbar title={"- Clientes"} />
       </div>
 
-      <div className="d-flex justify-content-between align-items-center p-3">
+      {/* Controles superiores */}
+      <div className="controles-superiores">
         <Form.Control
           type="text"
-          placeholder="Buscar..."
-          className="w-75"
+          placeholder="Buscar por nombre, email o teléfono..."
+          className="busqueda-input"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{ borderRadius: '12px', borderWidth: '2px' }}
         />
         <Button
-          variant="success"
-          className="d-flex align-items-center gap-2"
-          style={{ boxShadow: '2px 2px 6px #00000050', borderRadius: '12px' }}
+          className="btn-agregar"
           onClick={() => setShowModal(true)}
         >
-          Agregar <FaPlus />
+          <FaPlus className="me-2" />
+          Agregar Cliente
         </Button>
-        <ModalRegistrarCliente
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          onClienteRegistrado={fetchServices}
-        />
-        <ModalActualizarCliente
-          show={showModalA}
-          onHide={() => setShowModalA(false)}
-          onClienteRegistrado={fetchServices}
-          cliente={clienteSeleccionado}
-        />
       </div>
 
+      <ModalRegistrarCliente
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        onClienteRegistrado={fetchServices}
+      />
+      <ModalActualizarCliente
+        show={showModalA}
+        onHide={() => setShowModalA(false)}
+        onClienteRegistrado={fetchServices}
+        cliente={clienteSeleccionado}
+      />
+
       {cargando ? (
-        <div className="text-center p-3">
-          <Spinner animation="border" />
+        <div className="spinner-container">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-2">Cargando clientes...</p>
         </div>
       ) : (
-        <Table striped hover responsive className="p-3" style={{ minWidth: '1000px' }}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Vista de tabla para escritorio y tablet */}
+          <div className="tabla-responsiva">
+            <Table className="tabla-tramites" striped hover responsive>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosPaginados.map((cliente, index) => (
+                  <tr key={cliente.idUser || index}>
+                    <td>
+                      <span className="numero-tramite">
+                        {(paginaActual - 1) * itemsPorPagina + index + 1}
+                      </span>
+                    </td>
+                    <td>
+                      <strong>{cliente.name}</strong>
+                    </td>
+                    <td>
+                      <a href={`mailto:${cliente.email}`} className="email-link">
+                        {cliente.email}
+                      </a>
+                    </td>
+                    <td>
+                      <a href={`tel:${cliente.phone}`}>
+                        {cliente.phone}
+                      </a>
+                    </td>
+                    <td>
+                      <div className={`estado-badge ${cliente.status ? 'on' : 'off'}`}>
+                        <Form.Check
+                          type="switch"
+                          id={`custom-switch-${cliente.idUser}`}
+                          checked={cliente.status}
+                          onChange={(e) => {
+                            const nuevoEstado = e.target.checked;
+                            handleSwitchChange(cliente.idUser, nuevoEstado);
+                          }}
+                          style={{
+                            transform: 'scale(1.2)',
+                            accentColor: cliente.status ? '#28a745' : '#dc3545'
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Button
+                        className="btn-editar"
+                        onClick={() => {
+                          setClienteSeleccionado(cliente);
+                          setShowModalA(true);
+                        }}
+                      >
+                        EDITAR
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
+          {/* Vista de tarjetas para móviles */}
+          <div className="vista-movil">
             {datosPaginados.map((cliente, index) => (
-              <tr key={cliente.idUser || index}>
-                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-                <td>{cliente.name}</td>
-                <td><a href={`mailto:${cliente.email}`}>{cliente.email}</a></td>
-                <td>{cliente.phone}</td>
-                <td>
-                  <div className={`estado-badge ${cliente.status ? 'on' : 'off'}`}>
-                    <Form.Check
-                      type="switch"
-                      id={`custom-switch-${cliente.idUser}`}
-                      checked={cliente.status}
-                      onChange={(e) => {
-                        const nuevoEstado = e.target.checked;
-                        handleSwitchChange(cliente.idUser, nuevoEstado);
-                      }}
-                    />
+              <div key={cliente.idUser || index} className={`tarjeta-tramite ${cliente.status ? 'status-4' : 'status-5'}`}>
+                <div className="tarjeta-header">
+                  <span className="numero-tramite">
+                    #{(paginaActual - 1) * itemsPorPagina + index + 1}
+                  </span>
+                  <h5 className="nombre-tramite">{cliente.name}</h5>
+                </div>
+                
+                <div className="tarjeta-body">
+                  <div className="campo-movil">
+                    <span className="label-movil">Email:</span>
+                    <span className="valor-movil">
+                      <a href={`mailto:${cliente.email}`} className="email-link">
+                        {cliente.email}
+                      </a>
+                    </span>
                   </div>
-
-
-                </td>
-                <td>
+                  
+                  <div className="campo-movil">
+                    <span className="label-movil">Teléfono:</span>
+                    <span className="valor-movil">
+                      <a href={`tel:${cliente.phone}`}>
+                        {cliente.phone}
+                      </a>
+                    </span>
+                  </div>
+                  
+                  <div className="campo-movil">
+                    <span className="label-movil">Estado:</span>
+                    <div className="valor-movil d-flex align-items-center justify-content-end gap-2">
+                      <span className={`badge ${cliente.status ? 'bg-success' : 'bg-danger'}`}>
+                        {cliente.status ? 'Activo' : 'Inactivo'}
+                      </span>
+                      <Form.Check
+                        type="switch"
+                        id={`mobile-switch-${cliente.idUser}`}
+                        checked={cliente.status}
+                        onChange={(e) => {
+                          const nuevoEstado = e.target.checked;
+                          handleSwitchChange(cliente.idUser, nuevoEstado);
+                        }}
+                        style={{
+                          transform: 'scale(1.2)',
+                          accentColor: cliente.status ? '#28a745' : '#dc3545'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="acciones-movil">
                   <Button
-                    variant="success"
-                    className="d-flex align-items-center gap-2"
-                    style={{
-                      display: 'block',
-                      marginLeft: 'auto',
-                      boxShadow: '2px 2px 6px #00000050',
-                      borderRadius: '12px',
-                      marginTop: '10px'
-                    }}
+                    className="btn-editar-movil"
                     onClick={() => {
                       setClienteSeleccionado(cliente);
                       setShowModalA(true);
                     }}
                   >
-                    EDITAR
+                    EDITAR CLIENTE
                   </Button>
-                </td>
-
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+        </>
       )}
 
-      <div className="d-flex justify-content-center align-items-center my-3 gap-2">
+      {/* Paginación */}
+      <div className="paginacion-container">
         <Button
           variant="outline-primary"
+          className="btn-paginacion"
           onClick={() => cambiarPagina(paginaActual - 1)}
           disabled={paginaActual === 1}
         >
@@ -229,6 +303,7 @@ export default function AdministradorClientes() {
           <Button
             key={i}
             variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
+            className="btn-paginacion"
             onClick={() => cambiarPagina(i + 1)}
           >
             {i + 1}
@@ -237,12 +312,16 @@ export default function AdministradorClientes() {
 
         <Button
           variant="outline-primary"
+          className="btn-paginacion"
           onClick={() => cambiarPagina(paginaActual + 1)}
           disabled={paginaActual === totalPaginas}
         >
           Siguiente
         </Button>
       </div>
+
+      {/* Modal de RegistrarTramite si lo necesitas */}
+      <ModalRegistrarTramite clientes={datos} />
     </div>
   );
 }

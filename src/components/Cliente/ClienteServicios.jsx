@@ -133,23 +133,24 @@ export default function ClienteServicios() {
       return () => clearTimeout(timer);
     }
   }, [preselectedServiceId]);
-
-  const fetchServices = async () => {
-    try {
-      console.log('Iniciando carga de servicios...');
-      const response = await getAllProcess();
-      if (response.success && Array.isArray(response.response.Transacts)) {
-        console.log('Servicios cargados exitosamente:', response.response.Transacts.length);
-        setServices(response.response.Transacts);
-      } else {
-        console.error("Unexpected API response format:", response);
-        setServices([]);
-      }
-    } catch (error) {
-      console.error("Error fetching services:", error);
+const fetchServices = async () => {
+  try {
+    console.log('Iniciando carga de servicios...');
+    const response = await getAllProcess();
+    if (response.success && Array.isArray(response.response.Transacts)) {
+      const allServices = response.response.Transacts;
+      const activeServices = allServices.filter(service => service.status === true);
+      setServices(activeServices);
+    } else {
+      console.error("Unexpected API response format:", response);
       setServices([]);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    setServices([]);
+  }
+};
+
 
   const fetchStepsById = async (idTransact) => {
     setStepsLoading(true);
