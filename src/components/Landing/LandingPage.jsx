@@ -42,8 +42,10 @@ export default function LandingPage() {
       const response = await getAllProcess();
       console.log('Respuesta de la API:', response);
       if (response.success && Array.isArray(response.response.Transacts)) {
-        console.log('Servicios cargados:', response.response.Transacts.length);
-        setServices(response.response.Transacts);
+  const allServices = response.response.Transacts;
+      const activeServices = allServices.filter(service => service.status === true);
+      setServices(activeServices);
+      
       } else {
         console.error("Unexpected API response format:", response);
         setServices([]);

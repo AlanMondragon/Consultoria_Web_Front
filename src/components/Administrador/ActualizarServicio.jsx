@@ -195,6 +195,19 @@ export default function ActualizarServicio() {
                 }}
               />
             </div>
+             <div className={styles['form-group-switch']}>
+              <label htmlFor='status'>Estado del servicio</label>
+              <label className={styles['switch']}>
+                <input
+                  type='checkbox'
+                  id='status'
+                  name='status'
+                  defaultChecked={service?.status}
+                />
+
+                <span className={`${styles['slider']} ${styles['round']}`}></span>
+              </label>
+            </div>
 
             <div className={styles['form-group-switch']}>
               <label htmlFor='isDateService'>¿El servicio es una cita?</label>
@@ -275,19 +288,7 @@ export default function ActualizarServicio() {
               </label>
             </div>
 
-            <div className={styles['form-group-switch']}>
-              <label htmlFor='status'>Estado del servicio</label>
-              <label className={styles['switch']}>
-                <input
-                  type='checkbox'
-                  id='status'
-                  name='status'
-                  defaultChecked={service?.status}
-                />
-
-                <span className={`${styles['slider']} ${styles['round']}`}></span>
-              </label>
-            </div>
+           
 
 
             {tieneOtroCosto && (
