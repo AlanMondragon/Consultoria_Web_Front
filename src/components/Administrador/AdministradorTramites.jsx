@@ -6,7 +6,7 @@ import Navbar from '../NavbarAdmin.jsx';
 import { Table, Button, Form, Spinner } from 'react-bootstrap';
 import { FaInfo, FaPlus } from 'react-icons/fa';
 import { trasacciones, actualizarT, clientes } from './../../api/api.js';
-import '../../styles/Clientes.css';
+import './../../styles/Clientes.css'
 import ModalRegistrarTramite from './RegistrarTramite.jsx';
 import ModalActualizarTramite from './ActualizarTramite.jsx';
 
@@ -57,18 +57,15 @@ export default function AdministradorTramites() {
     setPaginaActual(1);
   }, [busqueda]);
 
-
-
   const fetchServices = async () => {
     try {
       const response = await trasacciones();
 
       if (response.success && Array.isArray(response.response.transactProgresses)) {
         const sortedData = response.response.transactProgresses.sort((a, b) => {
-          return  b.idTransactProgress-a.idTransactProgress ;
+          return b.idTransactProgress - a.idTransactProgress;
         });
         setDatos(sortedData);
-
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);
@@ -80,7 +77,6 @@ export default function AdministradorTramites() {
       setCargando(false);
     }
   };
-
 
   const handleStatusChange = async (idTransactProgress, nuevoEstado) => {
     try {
@@ -113,7 +109,6 @@ export default function AdministradorTramites() {
     paginaActual * itemsPorPagina
   );
 
-
   const cambiarPagina = (numero) => {
     if (numero >= 1 && numero <= totalPaginas) {
       setPaginaActual(numero);
@@ -139,27 +134,39 @@ export default function AdministradorTramites() {
     });
   }
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case 1: return "En proceso";
+      case 2: return "En espera";
+      case 3: return "Falta de pago";
+      case 4: return "Terminado";
+      case 5: return "Cancelado";
+      case 6: return "Revisar";
+      default: return "Desconocido";
+    }
+  };
+
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div className="tramites-container">
       <div className='fixed-top'>
         <Navbar title={" - Tramites"} />
       </div>
 
-
-      <div className="d-flex justify-content-between align-items-center p-3">
+      {/* Controles superiores */}
+      <div className="controles-superiores">
         <Form.Control
           type="text"
-          placeholder="Buscar..."
-          className="w-75"
+          placeholder="Buscar por nombre, teléfono, email o trámite..."
+          className="busqueda-input"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{ borderRadius: '12px', borderWidth: '2px' }}
         />
         <Form.Select
           value={estadoSeleccionado}
           onChange={(e) => setEstadoSeleccionado(e.target.value)}
+          className="estado-select"
         >
-          <option value="">Todos</option>
+          <option value="">Todos los estados</option>
           <option value="1">En proceso</option>
           <option value="2">En espera</option>
           <option value="3">Falta de pago</option>
@@ -168,15 +175,14 @@ export default function AdministradorTramites() {
           <option value="6">Revisar</option>
         </Form.Select>
         <Button
-          variant="success"
-          className="d-flex align-items-center gap-2"
-          style={{ boxShadow: '2px 2px 6px #00000050', borderRadius: '12px' }}
+          className="btn-agregar"
           onClick={() => {
             setDatitos(datos);
             setShowModal(true);
           }}
         >
-          Agregar <FaPlus />
+          <FaPlus className="me-2" />
+          Agregar Trámite
         </Button>
       </div>
 
@@ -191,42 +197,131 @@ export default function AdministradorTramites() {
         onClienteRegistrado={fetchServices}
         cliente={clienteSeleccionado}
       />
+
       {cargando ? (
-        <div className="text-center p-3">
-          <Spinner animation="border" />
+        <div className="spinner-container">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-2">Cargando trámites...</p>
         </div>
       ) : (
-        <Table striped hover responsive className="p-3" style={{ minWidth: '1000px' }}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Trámite</th>
-              <th>Cliente</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>Paso del tramite</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datosPaginados.map((cliente, index) => (
-              <tr key={cliente.idTransactProgress}>
-                <td>{(paginaActual - 1) * itemsPorPagina + index + 1}</td>
-                <td>{cliente.transact.name}</td>
-                <td>{cliente.user.name}</td>
-                <td>{cliente.user.phone}</td>
-                <td>
-                  <a href={`mailto:${cliente.user.email}`}>
-                    {cliente.user?.email}
-                  </a>
-                </td>
+        <>
+          {/* Vista de tabla para escritorio y tablet */}
+          <div className="tabla-responsiva">
+            <Table className="tabla-tramites" striped hover responsive>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Trámite</th>
+                  <th>Cliente</th>
+                  <th>Teléfono</th>
+                  <th>Email</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosPaginados.map((cliente, index) => (
+                  <tr key={cliente.idTransactProgress}>
+                    <td>
+                      <span className="numero-tramite">
+                        {(paginaActual - 1) * itemsPorPagina + index + 1}
+                      </span>
+                    </td>
+                    <td>
+                      <strong>{cliente.transact.name}</strong>
+                    </td>
+                    <td>{cliente.user.name}</td>
+                    <td>
+                      <a href={`tel:${cliente.user.phone}`}>
+                        {cliente.user.phone}
+                      </a>
+                    </td>
+                    <td>
+                      <a href={`mailto:${cliente.user.email}`} className="email-link">
+                        {cliente.user?.email}
+                      </a>
+                    </td>
+                    <td>
+                      <Form.Select
+                        value={cliente.status}
+                        onChange={(e) =>
+                          handleStatusChange(cliente.idTransactProgress, parseInt(e.target.value, 10))
+                        }
+                        className="status-select"
+                      >
+                        <option value={1}>En proceso</option>
+                        <option value={2}>En espera</option>
+                        <option value={3}>Falta de pago</option>
+                        <option value={4}>Terminado</option>
+                        <option value={5}>Cancelado</option>
+                        <option value={6}>Revisar</option>
+                      </Form.Select>
+                    </td>
+                    <td>
+                      <Button
+                        className="btn-editar"
+                        onClick={() => {
+                          setClienteSeleccionado(cliente);
+                          setShowModalA(true);
+                        }}
+                      >
+                        EDITAR
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
 
-                <td>
+          {/* Vista de tarjetas para móviles */}
+          <div className="vista-movil">
+            {datosPaginados.map((cliente, index) => (
+              <div key={cliente.idTransactProgress} className={`tarjeta-tramite status-${cliente.status}`}>
+                <div className="tarjeta-header">
+                  <span className="numero-tramite">
+                    #{(paginaActual - 1) * itemsPorPagina + index + 1}
+                  </span>
+                  <h5 className="nombre-tramite">{cliente.transact.name}</h5>
+                </div>
+                
+                <div className="tarjeta-body">
+                  <div className="campo-movil">
+                    <span className="label-movil">Cliente:</span>
+                    <span className="valor-movil">{cliente.user.name}</span>
+                  </div>
+                  
+                  <div className="campo-movil">
+                    <span className="label-movil">Teléfono:</span>
+                    <span className="valor-movil">
+                      <a href={`tel:${cliente.user.phone}`}>
+                        {cliente.user.phone}
+                      </a>
+                    </span>
+                  </div>
+                  
+                  <div className="campo-movil">
+                    <span className="label-movil">Email:</span>
+                    <span className="valor-movil">
+                      <a href={`mailto:${cliente.user.email}`} className="email-link">
+                        {cliente.user.email}
+                      </a>
+                    </span>
+                  </div>
+                  
+                  <div className="campo-movil">
+                    <span className="label-movil">Estado actual:</span>
+                    <span className="valor-movil">
+                      <strong>{getStatusText(cliente.status)}</strong>
+                    </span>
+                  </div>
+                  
                   <Form.Select
                     value={cliente.status}
                     onChange={(e) =>
                       handleStatusChange(cliente.idTransactProgress, parseInt(e.target.value, 10))
                     }
+                    className="status-movil"
                   >
                     <option value={1}>En proceso</option>
                     <option value={2}>En espera</option>
@@ -235,34 +330,30 @@ export default function AdministradorTramites() {
                     <option value={5}>Cancelado</option>
                     <option value={6}>Revisar</option>
                   </Form.Select>
-                </td>
-                <td>
+                </div>
+                
+                <div className="acciones-movil">
                   <Button
-                    variant="success"
-                    className="d-flex align-items-center gap-2"
-                    style={{
-                      display: 'block',
-                      marginLeft: 'auto',
-                      boxShadow: '2px 2px 6px #00000050',
-                      borderRadius: '12px'
-                    }}
+                    className="btn-editar-movil"
                     onClick={() => {
                       setClienteSeleccionado(cliente);
                       setShowModalA(true);
                     }}
                   >
-                    EDITAR
+                    EDITAR TRÁMITE
                   </Button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+        </>
       )}
 
-      <div className="d-flex justify-content-center align-items-center my-3 gap-2">
+      {/* Paginación */}
+      <div className="paginacion-container">
         <Button
           variant="outline-primary"
+          className="btn-paginacion"
           onClick={() => cambiarPagina(paginaActual - 1)}
           disabled={paginaActual === 1}
         >
@@ -273,6 +364,7 @@ export default function AdministradorTramites() {
           <Button
             key={i}
             variant={paginaActual === i + 1 ? "primary" : "outline-primary"}
+            className="btn-paginacion"
             onClick={() => cambiarPagina(i + 1)}
           >
             {i + 1}
@@ -281,6 +373,7 @@ export default function AdministradorTramites() {
 
         <Button
           variant="outline-primary"
+          className="btn-paginacion"
           onClick={() => cambiarPagina(paginaActual + 1)}
           disabled={paginaActual === totalPaginas}
         >

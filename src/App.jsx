@@ -138,7 +138,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* USER */}        <Route path="/ClienteHome" element={
+        <Route path="/ClienteHome" element={
           <ProtectedRoute allowedRoles={["USER"]}>
             <ClienteHome />
           </ProtectedRoute>

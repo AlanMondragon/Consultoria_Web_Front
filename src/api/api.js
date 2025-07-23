@@ -224,8 +224,8 @@ export const updateService = async (id, serviceData) => {
   try {
     const payload = {
       name: serviceData.name,
-      status: true,
       totalPayment: serviceData.totalPayment,
+      status: serviceData.status,
       simulation: serviceData.simulation,
       cas: serviceData.cas,
       con: serviceData.con,

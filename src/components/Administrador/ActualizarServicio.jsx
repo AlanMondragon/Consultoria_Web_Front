@@ -10,6 +10,7 @@ export default function ActualizarServicio() {
   const navigate = useNavigate();
   const location = useLocation();
   const service = location.state?.service;
+  console.log('Servicio recibido:', service);
 
   const [imagenNombre, setImagenNombre] = useState(service?.image ? "Imagen actual" : "Ningún archivo seleccionado");
   const [imagenDetalleNombre, setImagenDetalleNombre] = useState(service?.imageDetail ? "Imagen actual" : "Ningún archivo seleccionado");
@@ -18,6 +19,7 @@ export default function ActualizarServicio() {
   const [tieneOtroCosto, setTieneOtroCosto] = useState(service?.nameOption ? true : false);
   const [tieneAnticipo, setTieneAnticipo] = useState(service?.cashAdvance !== service?.totalPayment);
   const [esCita, setEsCita] = useState(service?.isDateService || false);
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
 
   useEffect(() => {
@@ -65,6 +67,7 @@ export default function ActualizarServicio() {
       cas: !esCita && formData.get('cas') === 'on',
       con: !esCita && formData.get('con') === 'on',
       totalPayment: service?.totalPayment,
+      status: formData.get('status') === 'on',
       cashAdvance: tieneAnticipo ? parseFloat(formData.get('cashAdvance')) : parseFloat(formData.get('cost')),
       cost: parseFloat(formData.get('cost')),
       nameOption: tieneOtroCosto ? formData.get('nameOption') : "",
@@ -112,7 +115,7 @@ export default function ActualizarServicio() {
               <label htmlFor='nombre'>Nombre del Trámite *</label>
               <input type='text' id='nombre' name='name' defaultValue={service?.name} required />
             </div>
-            
+
             <div className={styles['form-group']}>
               <label htmlFor='descripcion'>Descripción *</label>
               <textarea id='descripcion' name='description' defaultValue={service?.description} required></textarea>
@@ -174,10 +177,10 @@ export default function ActualizarServicio() {
 
             <div className={styles['form-group']}>
               <label htmlFor='cost'>Costo Total *</label>
-              <input 
-                type='number' 
-                id='cost' 
-                name='cost' 
+              <input
+                type='number'
+                id='cost'
+                name='cost'
                 step='any'
                 defaultValue={service?.cost}
                 required
@@ -196,9 +199,9 @@ export default function ActualizarServicio() {
             <div className={styles['form-group-switch']}>
               <label htmlFor='isDateService'>¿El servicio es una cita?</label>
               <label className={styles['switch']}>
-                <input 
-                  type='checkbox' 
-                  id='isDateService' 
+                <input
+                  type='checkbox'
+                  id='isDateService'
                   name='isDateService'
                   checked={esCita}
                   onChange={(e) => {
@@ -240,10 +243,10 @@ export default function ActualizarServicio() {
             {tieneAnticipo && (
               <div className={styles['form-group']}>
                 <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo *</label>
-                <input 
-                  type='number' 
-                  id='anticipoEfectivo' 
-                  name='cashAdvance' 
+                <input
+                  type='number'
+                  id='anticipoEfectivo'
+                  name='cashAdvance'
                   step='any'
                   defaultValue={service?.cashAdvance}
                   required={tieneAnticipo}
@@ -272,14 +275,29 @@ export default function ActualizarServicio() {
               </label>
             </div>
 
+            <div className={styles['form-group-switch']}>
+              <label htmlFor='status'>Estado del servicio</label>
+              <label className={styles['switch']}>
+                <input
+                  type='checkbox'
+                  id='status'
+                  name='status'
+                  defaultChecked={service?.status}
+                />
+
+                <span className={`${styles['slider']} ${styles['round']}`}></span>
+              </label>
+            </div>
+
+
             {tieneOtroCosto && (
               <>
                 <div className={styles['form-group']}>
                   <label htmlFor='nameOption'>Nombre de la Opción *</label>
-                  <input 
-                    type='text' 
-                    id='nameOption' 
-                    name='nameOption' 
+                  <input
+                    type='text'
+                    id='nameOption'
+                    name='nameOption'
                     defaultValue={service?.nameOption}
                     required={tieneOtroCosto}
                   />
@@ -287,10 +305,10 @@ export default function ActualizarServicio() {
 
                 <div className={styles['form-group']}>
                   <label htmlFor='optionCost'>Costo de la Opción *</label>
-                  <input 
-                    type='number' 
-                    id='optionCost' 
-                    name='optionCost' 
+                  <input
+                    type='number'
+                    id='optionCost'
+                    name='optionCost'
                     step='any'
                     defaultValue={service?.optionCost}
                     required={tieneOtroCosto}
@@ -304,10 +322,10 @@ export default function ActualizarServicio() {
                 <div className={styles['form-group-switch']}>
                   <label htmlFor='simulacion'>Requiere simulación *</label>
                   <label className={styles['switch']}>
-                    <input 
-                      type='checkbox' 
-                      id='simulacion' 
-                      name='simulation' 
+                    <input
+                      type='checkbox'
+                      id='simulacion'
+                      name='simulation'
                       defaultChecked={service?.simulation}
                       disabled={esCita}
                     />
@@ -318,10 +336,10 @@ export default function ActualizarServicio() {
                 <div className={styles['form-group-switch']}>
                   <label htmlFor='cas'>CAS *</label>
                   <label className={styles['switch']}>
-                    <input 
-                      type='checkbox' 
-                      id='cas' 
-                      name='cas' 
+                    <input
+                      type='checkbox'
+                      id='cas'
+                      name='cas'
                       defaultChecked={service?.cas}
                       disabled={esCita}
                     />
@@ -332,10 +350,10 @@ export default function ActualizarServicio() {
                 <div className={styles['form-group-switch']}>
                   <label htmlFor='con'>CON *</label>
                   <label className={styles['switch']}>
-                    <input 
-                      type='checkbox' 
-                      id='con' 
-                      name='con' 
+                    <input
+                      type='checkbox'
+                      id='con'
+                      name='con'
                       defaultChecked={service?.con}
                       disabled={esCita}
                     />
