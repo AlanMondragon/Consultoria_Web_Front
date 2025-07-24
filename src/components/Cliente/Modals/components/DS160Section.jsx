@@ -3,7 +3,7 @@ import { MessageIcon } from './Icons.jsx';
 import InfoBox from './InfoBox.jsx';
 import StripePaymentSection from './StripePaymentSection.jsx';
 
-const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentOptions, selectedPaymentType, onPaymentTypeChange, currentPaymentOption, quantity = 1, totalAmount, onQuantityChange }) => {
+const DS160Section = ({ userEmail,userId, onSuccess, onError, onHide, service, paymentOptions, selectedPaymentType, onPaymentTypeChange, currentPaymentOption, quantity = 1, totalAmount, onQuantityChange }) => {
   return (
     <div>
       {/* Info Box */}
@@ -68,6 +68,7 @@ const DS160Section = ({ userEmail, onSuccess, onError, onHide, service, paymentO
         currentPaymentOption={currentPaymentOption}
         userEmail={userEmail}
         quantity={quantity}
+        userId={userId}
         totalAmount={totalAmount}
         onQuantityChange={onQuantityChange}
         onSuccess={onSuccess}

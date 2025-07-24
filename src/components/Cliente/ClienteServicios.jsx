@@ -77,19 +77,15 @@ export default function ClienteServicios() {
   // Efecto para manejar servicio preseleccionado desde la landing page
   useEffect(() => {
     const checkPreselectedService = () => {
-      console.log('Verificando servicio preseleccionado...');
       const selectedServiceData = sessionStorage.getItem('selectedService');
-      console.log('Datos encontrados en sessionStorage:', selectedServiceData);
-      console.log('Número de servicios cargados:', services.length);
+
       
       if (selectedServiceData && services.length > 0) {
         try {
           const selectedService = JSON.parse(selectedServiceData);
-          console.log('Servicio parseado:', selectedService);
           
           // Buscar el servicio en la lista actual
           const serviceExists = services.find(s => s.idTransact === selectedService.idTransact);
-          console.log('Servicio encontrado en la lista:', serviceExists);
           
           if (serviceExists) {
             console.log('Estableciendo servicio preseleccionado para resaltado');
