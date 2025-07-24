@@ -193,7 +193,7 @@ const PaymentModal = ({
                       `Vista previa - Servicio de Traslado` :
                       `Vista previa - Desde $${getCashAdvance()} MXN`
               ) : (
-                isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'
+                isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe y Paypal ' : 'Pago seguro con Stripe y PayPal'
               )}
             </div>
           </div>

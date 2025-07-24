@@ -120,8 +120,6 @@ export default function ActualizarServicio() {
               <label htmlFor='descripcion'>Descripción *</label>
               <textarea id='descripcion' name='description' defaultValue={service?.description} required></textarea>
             </div>
-
-            {/* Imagen */}
             <div className={styles['form-group']}>
               <label htmlFor='imagen'>Imagen *</label>
               <input
@@ -148,7 +146,6 @@ export default function ActualizarServicio() {
               )}
             </div>
 
-            {/* Imagen Detalle */}
             <div className={styles['form-group']}>
               <label htmlFor='imagenDetalle'>Imagen de detalles *</label>
               <input
