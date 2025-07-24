@@ -7,6 +7,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import esLocale from '@fullcalendar/core/locales/es';
 import { trasacciones } from './../../api/api';
 import Navbar from '../NavbarAdmin';
+import '../../styles/CalendarioAdmin.css';
 
 export default function CalendarioAdmin() {
     const navigate = useNavigate();
@@ -84,191 +85,103 @@ export default function CalendarioAdmin() {
                         contador[nombreTramite] = 0;
                     }
                     
-                    // Contar cada tipo de cita que existe
-                    if (item.dateCas) contador[nombreTramite]++;
-                    if (item.dateCon) contador[nombreTramite]++;
-                    if (item.dateSimulation) contador[nombreTramite]++;
+                    contador[nombreTramite]++; // Incrementar contador para el trámite correspondiente
                 });
-                
+
                 setColoresPorTramite(colores);
-                setContadorCitas(contador); // Establecer el contador
+                setContadorCitas(contador);
+                
+                // Mapear los datos a formato de eventos para FullCalendar
+                const eventosCalendario = data.map(item => ({
+                    id: item.id,
+                    title: item.transact.name,
+                    date: item.date,
+                    description: item.description,
+                    userName: item.userName,
+                    userPhone: item.userPhone,
+                    text: item.text,
+                    backgroundColor: colores[item.transact.idTransact],
+                    borderColor: colores[item.transact.idTransact],
+                    transactDesc: item.transact.desc // Suponiendo que 'desc' es el campo correcto
+                }));
 
-                const eventosTransformados = data.flatMap((item) => {
-                    const idReal = item.transact.idTransact;
-                    const color = colores[idReal];
-
-                    const baseProps = {
-                        transactDesc: item.transact.name,
-                        backgroundColor: color,
-                        borderColor: color,
-                        userName: item.user?.name,
-                        userPhone: item.user?.phone
-                    };
-
-                    return [
-                        item.dateCas && {
-                            title: `${item.transact.name} - CAS`,
-                            start: item.dateCas,
-                            end: item.dateCas,
-                            description: 'Cita en CAS',
-                            text: item.dateCas,
-                            tipo: 'CAS',
-                            ...baseProps
-                        },
-                        item.dateCon && {
-                            title: `${item.transact.name} - CONSULADO`,
-                            start: item.dateCon,
-                            end: item.dateCon,
-                            description: 'Cita en el consulado',
-                            text: item.dateCon,
-                            tipo: 'CONSULADO',
-                            ...baseProps
-                        },
-                        item.dateSimulation && {
-                            title: `${item.transact.name} - SIMULACIÓN`,
-                            start: item.dateSimulation,
-                            end: item.dateSimulation,
-                            description: 'Cita Simulación',
-                            text: item.dateSimulation,
-                            tipo: 'SIMULACION',
-                            ...baseProps
-                        }
-                    ].filter(Boolean);
-                });
-
-                setEventos(eventosTransformados);
-            } else {
-                setEventos([]);
-                setTiposUnicos([]);
-                setContadorCitas({});
+                setEventos(eventosCalendario);
             }
         } catch (error) {
-            console.error("Error al obtener los trámites:", error);
-            setEventos([]);
-            setTiposUnicos([]);
-            setContadorCitas({});
+            console.error("Error fetching services:", error);
         }
     };
 
-    const eventosFiltrados = filtroTipo
-        ? eventos.filter(e => e.transactDesc === filtroTipo)
-        : eventos;
+    const eventosFiltrados = filtroTipo ? eventos.filter(evento => evento.title === filtroTipo) : eventos;
 
     const irAFechaMasCercana = (tipo) => {
-        const hoy = new Date();
-        const fechas = eventosFiltrados
-            .filter(e => e.tipo === tipo)
-            .map(e => new Date(e.start))
-            .filter(fecha => fecha >= hoy)
-            .sort((a, b) => a - b);
-
-        if (fechas.length > 0 && calendarRef.current) {
-            const calendarApi = calendarRef.current.getApi();
-            calendarApi.gotoDate(fechas[0]);
-        } else {
-            Swal.fire('Sin coincidencias', `No hay próximas fechas para ${tipo}`, 'info');
+        const evento = eventos.find(evento => evento.title === tipo);
+        if (evento) {
+            const fecha = new Date(evento.date);
+            calendarRef.current.getApi().gotoDate(fecha);
         }
     };
 
     return (
-        <div style={{ marginTop: '100px', backgroundColor: 'white', color: 'black', minHeight: '100vh' }}>
-           <div className='fixed-top'>
-                   <Navbar title={"- Calendario"} />
-                 </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', width: '1000px', margin: '0 auto', padding: '50px' }}>
-                <div style={{ flex: 3 }}>
-                    <select
-                        value={filtroTipo}
-                        onChange={(e) => setFiltroTipo(e.target.value)}
-                        style={{
-                            marginBottom: '15px',
-                            padding: '8px',
-                            width: '100%',
-                            backgroundColor: 'white',
-                            color: 'black',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px'
-                        }}
-                    >
-                        <option value="">Selecciona el tramite</option>
-                        {tiposUnicos.map((tipo, idx) => (
-                            <option key={idx} value={tipo}>{tipo}</option>
-                        ))}
-                    </select>
-
-                    <div style={{
-                        marginBottom: '15px',
-                        display: 'flex',
-                        gap: '10px',
-                        justifyContent: 'right',
-                        backgroundColor: 'white',
-                        padding: '10px',
-                        borderRadius: '4px'
-                    }}>
-                        <button style={buttonStyle} onClick={() => irAFechaMasCercana('CAS')}>CAS</button>
-                        <button style={buttonStyle} onClick={() => irAFechaMasCercana('CONSULADO')}>Consulado</button>
-                        <button style={buttonStyle} onClick={() => irAFechaMasCercana('SIMULACION')}>Simulación</button>
-                    </div>
-
-                    <FullCalendar
-                        ref={calendarRef}
-                        plugins={[dayGridPlugin]}
-                        initialView="dayGridMonth"
-                        contentHeight="auto"
-                        locale={esLocale}
-                        events={eventosFiltrados}
-                        eventClick={(info) => {
-                            const { userName, userPhone, description, text } = info.event.extendedProps;
-                            Swal.fire({
-                                title: info.event.title,
-                                html: `
-            <strong>Cliente:</strong> ${userName || 'No disponible'}<br/>
-            <strong>Teléfono:</strong> ${userPhone || 'No disponible'}<br/>
-            <strong>Descripción:</strong> ${description || 'Sin descripción'}<br/>
-            <strong>Fecha:</strong> ${text || 'No disponible'}
-        `,
-                                icon: 'info'
-                            });
-                        }}
-
-                    />
-                </div>
-
-                <div>
-                    <h4>Información</h4>
-                    <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
-                        {Object.entries(coloresPorTramite).map(([id, color]) => {
-                            const descripcion = eventos.find(e => e.backgroundColor === color)?.transactDesc;
-                            const cantidadCitas = contadorCitas[descripcion] || 0;
-                            return (
-                                
-                                <li key={id} style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
-                                        
-                                    <span style={{
-                                        display: 'inline-block',
-                                        width: '15px',
-                                        height: '15px',
-                                        backgroundColor: color,
-                                        marginRight: '10px',
-                                        borderRadius: '3px'
-                                    }}></span>
-                                    {descripcion|| `No hay fechas #${id}`}
-                                    <span style={{ 
-                                        marginLeft: '10px', 
-                                        fontSize: '14px', 
-                                        color: '#666',
-                                        fontWeight: 'bold'
-                                    }}>
-                                   
-                                    </span>
-                                     ({cantidadCitas})
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
+      <div className="calendario-admin-main">
+        <Navbar title={"- Calendario"} />
+        <div className="calendario-admin-container">
+          <div className="calendario-admin-card">
+            <select
+              className="calendario-admin-select"
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+            >
+              <option value="">Selecciona el trámite</option>
+              {tiposUnicos.map((tipo, idx) => (
+                <option key={idx} value={tipo}>{tipo}</option>
+              ))}
+            </select>
+            <div className="calendario-admin-btns">
+              <button className="calendario-admin-btn" onClick={() => irAFechaMasCercana('CAS')}>CAS</button>
+              <button className="calendario-admin-btn" onClick={() => irAFechaMasCercana('CONSULADO')}>Consulado</button>
+              <button className="calendario-admin-btn" onClick={() => irAFechaMasCercana('SIMULACION')}>Simulación</button>
             </div>
+            <FullCalendar
+              ref={calendarRef}
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              contentHeight="auto"
+              locale={esLocale}
+              events={eventosFiltrados}
+              eventClick={(info) => {
+                const { userName, userPhone, description, text } = info.event.extendedProps;
+                Swal.fire({
+                  title: info.event.title,
+                  html: `
+                    <strong>Cliente:</strong> ${userName || 'No disponible'}<br/>
+                    <strong>Teléfono:</strong> ${userPhone || 'No disponible'}<br/>
+                    <strong>Descripción:</strong> ${description || 'Sin descripción'}<br/>
+                    <strong>Fecha:</strong> ${text || 'No disponible'}
+                  `,
+                  icon: 'info'
+                });
+              }}
+            />
+          </div>
+          <div className="calendario-admin-info">
+            <h4>Información</h4>
+            <ul>
+              {Object.entries(coloresPorTramite).map(([id, color]) => {
+                const descripcion = eventos.find(e => e.backgroundColor === color)?.transactDesc;
+                const cantidadCitas = contadorCitas[descripcion] || 0;
+                return (
+                  <li key={id}>
+                    <span className="color-box" style={{ backgroundColor: color }}></span>
+                    {descripcion || `No hay fechas #${id}`}
+                    <span className="citas-count">({cantidadCitas})</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
+      </div>
     );
 }
 
