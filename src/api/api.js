@@ -164,6 +164,7 @@ export const servicios = async () => {
 
 export const createService = async (serviceData) => {
   try {
+    
     const payload = {
       name: serviceData.name,
       description: serviceData.description,
@@ -174,11 +175,10 @@ export const createService = async (serviceData) => {
       con: serviceData.con,
       cashAdvance: serviceData.cashAdvance,
       status: true,
-      totalPayment: serviceData.totalPayment,
-      cost: serviceData.cost ?? null,
-      nameOption: serviceData.nameOption ?? null,
-      optionCost: serviceData.optionCost ?? null,
-      isDateService: serviceData.isDateService ?? null
+      cost: serviceData.cost,
+      nameOption: serviceData.nameOption,
+      costOption: serviceData.costOption,
+      isDateService: serviceData.isDateService ?? false
     };
 
     const response = await axios.post(`${API_URL}/transaction/web`, payload, {
