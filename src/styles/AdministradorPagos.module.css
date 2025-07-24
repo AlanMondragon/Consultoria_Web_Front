@@ -1,3 +1,12 @@
+@media (max-width: 700px) {
+  body, html {
+    background: #fff !important;
+  }
+  .pagosContainer {
+    background: #fff !important;
+    min-height: 100vh;
+  }
+}
 /* AdministradorPagos.module.css */
 
 .pagosContainer {
@@ -135,7 +144,8 @@
   .cardFecha,
   .cardTotal,
   .cardTelefono,
-  .cardEstado {
+  .cardEstado,
+  .cardCantidad {
     min-width: 100%;
     margin-left: 0;
     margin-top: 0.5rem;
