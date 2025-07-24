@@ -9,6 +9,8 @@ import { Icon } from '@iconify/react';
 import ServicePreviewModal from './ServicePreviewModal.jsx';
 import StepsModal from './StepsModal.jsx';
 import AdminServiceCard from './AdminServiceCard.jsx';
+import modalUtils from '../../utils/modalUtils.js';
+import ModalErrorBoundary from '../common/ModalErrorBoundary.jsx';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -118,39 +120,29 @@ export default function AdministradorServicios() {
     setSelectedService(null);
     setPreviewModalIsOpen(false);
     setSteps([]); // Clear the steps list
-    // Forzar limpieza del DOM
-    setTimeout(() => {
-      document.body.classList.remove('modal-open');
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-    }, 100);
+    // Usar utilidad inteligente de limpieza
+    modalUtils.smartCleanup();
   };
 
   // Steps Modal handlers
   const openStepsModal = async (idTransact) => {
     try {
+      console.log('🔍 Abriendo modal de pasos, modales activos antes:', modalUtils.getActiveModalsCount());
       setIdService(idTransact); // Set ID first
       const response = await getStepById(idTransact);
       setSteps(response.response.StepsTransacts || []);
       setShowStepsModal(true);
+      console.log('✅ Modal de pasos abierto, modales activos después:', modalUtils.getActiveModalsCount());
     } catch (error) {
-      console.error('Error al obtener pasos:', error);
+      console.error('❌ Error al obtener pasos:', error);
       setSteps([]);
     }
   };
 
   const closeStepsModal = () => {
     setShowStepsModal(false);
-    // Forzar limpieza del DOM
-    setTimeout(() => {
-      document.body.classList.remove('modal-open');
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-    }, 100);
+    // Usar utilidad inteligente de limpieza
+    modalUtils.smartCleanup();
   };
 
   const clearSteps = () => {
@@ -247,21 +239,32 @@ export default function AdministradorServicios() {
       </div>
 
       {/* Service Preview Modal */}
-      <ServicePreviewModal
-        show={previewModalIsOpen}
-        onHide={closePreviewModal}
-        service={selectedService}
-        onViewSteps={openStepsModal}
-      />
+      <ModalErrorBoundary onReset={() => {
+        setPreviewModalIsOpen(false);
+        setSelectedService(null);
+        setSteps([]);
+      }}>
+        <ServicePreviewModal
+          show={previewModalIsOpen}
+          onHide={closePreviewModal}
+          service={selectedService}
+          onViewSteps={openStepsModal}
+        />
+      </ModalErrorBoundary>
 
       {/* Steps Modal */}
-      <StepsModal
-        show={showStepsModal}
-        onHide={closeStepsModal}
-        steps={steps}
-        serviceId={idService}
-        onClearSteps={clearSteps}
-      />
+      <ModalErrorBoundary onReset={() => {
+        setShowStepsModal(false);
+        setSteps([]);
+      }}>
+        <StepsModal
+          show={showStepsModal}
+          onHide={closeStepsModal}
+          steps={steps}
+          serviceId={idService}
+          onClearSteps={clearSteps}
+        />
+      </ModalErrorBoundary>
     </div>
   );
 }
