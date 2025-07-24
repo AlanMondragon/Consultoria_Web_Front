@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import Logo from '../img/logo.png';
 import logoutImg from '../img/salida.gif';
 import '../styles/Sidebar.css';
+import '../styles/SidebarAdmin.css';
 
 export default function NavbarAdmin({ title }) {
   const [collapsed, setCollapsed] = useState(() => {
@@ -125,7 +126,7 @@ export default function NavbarAdmin({ title }) {
           </button>
         )}
 
-        <nav className="sidebar-nav">
+        <nav className="sidebar-admin-nav">
           <a href={id4} onClick={handleLinkClick}>
             <Icon icon="material-symbols:dashboard" className='icon' />
             <span className="nav-text">Inicio</span>
