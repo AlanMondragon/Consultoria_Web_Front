@@ -199,8 +199,7 @@ export const usePaymentOptions = (service) => {
     console.log('costoTotal - validatedPaymentType:', validatedPaymentType);
 
     if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
-      const amount = currentPaymentOption?.liquidationAmount || service?.cost || service?.cashAdvance || 0;
-      console.log('costoTotal - amount (no visa americana):', amount);
+      const amount = currentPaymentOption?.amount;
       return amount;
     }
 

@@ -111,7 +111,7 @@ export default function CheckoutForm({
               idUser: parseInt(customer),
               idTransact: parseInt(idProductoTransaccion),
             };
-
+          console.log('Creando proceso con los siguientes datos:', processPaymentData);
             await createProcessWithPayment(processPaymentData);
           }
           // Enviar correo DS-160 si aplica
