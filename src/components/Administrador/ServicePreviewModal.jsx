@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import styles from './../../styles/AdminServicios.module.css';
+import modalUtils from '../../utils/modalUtils.js';
 
 export default function ServicePreviewModal({ 
   show, 
@@ -22,13 +23,8 @@ export default function ServicePreviewModal({
     setIsZoomed(false);
     onHide();
     
-    // Limpiar cualquier backdrop residual
-    setTimeout(() => {
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-    }, 150);
+    // Usar utilidad inteligente de limpieza
+    modalUtils.smartCleanup();
   };
 
   if (!service) return null;
@@ -41,7 +37,7 @@ export default function ServicePreviewModal({
         centered 
         size="lg" 
         className={styles.previewModal}
-        backdrop="static"
+        backdrop={true}
         keyboard={true}
       >
         <Modal.Header closeButton className={styles.modalHeader}>

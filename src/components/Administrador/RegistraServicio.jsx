@@ -11,7 +11,7 @@ export default function RegistrarServicio() {
   const [imagenNombre, setImagenNombre] = useState("Ningún archivo seleccionado");
   const [imagenDetalleNombre, setImagenDetalleNombre] = useState("Ningún archivo seleccionado");
   const [imagenPreview, setImagenPreview] = useState(null);
-  const [imagenDetallePreview, setImagenDetallePreview] = useState(null);  const [tieneOtroCosto, setTieneOtroCosto] = useState(false);
+  const [imagenDetallePreview, setImagenDetallePreview] = useState(null); const [tieneOtroCosto, setTieneOtroCosto] = useState(false);
   const [tieneAnticipo, setTieneAnticipo] = useState(false);
   const [esCita, setEsCita] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
@@ -65,6 +65,14 @@ export default function RegistrarServicio() {
       return;
     }
 
+    const cashAdvanceValue = tieneAnticipo
+      ? parseFloat(formData.get('cashAdvance'))
+      : totalPayment;
+
+    const optionCostValue = tieneOtroCosto
+      ? parseFloat(formData.get('optionCost'))
+      : null;
+
     const serviceData = {
       name: formData.get('name'),
       description: formData.get('description'),
@@ -73,18 +81,20 @@ export default function RegistrarServicio() {
       simulation: !esCita && formData.get('simulation') === 'on',
       cas: formData.get('cas') === 'on',
       con: formData.get('con') === 'on',
-      status: true, // Un servicio siempre se crea activo
-      totalPayment: totalPayment,
-      cashAdvance: tieneAnticipo ? parseFloat(formData.get('cashAdvance')) : totalPayment,
-      cost: tieneOtroCosto ? (formData.get('cost') ? parseFloat(formData.get('cost')) : null) : totalPayment,
+      status: true,
+      cashAdvance: cashAdvanceValue,
+      cost: totalPayment,
       nameOption: tieneOtroCosto ? formData.get('nameOption') : null,
-      optionCost: tieneOtroCosto && formData.get('optionCost') ? parseFloat(formData.get('optionCost')) : null,
+      costOption: optionCostValue,
       isDateService: formData.get('isDateService') === 'on',
     };
 
+
+
+
     try {
       const response = await createService(serviceData);
-      if (response.success) { 
+      if (response.success) {
         Swal.fire({
           icon: 'success',
           title: 'El servicio se ha registrado exitosamente',
@@ -115,7 +125,7 @@ export default function RegistrarServicio() {
   return (
     <div style={{ marginTop: '80px' }}>
       <div className='fixed-top'>
-        <Navbar title={isMobile ? "- Servicio" : "- Registrar Servicio" } />
+        <Navbar title={isMobile ? "- Servicio" : "- Registrar Servicio"} />
       </div>
 
       <div className={styles.containerRegistrarTramite}>
@@ -190,10 +200,10 @@ export default function RegistrarServicio() {
 
             <div className={styles.formGroup}>
               <label htmlFor='totalPayment'>Pago Total *</label>
-              <input 
-                type='number' 
-                id='totalPayment' 
-                name='totalPayment' 
+              <input
+                type='number'
+                id='totalPayment'
+                name='totalPayment'
                 step='any'
                 required
                 onChange={(e) => {
@@ -204,12 +214,13 @@ export default function RegistrarServicio() {
                   }
                 }}
               />
-            </div>              <div className={styles.switchContainer}>
+            </div>
+            <div className={styles.switchContainer}>
               <label htmlFor='isDateService'>¿El servicio es una cita?</label>
               <label className={styles.switch}>
-                <input 
-                  type='checkbox' 
-                  id='isDateService' 
+                <input
+                  type='checkbox'
+                  id='isDateService'
                   name='isDateService'
                   checked={esCita}
                   onChange={(e) => {
@@ -249,10 +260,10 @@ export default function RegistrarServicio() {
             {tieneAnticipo && (
               <div className={styles.formGroup}>
                 <label htmlFor='anticipoEfectivo'>Anticipo de Efectivo *</label>
-                <input 
-                  type='number' 
-                  id='anticipoEfectivo' 
-                  name='cashAdvance' 
+                <input
+                  type='number'
+                  id='anticipoEfectivo'
+                  name='cashAdvance'
                   step='any'
                   required={tieneAnticipo}
                 />
@@ -283,20 +294,20 @@ export default function RegistrarServicio() {
               <>
                 <div className={styles.formGroup}>
                   <label htmlFor='nameOption'>Nombre de la Opción *</label>
-                  <input 
-                    type='text' 
-                    id='nameOption' 
-                    name='nameOption' 
+                  <input
+                    type='text'
+                    id='nameOption'
+                    name='nameOption'
                     required={tieneOtroCosto}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
                   <label htmlFor='optionCost'>Costo de la Opción *</label>
-                  <input 
-                    type='number' 
-                    id='optionCost' 
-                    name='optionCost' 
+                  <input
+                    type='number'
+                    id='optionCost'
+                    name='optionCost'
                     step='any'
                     required={tieneOtroCosto}
                   />
@@ -307,10 +318,10 @@ export default function RegistrarServicio() {
                 <div className={styles.switchContainer}>
                   <label htmlFor='simulacion'>Requiere simulación</label>
                   <label className={styles.switch}>
-                    <input 
-                      type='checkbox' 
-                      id='simulacion' 
-                      name='simulation' 
+                    <input
+                      type='checkbox'
+                      id='simulacion'
+                      name='simulation'
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>
@@ -320,10 +331,10 @@ export default function RegistrarServicio() {
                 <div className={styles.switchContainer}>
                   <label htmlFor='cas'>CAS</label>
                   <label className={styles.switch}>
-                    <input 
-                      type='checkbox' 
-                      id='cas' 
-                      name='cas' 
+                    <input
+                      type='checkbox'
+                      id='cas'
+                      name='cas'
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>
@@ -333,10 +344,10 @@ export default function RegistrarServicio() {
                 <div className={styles.switchContainer}>
                   <label htmlFor='con'>CON</label>
                   <label className={styles.switch}>
-                    <input 
-                      type='checkbox' 
-                      id='con' 
-                      name='con' 
+                    <input
+                      type='checkbox'
+                      id='con'
+                      name='con'
                       disabled={esCita}
                     />
                     <span className={styles.slider}></span>

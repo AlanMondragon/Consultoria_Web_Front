@@ -10,7 +10,7 @@ export const usePaymentOptions = (service) => {
 
     const name = service.name.toLowerCase();
     const isTransportService = name === 'servicio de traslado para solicitantes de visa' || name.includes('traslado');
-    
+
     // Lógica mejorada para DS-160
     const nameForDs = name.trim();
     const hasElaboracion = nameForDs.includes('elaboracion') || nameForDs.includes('elaboración');
@@ -18,7 +18,7 @@ export const usePaymentOptions = (service) => {
     const hasDs = nameForDs.includes('ds');
     // Debe tener DS obligatoriamente Y al menos una de las otras dos (elaboracion o creacion)
     const isDs160 = hasDs && (hasElaboracion || hasCreacion);
-    
+
     const isVisaAmericana = service.name === 'Visa Americana' || service.name === 'Visa Americana (4 meses)';
     const haveOtherCost = service.optionCost !== null && service.optionCost !== undefined && service.optionCost > 0;
     const isAdvanceVisaAmericana = name.includes('adelanto') && (name.includes('cita') || name.includes('anticipo')) && name.includes('visa') && name.includes('americana');
@@ -86,32 +86,60 @@ export const usePaymentOptions = (service) => {
       };
     }
 
-    if(isTransportService) {
+    if (isTransportService) {
       const isFullPaymentOnly = service.cashAdvance === service.cost;
-      
+      const baseCost = service.cost;
+      const baseCashAdvance = service.cashAdvance;
+
       return {
-        adelanto: {
-          amount: service.cashAdvance,
-          description: isFullPaymentOnly ? 'Pago único del traslado' : 'Apartado del servicio de traslado',
-          processingTime: isFullPaymentOnly ? 'Pago total del servicio de traslado' : 'Reserva tu servicio de traslado',
-          timeType: isFullPaymentOnly ? 'normal' : 'deposit',
-          isDeposit: !isFullPaymentOnly
+        cuernavaca: {
+          amount: baseCashAdvance,
+          description:  'Cuernavaca  - CDMX CAS  / Consulado',
+          processingTime: 'Servicio de traslado de Cuernavaca al CDMX CAS / Consulado',
+          timeType: 'deposit',
+          isDeposit: false
         },
-        ...(service.cashAdvance !== service.cost && {
-          completo: {
-            amount: service.cost,
-            description: 'Servicio de traslado completo',
-            processingTime: 'Pago total del servicio de traslado',
-            timeType: 'normal',
-            isDeposit: false
-          }
-        }),
-        ...(haveOtherCost && {
-          opcion: {
+        express: {
+          amount: baseCost,
+          description: 'Aeropuerto - Hotel Hermosillo',
+          processingTime: 'Servicio de traslado del Aeropuerto al Hotel Hermosillo',
+          timeType: 'express',
+          isDeposit: false
+        },
+        premium: {
+          amount: baseCost,
+          description: 'Hotel - CAS - Hotel Hermosillo',
+          processingTime: '🚐 Servicio de traslado del Hotel al CAS y del CAS al Hotel',
+          timeType: 'premium',
+          isDeposit: false
+        },
+        grupal: {
+          amount: baseCost,
+          description: '🏨 Hotel - 🏛️ Consulado - 🏨 Hotel Hermosillo',
+          processingTime: '🚐 Servicio de traslado del Hotel al Consulado y del Consulado al Hotel',
+          timeType: 'shared',
+          isDeposit: false
+        },
+        ejecutivo: {
+          amount: service.optionCost,
+          description: service.nameOption,
+          processingTime: 'Servicio de traslado del Aeropuerto al Hotel en Tijuana',
+          timeType: 'vip',
+          isDeposit: false
+        },
+        nocturno: {
+          amount: service.optionCost,
+          description: 'Hotel - CAS - Hotel Tijuana',
+          processingTime: 'Servicio de traslado del Hotel al Cas y del Cas al Hotel',
+          timeType: 'night',
+          isDeposit: false
+        },
+        ...(haveOtherCost && service.optionCost && {
+          personalizado: {
             amount: service.optionCost,
-            description: service.nameOption || 'Opción adicional de traslado',
-            processingTime: service.nameOption || 'Servicio de traslado con opción adicional',
-            timeType: 'option',
+            description: 'Hotel - Consulado - Hotel  Tijuana',
+            processingTime: 'Servicio de traslado del Hotel al Consulado y del Consulado al Hotel',
+            timeType: 'custom',
             isDeposit: false
           }
         })
@@ -119,7 +147,7 @@ export const usePaymentOptions = (service) => {
     }
 
     const isFullPaymentOnly = service.cashAdvance === service.cost;
-    
+
     return {
       adelanto: {
         amount: service.cashAdvance,
@@ -169,36 +197,35 @@ export const usePaymentOptions = (service) => {
     console.log('costoTotal - service:', service);
     console.log('costoTotal - serviceInfo.isVisaAmericana:', serviceInfo.isVisaAmericana);
     console.log('costoTotal - validatedPaymentType:', validatedPaymentType);
-    
+
     if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
-      const amount = currentPaymentOption?.liquidationAmount || service?.cost || service?.cashAdvance || 0;
-      console.log('costoTotal - amount (no visa americana):', amount);
+      const amount = currentPaymentOption?.amount;
       return amount;
     }
-    
+
     // Para adelanto de Visa Americana, devolver el costo según el plazo
     const amount = selectedLiquidationPlan === '4meses' ? (service?.cost || 0) : (service?.optionCost || 0);
     console.log('costoTotal - amount (visa americana):', amount);
     return amount;
   };
-  console.log('Total del costo del tramite:',  costoTotal());
+  console.log('Total del costo del tramite:', costoTotal());
 
   // AQUI SE OBTIENE EL MONTO PENDIENTE DE LIQUIDACION
   const pendienteLiquidar = () => {
     if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
       return 0;
     }
-    
+
     const totalCost = costoTotal();
     const advanceAmount = currentPaymentOption?.amount || service?.cashAdvance || 0;
-    
+
     const pending = Math.max(0, totalCost - advanceAmount);
     console.log('pendienteLiquidar - totalCost:', totalCost, 'advanceAmount:', advanceAmount, 'pending:', pending);
     return pending;
   };
-    console.log('Lo que se tiene que liquidar:', pendienteLiquidar());
+  console.log('Lo que se tiene que liquidar:', pendienteLiquidar());
 
- 
+
 
   return {
     serviceInfo,
