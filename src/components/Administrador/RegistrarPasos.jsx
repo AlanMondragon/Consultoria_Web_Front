@@ -11,7 +11,7 @@ export default function RegistrarPasos() {
   const [steps, setSteps] = useState([{
     name: '',
     description: '',
-    stepNumber: 1, // Inicializar el primer paso con número 1
+    stepNumber: 1, 
     needCalendar: false,
     id: idTransact,
   }]);

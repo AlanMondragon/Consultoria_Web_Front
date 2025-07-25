@@ -37,7 +37,6 @@ export default function RegistrarServicio() {
   }, [navigate]);
 
   const handleSubmit = async (e) => {
-    console.log("Formulario enviado");
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -131,7 +130,7 @@ export default function RegistrarServicio() {
       <div className={styles.containerRegistrarTramite}>
         <div className={styles.cardRegistrarTramite}>
           <h2>Registrar Servicio</h2>
-          <form className={styles.formRegistrarTramite} onSubmit={(e) => { console.log("Evento onSubmit disparado"); handleSubmit(e); }}>
+          <form className={styles.formRegistrarTramite} onSubmit={(e) => {  handleSubmit(e); }}>
             <div className={styles.formGroup}>
               <label htmlFor='nombre'>Nombre del Trámite *</label>
               <input type='text' id='nombre' name='name' required />

@@ -10,7 +10,6 @@ export default function ActualizarServicio() {
   const navigate = useNavigate();
   const location = useLocation();
   const service = location.state?.service;
-  console.log('Servicio recibido:', service);
 
   const [imagenNombre, setImagenNombre] = useState(service?.image ? "Imagen actual" : "Ningún archivo seleccionado");
   const [imagenDetalleNombre, setImagenDetalleNombre] = useState(service?.imageDetail ? "Imagen actual" : "Ningún archivo seleccionado");

@@ -189,14 +189,11 @@ export const usePaymentOptions = (service) => {
   }, [paymentOptions, selectedPaymentType, serviceInfo]);
 
   const currentPaymentOption = paymentOptions[validatedPaymentType];
-  console.log('Current Payment Option:', currentPaymentOption);
+  
 
   // Función para obtener el costo total correcto basado en el plazo seleccionado
   const costoTotal = () => {
     //AQUI SE OBTIENE EL MONTO TOTAL DEL SERVICIO DEPENDIENDO DE LA SELECCION DEL PLAZO
-    console.log('costoTotal - service:', service);
-    console.log('costoTotal - serviceInfo.isVisaAmericana:', serviceInfo.isVisaAmericana);
-    console.log('costoTotal - validatedPaymentType:', validatedPaymentType);
 
     if (!serviceInfo.isVisaAmericana || validatedPaymentType !== 'adelanto') {
       const amount = currentPaymentOption?.amount;
@@ -205,10 +202,10 @@ export const usePaymentOptions = (service) => {
 
     // Para adelanto de Visa Americana, devolver el costo según el plazo
     const amount = selectedLiquidationPlan === '4meses' ? (service?.cost || 0) : (service?.optionCost || 0);
-    console.log('costoTotal - amount (visa americana):', amount);
+  ;
     return amount;
   };
-  console.log('Total del costo del tramite:', costoTotal());
+
 
   // AQUI SE OBTIENE EL MONTO PENDIENTE DE LIQUIDACION
   const pendienteLiquidar = () => {
@@ -220,10 +217,8 @@ export const usePaymentOptions = (service) => {
     const advanceAmount = currentPaymentOption?.amount || service?.cashAdvance || 0;
 
     const pending = Math.max(0, totalCost - advanceAmount);
-    console.log('pendienteLiquidar - totalCost:', totalCost, 'advanceAmount:', advanceAmount, 'pending:', pending);
     return pending;
   };
-  console.log('Lo que se tiene que liquidar:', pendienteLiquidar());
 
 
 

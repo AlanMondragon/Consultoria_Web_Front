@@ -100,7 +100,6 @@ export default function CheckoutForm({
 
           // Crear los procesos
           for (let i = 0; i < paymentData.quantity; i++) {
-            console.log(`Creando trámite ${i + 1} de ${paymentData.quantity}`);
 
             // Crear una copia de paymentData con el monto realmente pagado
             const processPaymentData = {
@@ -111,7 +110,6 @@ export default function CheckoutForm({
               idUser: parseInt(customer),
               idTransact: parseInt(idProductoTransaccion),
             };
-          console.log('Creando proceso con los siguientes datos:', processPaymentData);
             await createProcessWithPayment(processPaymentData);
           }
           // Enviar correo DS-160 si aplica

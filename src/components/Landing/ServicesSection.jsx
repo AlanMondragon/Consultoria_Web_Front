@@ -127,7 +127,6 @@ export default function ServicesSection({
                       <button
                         className={styles.cardButton}
                         onClick={() => {
-                          console.log('Ver Pasos clicked for service:', service.idTransact);
                           handleOpenStepsModal(service.idTransact);
                         }}
                       >
@@ -136,7 +135,6 @@ export default function ServicesSection({
                       <button
                         className={styles.cardButton}
                         onClick={() => {
-                          console.log('Ver más clicked for service:', service);
                           handleOpenDetailsModal(service);
                         }}
                       >
@@ -145,7 +143,6 @@ export default function ServicesSection({
                       <button
                         className={styles.cardButton}
                         onClick={() => {
-                          console.log('Obtener clicked for service:', service);
                           singint(service);
                         }}
                       >

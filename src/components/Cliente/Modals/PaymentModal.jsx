@@ -64,9 +64,7 @@ const PaymentModal = ({
   // Debug temporal para verificar tipos de servicio
   React.useEffect(() => {
     if (service && serviceInfo) {
-      console.log('🔍 Servicio:', service.name);
-      console.log('📋 ServiceInfo:', serviceInfo);
-      console.log('💰 PaymentOptions:', paymentOptions);
+
     }
   }, [service, serviceInfo, paymentOptions]);
 

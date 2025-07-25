@@ -52,7 +52,7 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
 
     const executePaymentRequests = async () => {
         try {
-            console.log("service: ", service);
+     
 
 
             if (!service) {
@@ -84,10 +84,8 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                 idTransact: idTransact,
             };
 
-            console.log('Enviando paymentData:', paymentData);
             await axios.post(`${API_URL}/payment`, paymentData);
 
-            console.log('Peticiones ejecutadas exitosamente');
             return true;
         } catch (error) {
             console.error('Error ejecutando peticiones:', error);

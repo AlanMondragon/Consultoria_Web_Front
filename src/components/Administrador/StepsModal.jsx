@@ -15,8 +15,7 @@ export default function StepsModal({
   // Debug at render time
   React.useEffect(() => {
     if (show) {
-      console.log('🎯 StepsModal renderizado con serviceId:', serviceId);
-      console.log('🎯 StepsModal renderizado con steps:', steps.length, 'items');
+     
     }
   }, [show, serviceId, steps]);
 
@@ -32,16 +31,13 @@ export default function StepsModal({
       console.error('❌ No hay serviceId disponible para agregar pasos');
       return;
     }
-    console.log('➕ Navegando para agregar pasos con serviceID:', serviceId);
     navigate("/RegistrarPasos", { state: { serviceID: serviceId } });
   };
 
   const handleUpdateSteps = () => {
     if (!serviceId) {
-      console.error('❌ No hay serviceId disponible para actualizar pasos');
       return;
     }
-    console.log('✏️ Navegando para actualizar pasos con serviceID:', serviceId);
     navigate("/ActualizarPasos", { 
       state: { 
         serviceID: serviceId, 
