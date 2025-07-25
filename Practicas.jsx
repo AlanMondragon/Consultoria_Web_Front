@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
 import { enviarCorreoConDatos } from './src/api/api.js'; // Importa la función que envía correo
-import styles from './src/styles/Signin.module.css';
+import styles from './src/styles/Practicas.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaChevronDown, FaCheck } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import Logo from './src/img/logo_letras_negras.jpg';
@@ -175,14 +175,17 @@ export default function Practicas({ onCancel }) {
     };
 
     return (
-        <div className="custom-container">
-            <a href="https://www.utez.edu.mx/" target="_blank" rel="noopener noreferrer">
-                <img src={LogoUtez} alt="Logo UTEZ" height={200} width={200} />
-            </a>
-            <a href="https://upeg.edu.mx" target="_blank" rel="noopener noreferrer">
-                <img src={LogoUpegro} alt='Logo UPEGRO' height={200} width={200}></img>            </a>
-
-            <div className={styles.card}>
+        <div className={styles.container}>
+            <div className={styles.layoutRow}>
+                <div className={styles.institutionsColumn}>
+                    <a href="https://www.utez.edu.mx/" target="_blank" rel="noopener noreferrer">
+                        <img src={LogoUtez} alt="Logo UTEZ" className={styles.institutionLogo} />
+                    </a>
+                    <a href="https://upeg.edu.mx" target="_blank" rel="noopener noreferrer">
+                        <img src={LogoUpegro} alt='Logo UPEGRO' className={styles.institutionLogo} />
+                    </a>
+                </div>
+                <div className={styles.card}>
                 <div className={styles.header}>
 
                     <button
@@ -326,7 +329,9 @@ export default function Practicas({ onCancel }) {
                         </button>
                     </div>
                 </form>
-            </div>
+
+                </div> {/* cierra .card */}
+            </div> {/* cierra .layoutRow */}
         </div>
     );
 }
