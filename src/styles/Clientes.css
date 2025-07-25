@@ -216,7 +216,7 @@
 }
 
 /* Móviles (hasta 767px) */
-@media (max-width: 767px) {
+@media (max-width:1000px) {
   .tramites-container {
     padding: 0 10px;
   }
