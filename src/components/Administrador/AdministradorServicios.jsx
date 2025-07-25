@@ -127,12 +127,10 @@ export default function AdministradorServicios() {
   // Steps Modal handlers
   const openStepsModal = async (idTransact) => {
     try {
-      console.log('🔍 Abriendo modal de pasos, modales activos antes:', modalUtils.getActiveModalsCount());
       setIdService(idTransact); // Set ID first
       const response = await getStepById(idTransact);
       setSteps(response.response.StepsTransacts || []);
       setShowStepsModal(true);
-      console.log('✅ Modal de pasos abierto, modales activos después:', modalUtils.getActiveModalsCount());
     } catch (error) {
       console.error('❌ Error al obtener pasos:', error);
       setSteps([]);

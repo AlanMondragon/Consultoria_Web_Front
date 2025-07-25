@@ -45,27 +45,27 @@ const stripePromise = loadStripe(stripeKey);
 
 export default function Liquidacion({ show, onHide, service, userEmail, userId, onSuccess, onError, COMPLETED }) {
     const [paypalStatus, setPaypalStatus] = useState(null);
-    
+
     if (!show || !service) return null;
 
     const montoRestante = service.paidAll - service.paid;
 
     const executePaymentRequests = async () => {
         try {
-            console.log("service: ", service);
-            
+     
+
 
             if (!service) {
                 throw new Error('Service is undefined');
             }
-            
+
             const nuevoPaid = service.paid + service.paidAll;
             await actualizarTC(service.idTransactProgress, {
                 ...service,
                 paid: service.paidAll,
                 paidAll: 0
             });
-            
+
 
             let idTransact;
             if (service.transact && service.transact.idTransact) {
@@ -76,18 +76,16 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                 console.error('No se encontró idTransact en service:', service);
                 throw new Error('idTransact no encontrado en service');
             }
-            
+
             const paymentData = {
                 total: montoRestante,
                 status: 1,
                 idUser: parseInt(userId),
                 idTransact: idTransact,
             };
-            
-            console.log('Enviando paymentData:', paymentData);
+
             await axios.post(`${API_URL}/payment`, paymentData);
-            
-            console.log('Peticiones ejecutadas exitosamente');
+
             return true;
         } catch (error) {
             console.error('Error ejecutando peticiones:', error);
@@ -143,7 +141,7 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                     <div>
                         <div className={paymentStyles.serviceTitle}>Liquidar Trámite</div>
                         <div className={paymentStyles.serviceSubtitle}>
-                            Pago seguro con Stripe
+                            Pago seguro con Stripe y PayPal
                         </div>
                     </div>
                 </Modal.Title>
@@ -178,6 +176,12 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                         serviceName={"liquidacion"}
                     />
                 </Elements>
+           
+                <div className={paymentStyles.paymentSeparator}>
+                    <div className={paymentStyles.separatorLine} />
+                    <span className={paymentStyles.separatorText}>o paga con</span>
+                    <div className={paymentStyles.separatorLine} />
+                </div>
 
                 <div style={{ marginTop: 24, marginBottom: 12 }}>
                     <PayPalScriptLoader>
@@ -202,20 +206,7 @@ export default function Liquidacion({ show, onHide, service, userEmail, userId, 
                     Nunca almacenamos los datos de tu tarjeta. El pago es procesado de forma segura por Stripe.
                 </div>
 
-                <button
-                    onClick={onHide}
-                    style={{
-                        marginTop: '1rem',
-                        background: '#999',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Cancelar
-                </button>
+                
             </Modal.Body>
         </Modal>
     );

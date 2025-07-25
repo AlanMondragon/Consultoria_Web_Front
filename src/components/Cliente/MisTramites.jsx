@@ -100,7 +100,6 @@ export default function MisTramites() {
           return a.idTransactProgress - b.idTransactProgress;
         });
         setDatos(sortedData);
-        console.log(sortedData);
       } else {
         console.error("Formato de respuesta inesperado:", response);
         setDatos([]);

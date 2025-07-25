@@ -67,7 +67,6 @@ const StripePaymentSection = ({
   const selectedLiquidationPlan = selectedPaymentType;
   const liquidationTotal = (paymentOptions && paymentOptions[selectedLiquidationPlan]?.amount) || 0;
   const totalWithExtraFee = (liquidationTotal * quantity) + extraFee;
-  console.log('Total con cargo extra:', totalWithExtraFee);
   return (
     <div className={stylesModal.modalContainer}>
       {showSinglePayment && !isAdvanceVisaAmericana ? (

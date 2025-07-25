@@ -38,9 +38,7 @@ export default function LandingPage() {
 
   const fetchServices = async () => {
     try {
-      console.log('Intentando cargar servicios...');
       const response = await getAllProcess();
-      console.log('Respuesta de la API:', response);
       if (response.success && Array.isArray(response.response.Transacts)) {
   const allServices = response.response.Transacts;
       const activeServices = allServices.filter(service => service.status === true);
@@ -96,10 +94,8 @@ export default function LandingPage() {
   const singint = (service) => {
     // Guardar el servicio seleccionado en sessionStorage para pasarlo después del login
     if (service) {
-      console.log('Guardando servicio en sessionStorage:', service);
       sessionStorage.setItem('selectedService', JSON.stringify(service));
     }
-    console.log('Redirigiendo a /Login');
     window.location.href = '/Login';
   };
 
@@ -115,7 +111,6 @@ export default function LandingPage() {
   };
 
   const handleOpenStepsModal = async (idTransact) => {
-    console.log("idTransact:", idTransact);
     await fetchStepsById(idTransact);
     setStepsModalOpen(true);
   };

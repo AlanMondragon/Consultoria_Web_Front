@@ -10,7 +10,6 @@ export default function ActualizarServicio() {
   const navigate = useNavigate();
   const location = useLocation();
   const service = location.state?.service;
-  console.log('Servicio recibido:', service);
 
   const [imagenNombre, setImagenNombre] = useState(service?.image ? "Imagen actual" : "Ningún archivo seleccionado");
   const [imagenDetalleNombre, setImagenDetalleNombre] = useState(service?.imageDetail ? "Imagen actual" : "Ningún archivo seleccionado");
@@ -120,8 +119,6 @@ export default function ActualizarServicio() {
               <label htmlFor='descripcion'>Descripción *</label>
               <textarea id='descripcion' name='description' defaultValue={service?.description} required></textarea>
             </div>
-
-            {/* Imagen */}
             <div className={styles['form-group']}>
               <label htmlFor='imagen'>Imagen *</label>
               <input
@@ -148,7 +145,6 @@ export default function ActualizarServicio() {
               )}
             </div>
 
-            {/* Imagen Detalle */}
             <div className={styles['form-group']}>
               <label htmlFor='imagenDetalle'>Imagen de detalles *</label>
               <input

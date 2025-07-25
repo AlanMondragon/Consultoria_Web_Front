@@ -76,7 +76,6 @@ const StripePaymentModal = ({ show, onHide, onPaymentSuccess, amount = 99, clien
     }, []);
 
     const handlePaymentSuccess = (paymentResult) => {
-        console.log('Pago exitoso:', paymentResult);
         setIsProcessing(false);
         onHide();
         
@@ -466,7 +465,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         .filter(fecha => fecha !== null && fecha !== undefined);
 
                     setFechasOcupadas(fechas);
-                    console.log('Fechas ocupadas cargadas:', fechas);
                 }
             } catch (error) {
                 console.error('Error al obtener fechas ocupadas:', error);
@@ -484,8 +482,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }, [show]);
 
     useEffect(() => {
-        console.log('Cliente recibido:', cliente);
-        console.log('WasUpdated:', cliente?.wasUpdated);
         if (cliente) {
             const formattedCas = cliente.dateCas
                 ? cliente.dateCas.replace(' ', 'T').slice(0, 16)
@@ -538,7 +534,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
     }, [cliente]);
 
     const handleExtraChargeRequired = (dateTime) => {
-        console.log('Se requiere cobro extra para:', dateTime);
         setPendingDateTime(dateTime);
         setIsPaymentRequired(true);
 
@@ -551,16 +546,12 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             tramite_id: cliente?.transact?.idTransact,
         };
 
-        console.log('Cliente info para pago:', clienteInfo);
         setExtraChargeClientInfo(clienteInfo);
         setShowStripeModal(true);
     };
 
     // FUNCIÓN CORREGIDA: Actualizar trámite después del pago exitoso
     const handlePaymentSuccess = async (paymentResult, confirmedDateTime) => {
-        console.log('✅ Pago exitoso:', paymentResult);
-        console.log('✅ Fecha/hora confirmada:', confirmedDateTime);
-
         try {
             // Actualizar el formulario con la nueva fecha
             if (confirmedDateTime) {
@@ -596,12 +587,10 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 stepProgress: currentFormData.stepProgress,
             };
 
-            console.log('Payload para actualización:', payload);
 
             // Realizar la actualización del trámite
             const response = await actualizarTCS(cliente.idTransactProgress, payload);
 
-            console.log('Respuesta de actualización:', response);
 
             if (response.success) {
                 // Resetear estados de pago
@@ -752,7 +741,6 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
 
             const response = await actualizarTCS(cliente.idTransactProgress, payload);
 
-            console.log('Datos actualizados:', response.message);
 
             if (response.success) {
                 Swal.fire({
@@ -800,8 +788,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
             try {
                 const fechaActual = new Date();
                 const fechaCita = new Date(cliente.dateSimulation);
-                console.log('Fecha actual:', fechaActual);
-                console.log('Fecha de la cita:', fechaCita);
+            
                 if (fechaCita < fechaActual) {
                     Swal.fire({
                         icon: 'error',
@@ -917,26 +904,7 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                             <label>Descripción del paso:</label>
                             <input type="text" className="form-control" value={descripcionDelPaso} disabled />
                         </div>
-                        {cliente?.emailAcces && (
-                            <div className="form-group">
-                                <label>Email de Acceso:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    {...register('emailAcces')}
-                                    placeholder="Email de acceso"
-                                    disabled
-                                />
-                            </div>
-                        )}
-
-                        {cliente?.emailAcces && (
-                            <div className="form-group">
-                                <label>Contraseña:</label>
-                                <input type="password" {...register('passwordAcces')} className={`modern-input ${errors.passwordAcces ? 'input-error' : ''}`} />
-                                <span className="error">{errors.passwordAcces?.message}</span>
-                            </div>
-                        )}
+                   
 
 
                         <div className="form-group">
