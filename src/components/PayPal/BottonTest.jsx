@@ -33,7 +33,6 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
       },
       onApprove: (data, actions) => {
         return actions.order.capture().then(async function (details) {
-          console.log("Service:", service, "Id Usuario:", userId, "Status:", details.status);
 
           setPaymentStatus(details.status);
 
@@ -76,22 +75,14 @@ const PayPalButton = ({ amount, onSuccess, onError, userId, service, setPaypalSt
                 };
               }
 
-              console.log('Enviando paymentData:', paymentData);
 
               const response = await axios.post(`${API_URL}/payment`, paymentData);
 
               for (let i = 0; i < paymentData.quantity; i++) {
-                console.log(`Creando trámite ${i + 1} de ${paymentData.quantity}`);
                 await createProcessWithPayment(paymentData);
               }
 
-
-
-              console.log('Respuesta backend:', response.data);
-
-
               if (response.data.success) {
-                console.log('Pago registrado correctamente');
                 if (onSuccess) onSuccess(details);
               } else {
                 console.error('Error al registrar en backend:', response.data.error);

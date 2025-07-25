@@ -64,9 +64,7 @@ const PaymentModal = ({
   // Debug temporal para verificar tipos de servicio
   React.useEffect(() => {
     if (service && serviceInfo) {
-      console.log('🔍 Servicio:', service.name);
-      console.log('📋 ServiceInfo:', serviceInfo);
-      console.log('💰 PaymentOptions:', paymentOptions);
+
     }
   }, [service, serviceInfo, paymentOptions]);
 
@@ -193,7 +191,7 @@ const PaymentModal = ({
                       `Vista previa - Servicio de Traslado` :
                       `Vista previa - Desde $${getCashAdvance()} MXN`
               ) : (
-                isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe' : 'Pago seguro con Stripe'
+                isDs160 ? 'Formulario DS-160 - Pago seguro con Stripe y Paypal ' : 'Pago seguro con Stripe y PayPal'
               )}
             </div>
           </div>

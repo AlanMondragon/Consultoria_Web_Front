@@ -74,7 +74,6 @@ export default function AdministradorPagos() {
                             const clienteResponse = await clientePorId(payment.idUser);
                             const cliente = clienteResponse.success ? clienteResponse.response.user : null;
                             const nombreTramite = await getNameService(payment.idTransact);
-                            console.log(`Detalles del pago ${payment.idPayment}:`, nombreTramite, clienteResponse);
                             return {
                                 ...payment,
                                 user: cliente,
@@ -83,7 +82,6 @@ export default function AdministradorPagos() {
                                 total: payment.total
                             };
                         } catch (error) {
-                            console.error(`Error al obtener detalles para el pago ${payment.idPayment}:`, error);
                             return {
                                 ...payment,
                                 user: null,
@@ -96,11 +94,9 @@ export default function AdministradorPagos() {
                 );
                 setDatos(paymentsWithDetails);
             } else {
-                console.error("Formato de respuesta inesperado:", response);
                 setDatos([]);
             }
         } catch (error) {
-            console.error("Error al obtener los pagos:", error);
             setDatos([]);
         } finally {
             setCargando(false);
