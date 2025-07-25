@@ -290,7 +290,6 @@ const PaymentModal = ({
         {/* Contenido principal */}
         {isPreviewMode ? (
           <div style={{ textAlign: 'center', marginTop: 20 }}>
-            {/* Información de precios en modo preview */}
             <div style={{
               marginBottom: 20,
               padding: '16px',
@@ -299,24 +298,21 @@ const PaymentModal = ({
               border: '1px solid #dee2e6'
             }}>
               <h6 style={{ marginBottom: 12, fontWeight: 'bold', color: '#495057' }}>
-                {serviceInfo.isVisaAmericana ? 'Opciones de Pago - Visa Americana' :
-                  serviceInfo.isDs160 ? 'Opciones de Pago - DS-160' :
-                    serviceInfo.isTransportService ? 'Servicio de Traslado' :
-                      'Información de Precios'}
+                Opciones de Pago
               </h6>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {getAvailablePaymentOptions().map((option, index) => (
-                  <div key={index} style={{
+                {Object.entries(paymentOptions).map(([key, option], index) => (
+                  <div key={key} style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     padding: '8px 0',
-                    borderBottom: index < getAvailablePaymentOptions().length - 1 ? '1px solid #e9ecef' : 'none'
+                    borderBottom: index < Object.entries(paymentOptions).length - 1 ? '1px solid #e9ecef' : 'none'
                   }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 'bold' }}>{option.label}</div>
-                      {option.description && (
+                      <div style={{ fontWeight: 'bold' }}>{option.description || key}</div>
+                      {option.processingTime && (
                         <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
-                          {option.description}
+                          {option.processingTime}
                         </div>
                       )}
                     </div>
@@ -331,7 +327,6 @@ const PaymentModal = ({
                 ))}
               </div>
             </div>
-
             <button className={paymentStyles.previewButton} onClick={handlePaymentAttempt}>
               Iniciar Sesión para Pagar
             </button>
@@ -371,18 +366,14 @@ const PaymentModal = ({
                 onSuccess={onSuccess}
                 onError={onError}
                 costoTotal={costoTotal()}
-
-
               />
             )}
-
             {/* Separador */}
             <div className={paymentStyles.paymentSeparator}>
               <div className={paymentStyles.separatorLine} />
               <span className={paymentStyles.separatorText}>o paga con</span>
               <div className={paymentStyles.separatorLine} />
             </div>
-
             {/* PayPal */}
             <PayPalScriptLoader>
               <PayPalButton
@@ -394,7 +385,6 @@ const PaymentModal = ({
                 quantity={quantity}
                 service={{ ...service, cost: getTotalAmount() }}
                 liquidationPlan={selectedLiquidationPlan}
-
               />
             </PayPalScriptLoader>
           </>
