@@ -170,23 +170,24 @@ function getRolActual() {
 
 export default function ClienteModal({ show, onHide, cliente, onGuardado }) {
   const esEdicion = !!cliente;
-  const esAdmin = getRolActual() === 'ADMIN';
+  const rolActual = getRolActual();
+  const puedeElegirEmpresa = rolActual === 'ADMIN' || rolActual === 'EMPRESA';
   const [campos, setCampos] = useState(CAMPOS_INICIALES);
   const [status, setStatus] = useState(true);
   const [showPw, setShowPw] = useState(false);
   const [guardando, setGuardando] = useState(false);
-  // Elegir empresa solo aplica al crear y solo tiene sentido para ADMIN: a un
-  // cliente creado por EMPRESA el backend ya le asigna la empresa del caller
-  // sin importar lo que se mande aquí (ver UserServiceImp.createUser).
+  // Elegir empresa solo aplica al crear (ADMIN o EMPRESA); si no se elige
+  // ninguna, el backend usa la empresa del caller como antes (ver
+  // UserServiceImp.createUser).
   const [empresa, setEmpresa] = useState(null);
   const [empresas, setEmpresas] = useState([]);
 
   useEffect(() => {
-    if (!show || esEdicion || !esAdmin) return;
+    if (!show || esEdicion || !puedeElegirEmpresa) return;
     getEmpresas()
       .then((response) => setEmpresas(response.success && Array.isArray(response.response.empresas) ? response.response.empresas : []))
       .catch((error) => { console.error('Error al obtener las empresas:', error); setEmpresas([]); });
-  }, [show, esEdicion, esAdmin]);
+  }, [show, esEdicion, puedeElegirEmpresa]);
 
   useEffect(() => {
     if (!show) return;
@@ -229,7 +230,7 @@ export default function ClienteModal({ show, onHide, cliente, onGuardado }) {
           phone: campos.phone,
           password: campos.password,
           status,
-          ...(esAdmin && empresa ? { idEmpresa: empresa } : {}),
+          ...(puedeElegirEmpresa && empresa ? { idEmpresa: empresa } : {}),
         });
       }
       Swal.fire({
@@ -335,7 +336,7 @@ export default function ClienteModal({ show, onHide, cliente, onGuardado }) {
               </div>
             </div>
 
-            {!esEdicion && esAdmin && (
+            {!esEdicion && puedeElegirEmpresa && (
               <div className={`${styles.field} ${styles.full}`}>
                 <label className={styles.fieldLabel}>Empresa</label>
                 <EmpresaDropdown value={empresa} onChange={setEmpresa} empresas={empresas} />
