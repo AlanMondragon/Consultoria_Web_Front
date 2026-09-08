@@ -88,6 +88,7 @@ export default function HeroSection() {
   const [maxIdx, setMaxIdx] = useState(DESTINATIONS.length - getPerView());
   const maxIdxRef = useRef(maxIdx);
   const timerRef = useRef(null);
+  const [noTransition, setNoTransition] = useState(false);
 
   const measure = () => {
     const track = trackRef.current;
@@ -107,8 +108,17 @@ export default function HeroSection() {
 
   const startTimer = () => {
     timerRef.current = setInterval(() => {
-      setIdx((i) => (i >= maxIdxRef.current ? 0 : i + 1));
-    }, 4000);
+      setIdx((i) => {
+        if (i >= maxIdxRef.current) {
+          // Salto instantáneo al inicio, sin la transición de 0.6s (evita
+          // el "brinco" hacia atrás al terminar la vuelta del carrusel).
+          setNoTransition(true);
+          requestAnimationFrame(() => requestAnimationFrame(() => setNoTransition(false)));
+          return 0;
+        }
+        return i + 1;
+      });
+    }, 2500);
   };
 
   useEffect(() => {
@@ -191,7 +201,7 @@ export default function HeroSection() {
             <div
               ref={trackRef}
               className={styles.destinosTrack}
-              style={{ transform: `translateX(-${idx * step}px)` }}
+              style={{ transform: `translateX(-${idx * step}px)`, transition: noTransition ? 'none' : undefined }}
             >
               {DESTINATIONS.map((d) => (
                 <div key={d.name} className={styles.destCard}>

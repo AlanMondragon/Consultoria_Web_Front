@@ -44,8 +44,6 @@ export default function FooterSection() {
                 <li><a href="#" target="_blank" rel="noreferrer">Manual de visado</a></li>
                 <li><a href="#" target="_blank" rel="noreferrer">Tasa de aprobación</a></li>
                 <li><a href="#faq">Preguntas frecuentes</a></li>
-                <li><a href="#">Blog migratorio</a></li>
-                <li><a href="#">Calculadora de costos</a></li>
               </ul>
             </div>
             <div className={styles.footerCol}>
