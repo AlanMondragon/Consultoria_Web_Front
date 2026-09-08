@@ -71,7 +71,7 @@
 .inpWrap.valid .inpIcon { color: var(--green); }
 .inpWrap.error .inpIcon { color: var(--rose); }
 .inp { flex: 1; border: 0; outline: 0; background: transparent; padding: 13px 12px 13px 2px; font-size: 13.5px; color: var(--c1); min-width: 0; }
-.inpToggle { padding: 0 14px; color: var(--muted); display: flex; align-items: center; transition: color 0.2s; }
+.inpToggle { padding: 0 14px; color: var(--muted) !important; display: flex; align-items: center; transition: color 0.2s; }
 .inpToggle:hover { color: var(--c2); }
 .inpValidIcon { padding-right: 14px; color: var(--green); display: flex; }
 .fieldMsg { font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 5px; }

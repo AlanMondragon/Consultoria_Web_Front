@@ -178,7 +178,7 @@
 .ncHeadIcon { width: 36px; height: 36px; border-radius: 11px; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .ncEyebrow { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; opacity: 0.75; white-space: nowrap; }
 .ncTitle { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-top: 1px; white-space: nowrap; }
-.ncClose { position: absolute; top: 20px; right: 20px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.18) !important; border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.ncClose { position: absolute; top: 20px; right: 20px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.18) !important; border: none; color: #fff !important; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .ncClose:hover { background: rgba(255,255,255,0.28) !important; }
 .ncBody { padding: 18px 22px; overflow-y: auto; }
 .ncTopRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
@@ -277,7 +277,7 @@
 .ccHead::after { content: ""; position: absolute; top: -55px; right: -45px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(31,160,209,0.22) 0%, transparent 70%); }
 .ccEyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(228,244,251,0.65); margin-bottom: 5px; position: relative; }
 .ccTitle { font-family: var(--display); font-weight: 600; font-size: 21px; letter-spacing: -0.02em; position: relative; }
-.ccClose { position: absolute; top: 18px; right: 18px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.18) !important; color: #fff; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.ccClose { position: absolute; top: 18px; right: 18px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.18) !important; color: #fff !important; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .ccClose:hover { background: rgba(255,255,255,0.3) !important; transform: rotate(90deg); }
 
 .ccBody { padding: 22px 24px; max-height: calc(100vh - 220px); overflow-y: auto; }
