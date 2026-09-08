@@ -268,7 +268,7 @@ export default function EmpresaPracticas() {
                   </div>
                   <button
                     className={styles.btn}
-                    style={{ background: 'var(--green)', color: '#fff' }}
+                    style={{ background: 'var(--c2)', color: '#fff' }}
                     onClick={handlePublicarInstituciones}
                     disabled={publicando}
                   >
