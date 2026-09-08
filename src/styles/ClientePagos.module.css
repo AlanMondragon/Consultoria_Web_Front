@@ -66,7 +66,7 @@
 .amt.paid { color: var(--green); }
 .amt.rest { color: var(--rose); }
 .amt.zero { color: var(--muted-2); }
-.liqBtn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary); color: var(--white) !important; border-radius: 9px; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+.liqBtn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary) !important; color: var(--white) !important; border-radius: 9px; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
 .liqBtn:hover { background: var(--hover); transform: translateY(-1px); }
 .liqDone { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--green); font-weight: 600; }
 .stTag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
@@ -74,7 +74,7 @@
 .stPend { background: var(--amber-soft); color: var(--amber); }
 .stPagado { background: var(--green-soft); color: var(--green); }
 .stProceso { background: var(--light); color: var(--hover); }
-.eyeBtn { width: 34px; height: 34px; border-radius: 9px; background: #F4F8FB; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.eyeBtn { width: 34px; height: 34px; border-radius: 9px; background: #F4F8FB !important; color: var(--muted) !important; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .eyeBtn:hover { background: var(--light); color: var(--hover); }
 
 /* modal detalle */
@@ -85,7 +85,7 @@
 .mhEyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(228, 244, 251, 0.6); margin-bottom: 4px; position: relative; }
 .mhTitle { font-family: var(--display); font-weight: 600; font-size: 21px; letter-spacing: -0.02em; position: relative; }
 .mhSub { font-size: 12px; color: rgba(228, 244, 251, 0.7); margin-top: 4px; position: relative; }
-.mhClose { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(228, 244, 251, 0.15); color: var(--c5); display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
+.mhClose { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(228, 244, 251, 0.15) !important; color: var(--c5) !important; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
 .mhClose:hover { background: rgba(228, 244, 251, 0.25); }
 .modalBody { padding: 22px; overflow-y: auto; }
 .detSummary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 22px; }
@@ -115,8 +115,8 @@
 .footPend { flex: 1; font-size: 12px; color: var(--muted); }
 .footPend strong { color: var(--rose); font-family: var(--display); font-size: 15px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 22px; border-radius: 12px; font-size: 13.5px; font-weight: 600; transition: all 0.2s; cursor: pointer; }
-.btnPrimary { background: var(--primary); color: var(--white) !important; }
-.btnPrimary:hover { background: var(--hover); }
+.btnPrimary { background: var(--primary) !important; color: var(--white) !important; }
+.btnPrimary:hover { background: var(--hover) !important; }
 
 @media (max-width: 900px) {
   .summaryStrip { grid-template-columns: 1fr; }

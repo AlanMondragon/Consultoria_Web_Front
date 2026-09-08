@@ -23,9 +23,9 @@
 .accent { color: var(--primary); }
 .pageTitleH { font-family: var(--display); font-weight: 600; font-size: 26px; letter-spacing: -0.025em; line-height: 1; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 11px; font-size: 13px; font-weight: 600; transition: all 0.2s; cursor: pointer; }
-.btnPrimary { background: var(--primary); color: var(--white) !important; }
-.btnPrimary:hover { background: var(--hover); transform: translateY(-1px); }
-.btnGhost { background: transparent; color: var(--c1); border: 1px solid var(--line-2); }
+.btnPrimary { background: var(--primary) !important; color: var(--white) !important; }
+.btnPrimary:hover { background: var(--hover) !important; transform: translateY(-1px); }
+.btnGhost { background: transparent !important; color: var(--c1) !important; border: 1px solid var(--line-2); }
 .btnGhost:hover { background: #F4F8FB; }
 
 .content { padding: 28px 32px 60px; display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
@@ -91,7 +91,7 @@
 .mhIcon { width: 44px; height: 44px; border-radius: 12px; background: rgba(228, 244, 251, 0.15); border: 1px solid rgba(228, 244, 251, 0.2); display: flex; align-items: center; justify-content: center; }
 .mhEyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(228, 244, 251, 0.6); margin-bottom: 4px; }
 .mhTitle { font-family: var(--display); font-weight: 600; font-size: 21px; letter-spacing: -0.02em; }
-.mhClose { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(228, 244, 251, 0.15); color: var(--c5); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.mhClose { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(228, 244, 251, 0.15) !important; color: var(--c5) !important; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .mhClose:hover { background: rgba(228, 244, 251, 0.25); }
 .modalBody { padding: 22px; overflow-y: auto; }
 .mField { margin-bottom: 18px; }
