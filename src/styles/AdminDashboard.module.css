@@ -117,6 +117,7 @@
 }
 @media (max-width: 767.98px) {
   .navGrid { grid-template-columns: 1fr; }
-  .topbar { padding: 14px 20px; flex-wrap: wrap; }
+  .topbar { padding: 14px 20px; flex-wrap: wrap; gap: 12px; }
+  .topActions { flex-wrap: wrap; width: 100%; justify-content: flex-end; }
   .content { padding: 20px; }
 }

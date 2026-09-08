@@ -144,7 +144,9 @@
 textarea.inp { resize: vertical; line-height: 1.5; }
 
 @media (max-width: 991.98px) {
-  .topbar { padding: 14px 20px; }
+  .topbar { padding: 14px 20px; flex-wrap: wrap; gap: 12px; }
+  .topActions { flex-wrap: wrap; width: 100%; justify-content: flex-end; }
+  .btn { white-space: nowrap; }
   .content { padding: 20px; }
   .grid2, .grid3 { grid-template-columns: 1fr; }
   .testGrid { grid-template-columns: repeat(2, 1fr); }
