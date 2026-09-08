@@ -753,7 +753,6 @@ export default function EmpresaCalendario() {
                   <div className={styles.legItem}><span className={styles.legDot} style={{ background: 'var(--orange)' }}></span> Simulación</div>
                   <div className={styles.legItem}><span className={styles.legDot} style={{ background: '#9333EA' }}></span> Atención a cliente</div>
                   <div className={styles.legItem}><span className={styles.legDot} style={{ background: '#0E9F8C' }}></span> Simulación (autoservicio)</div>
-                  <div className={styles.legItem}><span className={styles.legDot} style={{ background: '#DB2777' }}></span> Atención (autoservicio)</div>
                 </div>
               </div>
             </div>
@@ -788,11 +787,6 @@ export default function EmpresaCalendario() {
                   <div className={styles.resIcon} style={{ background: 'rgba(14,159,140,0.12)', color: '#0E9F8C' }}><IconMonitor /></div>
                   <div className={styles.resInfo}><div className={styles.resName}>Simulación (autoservicio)</div><div className={styles.resMeta}>Agendada por el cliente</div></div>
                   <div className={styles.resCount} style={{ color: '#0E9F8C' }}>{citasDelMes.citaSim}</div>
-                </div>
-                <div className={styles.resRow}>
-                  <div className={styles.resIcon} style={{ background: 'rgba(219,39,119,0.12)', color: '#DB2777' }}><IconChat /></div>
-                  <div className={styles.resInfo}><div className={styles.resName}>Atención (autoservicio)</div><div className={styles.resMeta}>Agendada por el cliente</div></div>
-                  <div className={styles.resCount} style={{ color: '#DB2777' }}>{citasDelMes.citaAten}</div>
                 </div>
               </div>
             </div>
