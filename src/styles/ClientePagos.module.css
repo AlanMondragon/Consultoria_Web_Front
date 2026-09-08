@@ -21,6 +21,13 @@
 .crumb { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 5px; }
 .accent { color: var(--primary); }
 .pageTitleH { font-family: var(--display); font-weight: 600; font-size: 26px; letter-spacing: -0.025em; line-height: 1; }
+.topUser { display: flex; align-items: center; gap: 12px; }
+.topBell {
+  width: 40px; height: 40px; border-radius: 50%; background: #F4F8FB !important;
+  display: flex; align-items: center; justify-content: center; position: relative; transition: background 0.2s;
+}
+.topBell:hover { background: var(--light) !important; }
+.dot { position: absolute; top: 9px; right: 11px; width: 8px; height: 8px; background: var(--primary); border: 2px solid var(--white); border-radius: 50%; }
 .topAvatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--hover)); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 15px; }
 
 .content { padding: 28px 32px 60px; display: flex; flex-direction: column; gap: 20px; }

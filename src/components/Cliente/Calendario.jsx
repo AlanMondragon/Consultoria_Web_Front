@@ -276,8 +276,10 @@ export default function Calendario() {
             <div className={styles.crumb}><span>Portal</span> <span style={{ color: 'var(--muted-2)' }}>/</span> <span className={styles.accent}>Citas</span></div>
             <div className={styles.pageTitleH}>Mis citas</div>
           </div>
-          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={abrirModal}><PlusIcon /> Agendar cita</button>
-          <HeaderLogoutButton />
+          <div className={styles.topUser}>
+            <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={abrirModal}><PlusIcon /> Agendar cita</button>
+            <HeaderLogoutButton />
+          </div>
         </header>
 
         <div className={styles.content}>
