@@ -1,22 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 import EmpresaSidebar from './EmpresaSidebar.jsx';
 import styles from './../../styles/EmpresaPracticas.module.css';
 import HeaderLogoutButton from './../common/HeaderLogoutButton.jsx';
+import { getInstituciones, crearInstitucion, eliminarInstitucion as eliminarInstitucionAPI } from './../../api/api.js';
 
 // Extraído 1:1 de "17-Practicas (standalone).html" y del modal "Nueva
 // institución" agregado en "17-Practicas (standalone) (1).html". El
-// backend no tiene
-// ninguna entidad de "solicitudes de prácticas" ni "instituciones", y el
+// backend no tiene ninguna entidad de "solicitudes de prácticas" — el
 // formulario público de Prácticas (PracticasSection.jsx en la landing)
-// ni siquiera envía los datos a ningún lado (su handleSubmit solo hace
-// setSubmitted(true)) — así que no existe ninguna fuente real de
-// solicitudes que mostrar aquí. La bandeja de "Solicitudes" usa los
-// mismos datos de ejemplo del mockup, sin persistencia (eliminar es solo
-// local). El tab "Instituciones" sí parte de datos reales: el arreglo
-// INSTITUTIONS de PracticasSection.jsx (los mismos 4 logos que hoy se
-// muestran en la landing), también editable solo en local.
+// solo envía un correo, no persiste nada — así que no existe ninguna
+// fuente real de solicitudes que mostrar aquí. La bandeja de
+// "Solicitudes" sigue usando datos de ejemplo del mockup (eliminar es
+// solo local). El tab "Instituciones" sí es real: viene de
+// GET /api/instituciones (ver InstitucionController en el backend), la
+// misma fuente que lee PracticasSection.jsx en la landing pública.
 
 const SOLICITUDES_INICIALES = [
   { id: 1, nombre: 'Dahiane Ayala', nueva: true, whatsapp: '777 145 2230', institucion: 'UTEZ', correoInst: 'vinculacion@utez.edu.mx', telInst: '777 367 9700', gradiente: 'linear-gradient(135deg,#6FAEDB,#4E6A9C)' },
@@ -26,12 +26,6 @@ const SOLICITUDES_INICIALES = [
   { id: 5, nombre: 'Ana Patricia Ruiz', nueva: false, whatsapp: '777 776 8890', institucion: 'UTEZ', correoInst: 'vinculacion@utez.edu.mx', telInst: '777 367 9700', gradiente: 'linear-gradient(135deg,#e89a7c,#c25a2e)' },
 ];
 
-const INSTITUCIONES_INICIALES = [
-  { id: 1, mark: 'U', color: '#1B6B3A', name: 'UTEZ', sub: 'Univ. Tecnológica Emiliano Zapata' },
-  { id: 2, mark: 'U', color: '#7A1F2B', name: 'UPEMOR', sub: 'Univ. Politécnica del Estado de Morelos' },
-  { id: 3, mark: 'U', color: '#2D6CDF', name: 'UAEM', sub: 'Univ. Autónoma del Estado de Morelos' },
-  { id: 4, mark: 'T', color: '#C68714', name: 'TecNM', sub: 'Tecnológico Nacional de México' },
-];
 
 function IconSearch() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--muted)' }}><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>; }
 function IconEye() { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>; }
@@ -59,10 +53,11 @@ export default function EmpresaPracticas() {
   const [solicitudes, setSolicitudes] = useState(SOLICITUDES_INICIALES);
   const [detalleAbierto, setDetalleAbierto] = useState(null);
   const [eliminando, setEliminando] = useState(null);
-  const [instituciones, setInstituciones] = useState(INSTITUCIONES_INICIALES);
+  const [instituciones, setInstituciones] = useState([]);
   const [agregarAbierto, setAgregarAbierto] = useState(false);
   const [nuevoNombreCorto, setNuevoNombreCorto] = useState('');
   const [nuevoNombreCompleto, setNuevoNombreCompleto] = useState('');
+  const [guardandoInstitucion, setGuardandoInstitucion] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -76,6 +71,17 @@ export default function EmpresaPracticas() {
       navigate('/');
     }
   }, [navigate]);
+
+  useEffect(() => {
+    getInstituciones()
+      .then((response) => {
+        const lista = response.success && Array.isArray(response.response.instituciones)
+          ? response.response.instituciones.map((i) => ({ id: i.idInstitucion, mark: i.mark, color: i.color, name: i.name, sub: i.sub }))
+          : [];
+        setInstituciones(lista);
+      })
+      .catch((error) => { console.error('Error al obtener las instituciones:', error); setInstituciones([]); });
+  }, []);
 
   const handleNavigate = (key) => { console.log('Navegar a sección de sidebar:', key); };
 
@@ -92,7 +98,17 @@ export default function EmpresaPracticas() {
     setEliminando(null);
   };
 
-  const handleEliminarInstitucion = (id) => setInstituciones((prev) => prev.filter((i) => i.id !== id));
+  const handleEliminarInstitucion = async (id) => {
+    const previas = instituciones;
+    setInstituciones((prev) => prev.filter((i) => i.id !== id));
+    try {
+      await eliminarInstitucionAPI(id);
+    } catch (error) {
+      console.error('Error al eliminar la institución', error);
+      setInstituciones(previas);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar la institución.' });
+    }
+  };
 
   const abrirAgregarInstitucion = () => {
     setNuevoNombreCorto('');
@@ -102,14 +118,26 @@ export default function EmpresaPracticas() {
 
   const cerrarAgregarInstitucion = () => setAgregarAbierto(false);
 
-  const handleConfirmarAgregarInstitucion = () => {
+  const handleConfirmarAgregarInstitucion = async () => {
     const name = nuevoNombreCorto.trim();
     const sub = nuevoNombreCompleto.trim();
     if (!name) return;
     const colores = ['#1B6B3A', '#7A1F2B', '#2D6CDF', '#C68714', '#6b3e8c', '#c25a2e'];
     const color = colores[instituciones.length % colores.length];
-    setInstituciones((prev) => [...prev, { id: Date.now(), mark: name[0].toUpperCase(), color, name, sub }]);
-    setAgregarAbierto(false);
+    setGuardandoInstitucion(true);
+    try {
+      const response = await crearInstitucion({ mark: name[0].toUpperCase(), color, name, sub });
+      const nueva = response.response?.institucion;
+      if (nueva) {
+        setInstituciones((prev) => [...prev, { id: nueva.idInstitucion, mark: nueva.mark, color: nueva.color, name: nueva.name, sub: nueva.sub }]);
+      }
+      setAgregarAbierto(false);
+    } catch (error) {
+      console.error('Error al agregar la institución', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo agregar la institución.' });
+    } finally {
+      setGuardandoInstitucion(false);
+    }
   };
 
   return (
@@ -334,9 +362,9 @@ export default function EmpresaPracticas() {
                 className={styles.btn}
                 style={{ background: 'var(--c2)', color: '#fff' }}
                 onClick={handleConfirmarAgregarInstitucion}
-                disabled={!nuevoNombreCorto.trim()}
+                disabled={!nuevoNombreCorto.trim() || guardandoInstitucion}
               >
-                Agregar
+                {guardandoInstitucion ? 'Agregando...' : 'Agregar'}
               </button>
             </div>
           </div>

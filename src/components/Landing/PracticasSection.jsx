@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import useReveal from "../../hooks/useReveal";
-import { enviarCorreoConDatos, getPdfLegalUrl } from "../../api/api.js";
+import { enviarCorreoConDatos, getPdfLegalUrl, getInstituciones } from "../../api/api.js";
 import styles from '../../styles/landing/PracticasSection.module.css';
 
 const DESTINO_PRACTICAS = 'recursoshumanos@consultoriajas.com';
-
-const INSTITUTIONS = [
-  { mark: 'U', color: '#1B6B3A', name: 'UTEZ', sub: 'Univ. Tecnológica Emiliano Zapata' },
-  { mark: 'U', color: '#7A1F2B', name: 'UPEMOR', sub: 'Univ. Politécnica del Estado de Morelos' },
-  { mark: 'U', color: '#2D6CDF', name: 'UAEM', sub: 'Univ. Autónoma del Estado de Morelos' },
-  { mark: 'T', color: '#C68714', name: 'TecNM', sub: 'Tecnológico Nacional de México' },
-];
 
 function PersonIcon() {
   return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="7" r="4" /><path d="M3 21v-1a7 7 0 0 1 14 0v1" /></svg>;
@@ -40,6 +33,18 @@ export default function PracticasSection() {
   const [institucion, setInstitucion] = useState('');
   const [correoInstitucion, setCorreoInstitucion] = useState('');
   const [telefonoInstitucion, setTelefonoInstitucion] = useState('');
+  const [institutions, setInstitutions] = useState([]);
+
+  useEffect(() => {
+    getInstituciones()
+      .then((response) => {
+        const lista = response.success && Array.isArray(response.response.instituciones)
+          ? response.response.instituciones.map((i) => ({ mark: i.mark, color: i.color, name: i.name, sub: i.sub }))
+          : [];
+        setInstitutions(lista);
+      })
+      .catch((error) => { console.error('Error al obtener las instituciones:', error); setInstitutions([]); });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,7 +94,7 @@ export default function PracticasSection() {
         <div ref={instRef} className={`${styles.pracInstitutions} jas-reveal ${instIn ? 'jas-in' : ''}`}>
           <div className={styles.pracInstLabel}>— Instituciones que confían en nosotros</div>
           <div className={styles.pracLogos}>
-            {INSTITUTIONS.map((inst) => (
+            {institutions.map((inst) => (
               <div key={inst.name} className={styles.pracLogo}>
                 <div className={styles.pracLogoMark} style={{ background: inst.color, color: '#fff' }}>{inst.mark}</div>
                 <div>

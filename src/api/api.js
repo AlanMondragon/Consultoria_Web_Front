@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 import apiClient from './apiClient';
 
 // =============================================================================
@@ -538,12 +539,8 @@ export const tramitesPorId = async (id) => {
 };
 
 export const deleteTRansactProgress = async (id) => {
-  try {
-    const response = await apiClient.delete(`/progress/delete/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await apiClient.delete(`/progress/delete/${id}`);
+  return response.data;
 }
 
 export const cancelarCita = async (id) => {
@@ -792,6 +789,40 @@ export const eliminarTestimonio = async (idTestimonio) => {
     return response.data;
   } catch (error) {
     console.error('Error al eliminar el testimonio', error);
+    throw error;
+  }
+};
+
+// =============================================================================
+// INSTITUCIONES (logos de Prácticas profesionales, landing pública)
+// =============================================================================
+
+export const getInstituciones = async () => {
+  try {
+    const response = await apiClient.get(`/instituciones`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las instituciones', error);
+    throw error;
+  }
+};
+
+export const crearInstitucion = async (datos) => {
+  try {
+    const response = await apiClient.post(`/instituciones`, datos);
+    return response.data;
+  } catch (error) {
+    console.error('Error al agregar la institución', error);
+    throw error;
+  }
+};
+
+export const eliminarInstitucion = async (idInstitucion) => {
+  try {
+    const response = await apiClient.delete(`/instituciones/${idInstitucion}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar la institución', error);
     throw error;
   }
 };
