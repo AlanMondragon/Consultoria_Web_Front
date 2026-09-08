@@ -5,26 +5,31 @@ import Swal from 'sweetalert2';
 import EmpresaSidebar from './EmpresaSidebar.jsx';
 import styles from './../../styles/EmpresaPracticas.module.css';
 import HeaderLogoutButton from './../common/HeaderLogoutButton.jsx';
-import { getInstituciones, crearInstitucion, eliminarInstitucion as eliminarInstitucionAPI, publicarInstituciones as publicarInstitucionesAPI } from './../../api/api.js';
+import { getInstituciones, crearInstitucion, eliminarInstitucion as eliminarInstitucionAPI, publicarInstituciones as publicarInstitucionesAPI, getSolicitudesPracticas, eliminarSolicitudPractica as eliminarSolicitudPracticaAPI } from './../../api/api.js';
 
 // Extraído 1:1 de "17-Practicas (standalone).html" y del modal "Nueva
-// institución" agregado en "17-Practicas (standalone) (1).html". El
-// backend no tiene ninguna entidad de "solicitudes de prácticas" — el
-// formulario público de Prácticas (PracticasSection.jsx en la landing)
-// solo envía un correo, no persiste nada — así que no existe ninguna
-// fuente real de solicitudes que mostrar aquí. La bandeja de
-// "Solicitudes" sigue usando datos de ejemplo del mockup (eliminar es
-// solo local). El tab "Instituciones" sí es real: viene de
-// GET /api/instituciones (ver InstitucionController en el backend), la
-// misma fuente que lee PracticasSection.jsx en la landing pública.
+// institución" agregado en "17-Practicas (standalone) (1).html". Ambos tabs
+// son reales: "Solicitudes recibidas" viene de GET /api/solicitudes-practicas
+// (ver SolicitudPracticaController en el backend), llenado por el
+// formulario público de Prácticas (PracticasSection.jsx en la landing).
+// "Instituciones" viene de GET /api/instituciones, misma fuente que lee
+// PracticasSection.jsx para los logos de la landing pública.
 
-const SOLICITUDES_INICIALES = [
-  { id: 1, nombre: 'Dahiane Ayala', nueva: true, whatsapp: '777 145 2230', institucion: 'UTEZ', correoInst: 'vinculacion@utez.edu.mx', telInst: '777 367 9700', gradiente: 'linear-gradient(135deg,#6FAEDB,#4E6A9C)' },
-  { id: 2, nombre: 'Roberto Guzmán', nueva: true, whatsapp: '777 588 1144', institucion: 'UPEMOR', correoInst: 'practicas@upemor.edu.mx', telInst: '777 362 1100', gradiente: 'linear-gradient(135deg,#7ec286,#2c7a3f)' },
-  { id: 3, nombre: 'Mariana Cortés', nueva: false, whatsapp: '777 901 3322', institucion: 'UAEM', correoInst: 'servicio.social@uaem.mx', telInst: '777 329 7000', gradiente: 'linear-gradient(135deg,#fbd28b,#e89e3b)' },
-  { id: 4, nombre: 'José Luis Mora', nueva: false, whatsapp: '777 410 5567', institucion: 'TecNM', correoInst: 'vinculacion@cuernavaca.tecnm.mx', telInst: '777 312 2314', gradiente: 'linear-gradient(135deg,#b89dc8,#6b3e8c)' },
-  { id: 5, nombre: 'Ana Patricia Ruiz', nueva: false, whatsapp: '777 776 8890', institucion: 'UTEZ', correoInst: 'vinculacion@utez.edu.mx', telInst: '777 367 9700', gradiente: 'linear-gradient(135deg,#e89a7c,#c25a2e)' },
+const GRADIENTES_AVATAR = [
+  'linear-gradient(135deg,#6FAEDB,#4E6A9C)',
+  'linear-gradient(135deg,#7ec286,#2c7a3f)',
+  'linear-gradient(135deg,#fbd28b,#e89e3b)',
+  'linear-gradient(135deg,#b89dc8,#6b3e8c)',
+  'linear-gradient(135deg,#e89a7c,#c25a2e)',
 ];
+
+// "Nueva" = registrada en los últimos 7 días (createdAt es "yyyy-MM-dd HH:mm:ss").
+function esSolicitudNueva(createdAt) {
+  if (!createdAt) return false;
+  const fecha = new Date(createdAt.replace(' ', 'T'));
+  if (Number.isNaN(fecha.getTime())) return false;
+  return Date.now() - fecha.getTime() <= 7 * 24 * 60 * 60 * 1000;
+}
 
 
 function IconSearch() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--muted)' }}><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>; }
@@ -50,7 +55,7 @@ export default function EmpresaPracticas() {
   const navigate = useNavigate();
   const [tab, setTab] = useState('solicitudes');
   const [busqueda, setBusqueda] = useState('');
-  const [solicitudes, setSolicitudes] = useState(SOLICITUDES_INICIALES);
+  const [solicitudes, setSolicitudes] = useState([]);
   const [detalleAbierto, setDetalleAbierto] = useState(null);
   const [eliminando, setEliminando] = useState(null);
   const [instituciones, setInstituciones] = useState([]);
@@ -72,6 +77,30 @@ export default function EmpresaPracticas() {
       navigate('/');
     }
   }, [navigate]);
+
+  const cargarSolicitudes = () => {
+    getSolicitudesPracticas()
+      .then((response) => {
+        const lista = response.success && Array.isArray(response.response.solicitudes)
+          ? response.response.solicitudes.map((s, i) => ({
+              id: s.idSolicitud,
+              nombre: s.nombre,
+              nueva: esSolicitudNueva(s.createdAt),
+              whatsapp: s.whatsapp,
+              institucion: s.institucion,
+              correoInst: s.correoInstitucion,
+              telInst: s.telefonoInstitucion,
+              gradiente: GRADIENTES_AVATAR[i % GRADIENTES_AVATAR.length],
+            }))
+          : [];
+        setSolicitudes(lista);
+      })
+      .catch((error) => { console.error('Error al obtener las solicitudes de prácticas:', error); setSolicitudes([]); });
+  };
+
+  useEffect(() => {
+    cargarSolicitudes();
+  }, []);
 
   const cargarInstituciones = () => {
     getInstituciones()
@@ -97,10 +126,19 @@ export default function EmpresaPracticas() {
   const nuevasEstaSemana = useMemo(() => solicitudes.filter((s) => s.nueva).length, [solicitudes]);
   const institucionesDistintas = useMemo(() => new Set(solicitudes.map((s) => s.institucion)).size, [solicitudes]);
 
-  const handleEliminarSolicitud = () => {
+  const handleEliminarSolicitud = async () => {
     if (!eliminando) return;
-    setSolicitudes((prev) => prev.filter((s) => s.id !== eliminando.id));
+    const previas = solicitudes;
+    const idEliminando = eliminando.id;
+    setSolicitudes((prev) => prev.filter((s) => s.id !== idEliminando));
     setEliminando(null);
+    try {
+      await eliminarSolicitudPracticaAPI(idEliminando);
+    } catch (error) {
+      console.error('Error al eliminar la solicitud', error);
+      setSolicitudes(previas);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar la solicitud.' });
+    }
   };
 
   const handleEliminarInstitucion = async (id) => {

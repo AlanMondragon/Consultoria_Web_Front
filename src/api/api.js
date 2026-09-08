@@ -838,6 +838,40 @@ export const publicarInstituciones = async () => {
 };
 
 // =============================================================================
+// SOLICITUDES DE PRÁCTICAS PROFESIONALES
+// =============================================================================
+
+export const crearSolicitudPractica = async (datos) => {
+  try {
+    const response = await apiClient.post(`/solicitudes-practicas`, datos);
+    return response.data;
+  } catch (error) {
+    console.error('Error al registrar la solicitud de prácticas', error);
+    throw error;
+  }
+};
+
+export const getSolicitudesPracticas = async () => {
+  try {
+    const response = await apiClient.get(`/solicitudes-practicas`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las solicitudes de prácticas', error);
+    throw error;
+  }
+};
+
+export const eliminarSolicitudPractica = async (idSolicitud) => {
+  try {
+    const response = await apiClient.delete(`/solicitudes-practicas/${idSolicitud}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar la solicitud de prácticas', error);
+    throw error;
+  }
+};
+
+// =============================================================================
 // CONFIGURACIÓN DE PÁGINA PÚBLICA
 // =============================================================================
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import useReveal from "../../hooks/useReveal";
-import { enviarCorreoConDatos, getPdfLegalUrl, getInstituciones } from "../../api/api.js";
+import { enviarCorreoConDatos, getPdfLegalUrl, getInstituciones, crearSolicitudPractica } from "../../api/api.js";
 import styles from '../../styles/landing/PracticasSection.module.css';
 
 const DESTINO_PRACTICAS = 'recursoshumanos@consultoriajas.com';
@@ -64,10 +64,15 @@ export default function PracticasSection() {
       </div>`;
 
     try {
-      await enviarCorreoConDatos(DESTINO_PRACTICAS, asunto, mensaje);
+      await crearSolicitudPractica({ nombre, whatsapp, institucion, correoInstitucion, telefonoInstitucion });
+      try {
+        await enviarCorreoConDatos(DESTINO_PRACTICAS, asunto, mensaje);
+      } catch (emailError) {
+        console.error('La solicitud se guardó pero el correo de aviso falló:', emailError);
+      }
       setSubmitted(true);
     } catch (error) {
-      console.error('Error al enviar solicitud de prácticas:', error);
+      console.error('Error al registrar la solicitud de prácticas:', error);
       Swal.fire({
         icon: 'error',
         title: 'No se pudo enviar tu solicitud',
