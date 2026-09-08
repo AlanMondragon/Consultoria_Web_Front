@@ -827,6 +827,16 @@ export const eliminarInstitucion = async (idInstitucion) => {
   }
 };
 
+export const publicarInstituciones = async () => {
+  try {
+    const response = await apiClient.post(`/instituciones/publicar`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al publicar las instituciones', error);
+    throw error;
+  }
+};
+
 // =============================================================================
 // CONFIGURACIÓN DE PÁGINA PÚBLICA
 // =============================================================================

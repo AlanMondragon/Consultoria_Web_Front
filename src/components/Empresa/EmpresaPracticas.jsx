@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import EmpresaSidebar from './EmpresaSidebar.jsx';
 import styles from './../../styles/EmpresaPracticas.module.css';
 import HeaderLogoutButton from './../common/HeaderLogoutButton.jsx';
-import { getInstituciones, crearInstitucion, eliminarInstitucion as eliminarInstitucionAPI } from './../../api/api.js';
+import { getInstituciones, crearInstitucion, eliminarInstitucion as eliminarInstitucionAPI, publicarInstituciones as publicarInstitucionesAPI } from './../../api/api.js';
 
 // Extraído 1:1 de "17-Practicas (standalone).html" y del modal "Nueva
 // institución" agregado en "17-Practicas (standalone) (1).html". El
@@ -58,6 +58,7 @@ export default function EmpresaPracticas() {
   const [nuevoNombreCorto, setNuevoNombreCorto] = useState('');
   const [nuevoNombreCompleto, setNuevoNombreCompleto] = useState('');
   const [guardandoInstitucion, setGuardandoInstitucion] = useState(false);
+  const [publicando, setPublicando] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -72,15 +73,19 @@ export default function EmpresaPracticas() {
     }
   }, [navigate]);
 
-  useEffect(() => {
+  const cargarInstituciones = () => {
     getInstituciones()
       .then((response) => {
         const lista = response.success && Array.isArray(response.response.instituciones)
-          ? response.response.instituciones.map((i) => ({ id: i.idInstitucion, mark: i.mark, color: i.color, name: i.name, sub: i.sub }))
+          ? response.response.instituciones.map((i) => ({ id: i.idInstitucion, mark: i.mark, color: i.color, name: i.name, sub: i.sub, published: i.published }))
           : [];
         setInstituciones(lista);
       })
       .catch((error) => { console.error('Error al obtener las instituciones:', error); setInstituciones([]); });
+  };
+
+  useEffect(() => {
+    cargarInstituciones();
   }, []);
 
   const handleNavigate = (key) => { console.log('Navegar a sección de sidebar:', key); };
@@ -110,6 +115,28 @@ export default function EmpresaPracticas() {
     }
   };
 
+  const handlePublicarInstituciones = async () => {
+    setPublicando(true);
+    try {
+      await publicarInstitucionesAPI();
+      cargarInstituciones();
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Cambios publicados',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+      });
+    } catch (error) {
+      console.error('Error al publicar las instituciones', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron publicar los cambios.' });
+    } finally {
+      setPublicando(false);
+    }
+  };
+
   const abrirAgregarInstitucion = () => {
     setNuevoNombreCorto('');
     setNuevoNombreCompleto('');
@@ -126,11 +153,8 @@ export default function EmpresaPracticas() {
     const color = colores[instituciones.length % colores.length];
     setGuardandoInstitucion(true);
     try {
-      const response = await crearInstitucion({ mark: name[0].toUpperCase(), color, name, sub });
-      const nueva = response.response?.institucion;
-      if (nueva) {
-        setInstituciones((prev) => [...prev, { id: nueva.idInstitucion, mark: nueva.mark, color: nueva.color, name: nueva.name, sub: nueva.sub }]);
-      }
+      await crearInstitucion({ mark: name[0].toUpperCase(), color, name, sub });
+      cargarInstituciones();
       setAgregarAbierto(false);
     } catch (error) {
       console.error('Error al agregar la institución', error);
@@ -242,11 +266,24 @@ export default function EmpresaPracticas() {
                     <div className={styles.tblTitle}>Logos de instituciones</div>
                     <div className={styles.tblSub}>Se muestran en la sección de Prácticas de la landing</div>
                   </div>
+                  <button
+                    className={styles.btn}
+                    style={{ background: 'var(--green)', color: '#fff' }}
+                    onClick={handlePublicarInstituciones}
+                    disabled={publicando}
+                  >
+                    {publicando ? 'Publicando...' : 'Publicar cambios'}
+                  </button>
                 </div>
                 <div className={styles.logosGrid}>
                   {instituciones.map((inst) => (
                     <div key={inst.id} className={styles.logoCard}>
                       <button className={styles.logoDel} title="Eliminar" onClick={() => handleEliminarInstitucion(inst.id)}><IconTrashSm size={14} /></button>
+                      {!inst.published && (
+                        <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999, background: 'var(--amber)', color: '#fff' }}>
+                          Borrador
+                        </span>
+                      )}
                       <div className={styles.logoMark} style={{ background: inst.color }}>{inst.mark}</div>
                       <div>
                         <div className={styles.logoName}>{inst.name}</div>
