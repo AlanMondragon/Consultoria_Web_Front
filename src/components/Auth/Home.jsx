@@ -107,7 +107,7 @@ export default function Home() {
     setErrorMsg('');
     setSubmitting(true);
     try {
-      const response = await Login(email, password);
+      const response = await Login(email.trim().toLowerCase(), password);
       const data = response.response;
 
       if (!data.token) {
@@ -266,7 +266,7 @@ export default function Home() {
             <div className={styles.errorBanner}>
               <div className={styles.errorIcon}><AlertIcon /></div>
               <div className={styles.errorText}>
-                <div className={styles.errorTitle}>Credenciales incorrectas</div>
+                <div className={styles.errorTitle}>No se pudo iniciar sesión</div>
                 <div className={styles.errorDesc}>{errorMsg}</div>
               </div>
               <button type="button" className={styles.errorClose} aria-label="Cerrar" onClick={() => setErrorMsg('')}>
