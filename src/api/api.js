@@ -159,6 +159,16 @@ export const archivarCliente = async (id_user, archivado) => {
   }
 };
 
+export const asignarEncargadoCliente = async (idUser, idEncargado) => {
+  try {
+    const response = await apiClient.put(`/users/${idUser}/encargado`, { idEncargado });
+    return response.data;
+  } catch (error) {
+    console.error("Error al asignar el encargado", error);
+    throw error;
+  }
+};
+
 export const actualizar = async (idUser, datosActualizados) => {
   try {
     const response = await apiClient.put(`/users/${idUser}`, {

@@ -3,18 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import EmpresaSidebar from './EmpresaSidebar.jsx';
-import { listarEncargados, actualizarStatusCliente, archivarCliente, clientes as clientesAPI } from './../../api/api.js';
+import { listarEncargados, actualizarStatusCliente, archivarCliente, clientes as clientesAPI, asignarEncargadoCliente } from './../../api/api.js';
 import ModalAdmin from '../Administrador/ModalAdmin.jsx';
 import modalStyles from './../../styles/ClienteModal.module.css';
 import styles from './../../styles/EmpresaAdmins.module.css';
 import HeaderLogoutButton from './../common/HeaderLogoutButton.jsx';
 
 // Extraído 1:1 de "16-Admins (standalone).html". El botón "Ver clientes"
-// abre un modal con reasignar/quitar/agregar cliente, pero no existe
-// ninguna relación cliente↔admin en el backend (User no tiene ese campo):
-// el modal muestra todos los clientes reales del sistema (no se puede
-// filtrar por admin) y reasignar/quitar/agregar son solo visuales, sin
-// persistir nada — igual que "Cita externa" en el Calendario.
+// abre un modal con reasignar/quitar/agregar cliente; reasignar/quitar/
+// agregar llaman a PUT /users/{id}/encargado y persisten de verdad
+// (User.encargado, ver migration_encargado_cliente.sql).
 // El botón "Eliminar" del mockup no tiene endpoint DELETE real; por debajo
 // usa "archivar" (PUT /users/{id}/archive), el mismo mecanismo de
 // soft-delete que ya usa EmpresaClientes.jsx, pero el texto de la UI
@@ -167,7 +165,7 @@ export default function EmpresaAdmins() {
       const response = await clientesAPI();
       const lista = response.success && Array.isArray(response.response.users) ? response.response.users : [];
       setTodosClientes(lista);
-      setClientesVisiblesIds(lista.map((c) => c.idUser));
+      setClientesVisiblesIds(lista.filter((c) => c.encargadoId === admin.idUser).map((c) => c.idUser));
     } catch (error) {
       console.error('Error al obtener clientes:', error);
       setTodosClientes([]);
@@ -175,13 +173,40 @@ export default function EmpresaAdmins() {
     }
   };
 
-  const handleQuitarCliente = (idUser) => {
-    setClientesVisiblesIds((prev) => prev.filter((id) => id !== idUser));
+  const handleQuitarCliente = async (idUser) => {
+    try {
+      await asignarEncargadoCliente(idUser, null);
+      setClientesVisiblesIds((prev) => prev.filter((id) => id !== idUser));
+      setTodosClientes((prev) => prev.map((c) => (c.idUser === idUser ? { ...c, encargadoId: null, encargadoName: null } : c)));
+    } catch (error) {
+      console.error('Error al quitar la asignación', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo quitar la asignación.' });
+    }
   };
 
-  const handleAgregarCliente = (idUser) => {
-    setClientesVisiblesIds((prev) => (prev.includes(idUser) ? prev : [...prev, idUser]));
-    setAddMenuAbierto(false);
+  const handleAgregarCliente = async (idUser) => {
+    if (!adminClientesSel) return;
+    try {
+      await asignarEncargadoCliente(idUser, adminClientesSel.idUser);
+      setClientesVisiblesIds((prev) => (prev.includes(idUser) ? prev : [...prev, idUser]));
+      setTodosClientes((prev) => prev.map((c) => (c.idUser === idUser ? { ...c, encargadoId: adminClientesSel.idUser, encargadoName: adminClientesSel.name } : c)));
+      setAddMenuAbierto(false);
+    } catch (error) {
+      console.error('Error al agregar el cliente', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo asignar el cliente.' });
+    }
+  };
+
+  const handleReasignarCliente = async (idUser, nuevoIdAdmin) => {
+    try {
+      await asignarEncargadoCliente(idUser, nuevoIdAdmin);
+      setClientesVisiblesIds((prev) => prev.filter((id) => id !== idUser));
+      const nuevoAdmin = otrosAdmins.find((a) => String(a.idUser) === String(nuevoIdAdmin));
+      setTodosClientes((prev) => prev.map((c) => (c.idUser === idUser ? { ...c, encargadoId: nuevoAdmin?.idUser ?? null, encargadoName: nuevoAdmin?.name ?? null } : c)));
+    } catch (error) {
+      console.error('Error al reasignar el cliente', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo reasignar el cliente.' });
+    }
   };
 
   const clientesVisibles = useMemo(() =>
@@ -190,8 +215,8 @@ export default function EmpresaAdmins() {
     ), [todosClientes, clientesVisiblesIds, busquedaCli]);
 
   const clientesSinAsignar = useMemo(() =>
-    todosClientes.filter((c) => !clientesVisiblesIds.includes(c.idUser)),
-    [todosClientes, clientesVisiblesIds]);
+    todosClientes.filter((c) => !c.encargadoId),
+    [todosClientes]);
 
   const otrosAdmins = useMemo(() =>
     noArchivados.filter((a) => a.idUser !== adminClientesSel?.idUser),
@@ -355,9 +380,8 @@ export default function EmpresaAdmins() {
         </div>
       )}
 
-      {/* Modal "Ver clientes" - extraído 1:1 del mockup. Sin backend real de
-          asignación: muestra todos los clientes del sistema; reasignar/
-          quitar/agregar son solo visuales, no persisten nada. */}
+      {/* Modal "Ver clientes" - extraído 1:1 del mockup. Reasignar/quitar/
+          agregar persisten vía PUT /users/{id}/encargado. */}
       {modalClientesAbierto && adminClientesSel && (
         <div className={modalStyles.scrim} onMouseDown={(e) => { if (e.target === e.currentTarget) setModalClientesAbierto(false); }}>
           <div className={modalStyles.modal} style={{ maxWidth: 760 }}>
@@ -428,7 +452,9 @@ export default function EmpresaAdmins() {
                         </td>
                         <td><span className={styles.cellMuted}>{c.email}</span></td>
                         <td>
-                          <select className={styles.reassign} defaultValue="mantener">
+                          <select className={styles.reassign} value="mantener" onChange={(e) => {
+                            if (e.target.value !== 'mantener') handleReasignarCliente(c.idUser, e.target.value);
+                          }}>
                             <option value="mantener">Mantener · {adminClientesSel.name.split(' ')[0]}</option>
                             {otrosAdmins.map((a) => (
                               <option key={a.idUser} value={a.idUser}>Reasignar a {a.name.split(' ')[0]}</option>
