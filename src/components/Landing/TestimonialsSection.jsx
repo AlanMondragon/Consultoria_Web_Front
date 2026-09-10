@@ -11,11 +11,21 @@ function IconPlay() {
   );
 }
 
+function IconArrowLeft() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>;
+}
+function IconArrowRight() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>;
+}
+
+const POR_PAGINA = 8;
+
 export default function TestimonialsSection() {
   const [headerRef, headerIn] = useReveal();
   const [gridRef, gridIn] = useReveal();
   const [testimonios, setTestimonios] = useState([]);
   const [zoomImg, setZoomImg] = useState(null);
+  const [pagina, setPagina] = useState(0);
 
   useEffect(() => {
     let activo = true;
@@ -31,6 +41,8 @@ export default function TestimonialsSection() {
       });
     return () => { activo = false; };
   }, []);
+
+  const totalPaginas = Math.max(1, Math.ceil(testimonios.length / POR_PAGINA));
 
   return (
     <section className={styles.testimonials} id="testimonios" style={testimonios.length === 0 ? { display: 'none' } : undefined}>
@@ -57,7 +69,7 @@ export default function TestimonialsSection() {
         </div>
 
         <div ref={gridRef} className={`${styles.videoGrid} jas-reveal ${gridIn ? 'jas-in' : ''}`}>
-          {testimonios.map((t) => (
+          {testimonios.slice(pagina * POR_PAGINA, pagina * POR_PAGINA + POR_PAGINA).map((t) => (
             <div key={t.idTestimonio} className={styles.videoCard} onClick={() => setZoomImg(t.image)}>
               <div className={styles.vtImg} style={{ backgroundImage: `url("${t.image}")` }}></div>
               <div className={styles.videoPlay}><IconPlay /></div>
@@ -67,6 +79,27 @@ export default function TestimonialsSection() {
             </div>
           ))}
         </div>
+
+        {totalPaginas > 1 && (
+          <div className={styles.testNav}>
+            <button
+              className={styles.tnavBtn}
+              onClick={() => setPagina((p) => Math.max(0, p - 1))}
+              disabled={pagina === 0}
+              aria-label="Anteriores"
+            >
+              <IconArrowLeft />
+            </button>
+            <button
+              className={styles.tnavBtn}
+              onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
+              disabled={pagina === totalPaginas - 1}
+              aria-label="Siguientes"
+            >
+              <IconArrowRight />
+            </button>
+          </div>
+        )}
       </div>
 
       {zoomImg && (

@@ -49,6 +49,34 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 }
+.testNav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+.tnavBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(228, 236, 240, 0.25);
+  background: rgba(228, 236, 240, 0.06);
+  color: var(--c5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.tnavBtn:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--c1);
+  border-color: var(--accent);
+}
+.tnavBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
 .videoCard {
   position: relative;
   aspect-ratio: 9 / 14;

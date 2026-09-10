@@ -563,7 +563,7 @@ export default function EmpresaPaginaPublica() {
               <div className={styles.card}>
                 <div className={styles.cardHead}>
                   <div className={styles.cardIcon}><IconPlay /></div>
-                  <div><div className={styles.cardTitle}>Galería de testimonios</div><div className={styles.cardSub}>Capturas y videos de clientes · {testimonios.length}/8</div></div>
+                  <div><div className={styles.cardTitle}>Galería de testimonios</div><div className={styles.cardSub}>Capturas y videos de clientes · {testimonios.length} · se muestran de a 8 en la landing</div></div>
                 </div>
                 <div className={styles.cardBody}>
                   {testimoniosCargando ? (
@@ -576,26 +576,18 @@ export default function EmpresaPaginaPublica() {
                           <button className={styles.testDel} title="Eliminar" onClick={() => handleEliminarTestimonio(t.id)}><IconClose size={12} /></button>
                         </div>
                       ))}
-                      {testimonios.length >= 8 ? (
-                        <div className={styles.testAdd} style={{ opacity: 0.5, cursor: 'default' }}>
-                          <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center' }}>Máximo alcanzado (8/8)</span>
-                        </div>
-                      ) : (
-                        <>
-                          <label className={`${styles.testAdd} ${testimonioSubiendo ? styles.disabled : ''}`} htmlFor="upload-testimonio">
-                            <IconPlus size={20} />
-                            <span style={{ fontSize: 11, fontWeight: 600 }}>{testimonioSubiendo ? 'Subiendo...' : 'Subir'}</span>
-                          </label>
-                          <input
-                            id="upload-testimonio" type="file" accept="image/*" hidden disabled={testimonioSubiendo}
-                            onChange={async (e) => {
-                              const file = e.target.files[0];
-                              e.target.value = '';
-                              if (file) await handleSubirTestimonio(file);
-                            }}
-                          />
-                        </>
-                      )}
+                      <label className={`${styles.testAdd} ${testimonioSubiendo ? styles.disabled : ''}`} htmlFor="upload-testimonio">
+                        <IconPlus size={20} />
+                        <span style={{ fontSize: 11, fontWeight: 600 }}>{testimonioSubiendo ? 'Subiendo...' : 'Subir'}</span>
+                      </label>
+                      <input
+                        id="upload-testimonio" type="file" accept="image/*" hidden disabled={testimonioSubiendo}
+                        onChange={async (e) => {
+                          const file = e.target.files[0];
+                          e.target.value = '';
+                          if (file) await handleSubirTestimonio(file);
+                        }}
+                      />
                     </div>
                   )}
                 </div>
