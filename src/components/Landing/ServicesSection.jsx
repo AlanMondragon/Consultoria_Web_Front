@@ -49,7 +49,7 @@ function cleanDescription(text) {
   return text.replace(/•/g, '').replace(/\s{2,}/g, ' ').trim();
 }
 
-export default function ServicesSection({ services, handleOpenDetailsModal, handleOpenStepsModal, singint }) {
+export default function ServicesSection({ services, handleOpenDetailsModal, handleOpenStepsModal, singint, highlightServiceId }) {
   const [headerRef, headerIn] = useReveal();
   const [bentoRef, bentoIn] = useReveal();
 
@@ -75,7 +75,8 @@ export default function ServicesSection({ services, handleOpenDetailsModal, hand
             return (
               <div
                 key={service.idTransact}
-                className={`${styles.bentoCard} ${isFeatured ? styles.featured : ''}`}
+                id={`servicio-${service.idTransact}`}
+                className={`${styles.bentoCard} ${isFeatured ? styles.featured : ''} ${service.idTransact === highlightServiceId ? styles.highlighted : ''}`}
               >
                 {isFeatured && <div className={styles.bentoImg}></div>}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isFeatured ? 'start' : undefined }}>

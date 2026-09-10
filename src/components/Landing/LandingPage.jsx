@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAllProcess, getStepById, getPaginaPublicaConfig } from './../../api/api.js';
 import ServiceDetailsModal from './../Cliente/Modals/ServiceDetailsModal.jsx';
 import StepsModal from './../Cliente/Modals/StepsModal.jsx';
@@ -35,6 +35,9 @@ export default function LandingPage() {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedServiceForPayment, setSelectedServiceForPayment] = useState(null);
   const [servicioDestacadoId, setServicioDestacadoId] = useState(null);
+  const [destinoServicios, setDestinoServicios] = useState({});
+  const [highlightServiceId, setHighlightServiceId] = useState(null);
+  const highlightTimeoutRef = useRef(null);
 
   // Servicio destacado: se elige en Empresa > Página pública > Servicios.
   // No reordena `services` directamente (evita condiciones de carrera con
@@ -42,12 +45,39 @@ export default function LandingPage() {
   useEffect(() => {
     getPaginaPublicaConfig()
       .then((response) => {
-        if (response.success && response.response?.config?.servicioDestacadoId != null) {
-          setServicioDestacadoId(response.response.config.servicioDestacadoId);
-        }
+        if (!response.success || !response.response?.config) return;
+        const c = response.response.config;
+        if (c.servicioDestacadoId != null) setServicioDestacadoId(c.servicioDestacadoId);
+        setDestinoServicios({
+          visaUsa: c.servicioVisaUsa ?? null,
+          visaIndia: c.servicioVisaIndia ?? null,
+          visaEgipto: c.servicioVisaEgipto ?? null,
+          etaCanada: c.servicioEtaCanada ?? null,
+        });
       })
       .catch((error) => console.error('Error al obtener configuración de página pública:', error));
   }, []);
+
+  const DESTINO_BADGE_TO_KEY = {
+    'Visa Americana': 'visaUsa',
+    'Visa India': 'visaIndia',
+    'Visa Egipto': 'visaEgipto',
+    'eTA Canadá': 'etaCanada',
+  };
+
+  const handleDestinoClick = (badge) => {
+    const key = DESTINO_BADGE_TO_KEY[badge];
+    const targetId = key ? destinoServicios[key] : null;
+    if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+    if (targetId) {
+      setHighlightServiceId(targetId);
+      document.getElementById(`servicio-${targetId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      highlightTimeoutRef.current = setTimeout(() => setHighlightServiceId(null), 2500);
+    } else {
+      setHighlightServiceId(null);
+      document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const orderedServices = servicioDestacadoId != null
     ? [...services].sort((a, b) => {
@@ -197,7 +227,7 @@ export default function LandingPage() {
     />
 
     <main>
-      <HeroSection />
+      <HeroSection onDestinoClick={handleDestinoClick} />
 
       <MarqueeSection />
 
@@ -206,6 +236,7 @@ export default function LandingPage() {
         handleOpenDetailsModal={handleOpenDetailsModal}
         handleOpenStepsModal={handleOpenStepsModal}
         singint={handleOpenPaymentModal}
+        highlightServiceId={highlightServiceId}
       />
 
       <AboutSection />

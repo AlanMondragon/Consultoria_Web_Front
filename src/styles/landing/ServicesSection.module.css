@@ -40,6 +40,10 @@
   background: rgba(228, 236, 240, 0.04);
   border: 1px solid rgba(228, 236, 240, 0.10);
 }
+.highlighted {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb, 47, 186, 214), 0.25);
+}
 .bentoCard:hover {
   transform: translateY(-4px);
   border-color: rgba(228, 236, 240, 0.25);

@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import useReveal from "../../hooks/useReveal";
-import { enviarCorreoConDatos, crearAsesoria } from "../../api/api.js";
+import { enviarCorreoConDatos, crearAsesoria, getHorarios } from "../../api/api.js";
 import styles from '../../styles/landing/AgendaSection.module.css';
 
 const DESTINO_AGENDA = 'direcciongeneral@consultoriajas.com';
+
+function formatearHora12h(hora) {
+  const [hStr, mStr] = hora.split(':');
+  const h = parseInt(hStr, 10);
+  const suffix = h < 12 ? 'AM' : 'PM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${mStr} ${suffix}`;
+}
 
 function ArrowIcon() {
   return (
@@ -23,6 +31,22 @@ export default function AgendaSection() {
   const [telefono, setTelefono] = useState('');
   const [fecha, setFecha] = useState('');
   const [enviando, setEnviando] = useState(false);
+  const [horasDisponibles, setHorasDisponibles] = useState([]);
+
+  useEffect(() => {
+    let activo = true;
+    getHorarios()
+      .then((response) => {
+        if (!activo || !response.success) return;
+        const horas = response.response?.horarios?.ATENCION_REMOTA?.horas;
+        setHorasDisponibles(Array.isArray(horas) ? [...horas].sort() : []);
+      })
+      .catch((error) => console.error('Error al obtener horarios:', error));
+    return () => { activo = false; };
+  }, []);
+
+  const horasAM = horasDisponibles.filter((h) => parseInt(h.split(':')[0], 10) < 12);
+  const horasPM = horasDisponibles.filter((h) => parseInt(h.split(':')[0], 10) >= 12);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,7 +147,14 @@ export default function AgendaSection() {
               <div className={styles.agField}>
                 <label className={styles.agLabel}>Fecha <span className={styles.req}>*</span></label>
                 <div className={styles.agInpWrap}>
-                  <input className={`${styles.agInp} ${styles.agInpNoLeadIcon}`} type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required />
+                  <input
+                    className={`${styles.agInp} ${styles.agInpNoLeadIcon}`}
+                    type="date"
+                    min={new Date().toISOString().slice(0, 10)}
+                    value={fecha}
+                    onChange={(e) => setFecha(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
               <div className={styles.agField}>
@@ -132,12 +163,23 @@ export default function AgendaSection() {
                   <span className={styles.agInpIcon}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                   </span>
-                  <input
-                    className={`${styles.agInp} ${!hora ? styles.agInpTimeEmpty : ''}`}
-                    type="time"
+                  <select
+                    className={styles.agInp}
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
-                  />
+                  >
+                    <option value="">Selecciona una hora</option>
+                    {horasAM.length > 0 && (
+                      <optgroup label="AM">
+                        {horasAM.map((h) => <option key={h} value={h}>{formatearHora12h(h)}</option>)}
+                      </optgroup>
+                    )}
+                    {horasPM.length > 0 && (
+                      <optgroup label="PM">
+                        {horasPM.map((h) => <option key={h} value={h}>{formatearHora12h(h)}</option>)}
+                      </optgroup>
+                    )}
+                  </select>
                 </div>
               </div>
             </div>

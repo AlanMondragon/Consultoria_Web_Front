@@ -112,6 +112,10 @@ export default function EmpresaPaginaPublica() {
   // Servicios (real: ServicesSection.jsx)
   const [servicios, setServicios] = useState([]);
   const [servicioDestacadoId, setServicioDestacadoId] = useState('');
+  const [servicioVisaUsa, setServicioVisaUsa] = useState('');
+  const [servicioVisaIndia, setServicioVisaIndia] = useState('');
+  const [servicioVisaEgipto, setServicioVisaEgipto] = useState('');
+  const [servicioEtaCanada, setServicioEtaCanada] = useState('');
   const [imgServicioPreview, setImgServicioPreview] = useState(null);
   const [tasaAprobacion, setTasaAprobacion] = useState('');
   const [telServicios, setTelServicios] = useState('');
@@ -152,6 +156,10 @@ export default function EmpresaPaginaPublica() {
       setHeroUbicaciones((c.heroUbicaciones || []).map((texto, i) => ({ id: i + 1, texto })));
       setHeroTelefono(c.heroTelefono || '');
       if (c.servicioDestacadoId != null) setServicioDestacadoId(String(c.servicioDestacadoId));
+      if (c.servicioVisaUsa != null) setServicioVisaUsa(String(c.servicioVisaUsa));
+      if (c.servicioVisaIndia != null) setServicioVisaIndia(String(c.servicioVisaIndia));
+      if (c.servicioVisaEgipto != null) setServicioVisaEgipto(String(c.servicioVisaEgipto));
+      if (c.servicioEtaCanada != null) setServicioEtaCanada(String(c.servicioEtaCanada));
       setTasaAprobacion(c.tasaAprobacion || '');
       setTelServicios(c.telServicios || '');
       setImgNosotrosPreview(c.imgNosotros || null);
@@ -238,6 +246,10 @@ export default function EmpresaPaginaPublica() {
         heroTelefono,
         heroUbicaciones: heroUbicaciones.map((u) => u.texto),
         servicioDestacadoId: servicioDestacadoId ? Number(servicioDestacadoId) : null,
+        servicioVisaUsa: servicioVisaUsa ? Number(servicioVisaUsa) : null,
+        servicioVisaIndia: servicioVisaIndia ? Number(servicioVisaIndia) : null,
+        servicioVisaEgipto: servicioVisaEgipto ? Number(servicioVisaEgipto) : null,
+        servicioEtaCanada: servicioEtaCanada ? Number(servicioEtaCanada) : null,
         tasaAprobacion,
         telServicios,
         imgNosotros: imgNosotrosPreview || null,
@@ -479,6 +491,31 @@ export default function EmpresaPaginaPublica() {
 
               <div className={styles.card}>
                 <div className={styles.cardHead}>
+                  <div className={styles.cardIcon}><IconGlobe2 /></div>
+                  <div><div className={styles.cardTitle}>Servicios por destino</div><div className={styles.cardSub}>A qué servicio lleva cada card de país del hero</div></div>
+                </div>
+                <div className={styles.cardBody}>
+                  {[
+                    { label: 'Visa Americana (Nueva York, Las Vegas, Los Ángeles)', value: servicioVisaUsa, setter: setServicioVisaUsa },
+                    { label: 'Visa India (Taj Mahal, Nueva Delhi)', value: servicioVisaIndia, setter: setServicioVisaIndia },
+                    { label: 'Visa Egipto (Pirámides de Giza, El Cairo)', value: servicioVisaEgipto, setter: setServicioVisaEgipto },
+                    { label: 'eTA Canadá (Toronto, Vancouver)', value: servicioEtaCanada, setter: setServicioEtaCanada },
+                  ].map((d) => (
+                    <div className={styles.field} key={d.label}>
+                      <label className={styles.fieldLabel}>{d.label}</label>
+                      <select className={styles.inp} value={d.value} onChange={(e) => d.setter(e.target.value)}>
+                        <option value="">— Sin asignar —</option>
+                        {servicios.map((s) => (
+                          <option key={s.idTransact} value={s.idTransact}>{s.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.card}>
+                <div className={styles.cardHead}>
                   <div className={styles.cardIcon}><IconTrendUp /></div>
                   <div><div className={styles.cardTitle}>Datos generales de la empresa</div><div className={styles.cardSub}>Cifras globales que aparecen en el hero</div></div>
                 </div>
@@ -526,7 +563,7 @@ export default function EmpresaPaginaPublica() {
               <div className={styles.card}>
                 <div className={styles.cardHead}>
                   <div className={styles.cardIcon}><IconPlay /></div>
-                  <div><div className={styles.cardTitle}>Galería de testimonios</div><div className={styles.cardSub}>Capturas y videos de clientes · {testimonios.length} visibles</div></div>
+                  <div><div className={styles.cardTitle}>Galería de testimonios</div><div className={styles.cardSub}>Capturas y videos de clientes · {testimonios.length}/8</div></div>
                 </div>
                 <div className={styles.cardBody}>
                   {testimoniosCargando ? (
@@ -539,18 +576,26 @@ export default function EmpresaPaginaPublica() {
                           <button className={styles.testDel} title="Eliminar" onClick={() => handleEliminarTestimonio(t.id)}><IconClose size={12} /></button>
                         </div>
                       ))}
-                      <label className={`${styles.testAdd} ${testimonioSubiendo ? styles.disabled : ''}`} htmlFor="upload-testimonio">
-                        <IconPlus size={20} />
-                        <span style={{ fontSize: 11, fontWeight: 600 }}>{testimonioSubiendo ? 'Subiendo...' : 'Subir'}</span>
-                      </label>
-                      <input
-                        id="upload-testimonio" type="file" accept="image/*" hidden disabled={testimonioSubiendo}
-                        onChange={async (e) => {
-                          const file = e.target.files[0];
-                          e.target.value = '';
-                          if (file) await handleSubirTestimonio(file);
-                        }}
-                      />
+                      {testimonios.length >= 8 ? (
+                        <div className={styles.testAdd} style={{ opacity: 0.5, cursor: 'default' }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center' }}>Máximo alcanzado (8/8)</span>
+                        </div>
+                      ) : (
+                        <>
+                          <label className={`${styles.testAdd} ${testimonioSubiendo ? styles.disabled : ''}`} htmlFor="upload-testimonio">
+                            <IconPlus size={20} />
+                            <span style={{ fontSize: 11, fontWeight: 600 }}>{testimonioSubiendo ? 'Subiendo...' : 'Subir'}</span>
+                          </label>
+                          <input
+                            id="upload-testimonio" type="file" accept="image/*" hidden disabled={testimonioSubiendo}
+                            onChange={async (e) => {
+                              const file = e.target.files[0];
+                              e.target.value = '';
+                              if (file) await handleSubirTestimonio(file);
+                            }}
+                          />
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

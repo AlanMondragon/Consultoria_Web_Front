@@ -45,7 +45,7 @@ const HERO_UBICACIONES_FALLBACK = ['Jiutepec, Morelos', 'Taxco, Guerrero'];
 const HERO_TELEFONO_FALLBACK = '777 983 5782';
 const HERO_TASA_APROBACION_FALLBACK = '96';
 
-export default function HeroSection() {
+export default function HeroSection({ onDestinoClick }) {
   const [topRowRef, topRowIn] = useReveal();
   const [headlineRef, headlineIn] = useReveal();
   const [destinosRef, destinosIn] = useReveal();
@@ -204,7 +204,12 @@ export default function HeroSection() {
               style={{ transform: `translateX(-${idx * step}px)`, transition: noTransition ? 'none' : undefined }}
             >
               {DESTINATIONS.map((d) => (
-                <div key={d.name} className={styles.destCard}>
+                <div
+                  key={d.name}
+                  className={styles.destCard}
+                  style={{ cursor: onDestinoClick ? 'pointer' : undefined }}
+                  onClick={() => onDestinoClick?.(d.badge)}
+                >
                   <div className={styles.destImg} style={{ backgroundImage: `url("${d.img}")` }}></div>
                   <div className={styles.destBadge}>{d.badge}</div>
                   <div className={styles.destName}>{d.name}</div>
