@@ -905,6 +905,16 @@ export const actualizarPaginaPublicaConfig = async (config) => {
   }
 };
 
+export const actualizarMapasRecursos = async ({ mapaPresencia, mapaZonas }) => {
+  try {
+    const response = await apiClient.put(`/pagina-publica/mapas`, { mapaPresencia, mapaZonas });
+    return response.data;
+  } catch (error) {
+    console.error('Error al actualizar los mapas', error);
+    throw error;
+  }
+};
+
 // =============================================================================
 // ASESORÍAS GRATUITAS (agenda pública, sin cuenta)
 // =============================================================================

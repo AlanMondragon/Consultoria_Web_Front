@@ -1,36 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import mexico from '@svg-maps/mexico';
+import Swal from 'sweetalert2';
 import EmpresaSidebar from './EmpresaSidebar.jsx';
 import styles from './../../styles/EmpresaRecursos.module.css';
 import HeaderLogoutButton from './../common/HeaderLogoutButton.jsx';
+import { getPaginaPublicaConfig, actualizarMapasRecursos } from './../../api/api.js';
 
-// Extraído 1:1 de "18-Recursos (standalone).html". Estos 3 editores
-// alimentan visualmente la sección "Nuestros números" de la landing
-// (StatsSection.jsx), pero esa sección tiene sus gráficas y mapas
-// completamente hardcodeados en JSX/SVG — no hay backend (ni entidad
-// Empresa/config) para persistir tabla, colores de mapa ni zonas. Por
-// eso esto es UI 1:1 sin persistencia, igual que Página Pública: la
-// interactividad (agregar/quitar fila, pintar estado, agregar/quitar
-// zona) funciona en memoria tal como en el mockup original, pero
-// "Guardar cambios" no persiste nada. Los datos de ejemplo son los
-// mismos que trae el mockup (no hay una fuente real más granular que
-// sustituirlos, ya que el mapa/tabla del mockup no coincide 1:1 con la
-// estructura de datos ya hardcodeada en StatsSection.jsx).
-//
-// El mapa original era una cuadrícula de rectángulos placeholder (sin
-// forma real de México, sin nombres). Se reemplaza por los 32 estados
-// reales (paths SVG) del paquete @svg-maps/mexico (CC-BY 4.0).
+// Extraído 1:1 de "18-Recursos (standalone).html". El editor de gráfica
+// (tabla de trámites por mes) sigue siendo UI sin persistencia — no hay
+// backend para esa tabla/gráfica todavía. Los 2 mapas interactivos de
+// México (que sí tenían esa limitación) se reemplazaron por un campo real
+// de subir imagen: se guardan en PaginaPublicaConfig.mapaPresencia/
+// mapaZonas (mismo patrón que imgNosotros) y esas mismas imágenes son las
+// que muestra la landing pública en "Nuestros números"
+// (Landing/StatsSection.jsx) en vez del SVG hardcodeado.
 
-const STATES = mexico.locations;
-const DEFAULT_FILL = '#EAEBED';
+const MAX_IMG_BYTES = 5 * 1024 * 1024;
 
-const PRESENCIA_SWATCHES = [
-  { color: '#1FA0D1', name: 'Mucha presencia', sub: 'Estado con muchos clientes' },
-  { color: '#28A052', name: 'Sí tenemos presencia', sub: 'Algunos clientes' },
-  { color: '#B73E3E', name: 'No tenemos presencia', sub: 'Sin clientes aún' },
-];
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function IconChart() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"></path></svg>; }
+function IconLayers() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 18l-6 3V6l6-3M9 18l6 3M9 18V3M15 21l6-3V3l-6 3M15 21V6"></path></svg>; }
+function IconPin() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>; }
+function IconCheck() { return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12l5 5L20 7"></path></svg>; }
+function IconPlus({ size = 13 }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"></path></svg>; }
+function IconTrash({ size = 14 }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path></svg>; }
+function IconSwap() { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg>; }
+function IconInfo() { return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>; }
 
 const CHART_ROWS_INICIALES = [
   { id: 1, mes: 'Enero', total: '42', otraAgencia: '12' },
@@ -39,37 +43,20 @@ const CHART_ROWS_INICIALES = [
   { id: 4, mes: 'Junio', total: '96', otraAgencia: '31' },
 ];
 
-const ZONAS_INICIALES = [
-  { id: 1, color: '#1FA0D1', nombre: 'CDMX — CAS Hamburgo' },
-  { id: 2, color: '#28A052', nombre: 'Jalisco — CAS Guadalajara' },
-  { id: 3, color: '#D9722E', nombre: 'Nuevo León — Consulado MTY' },
-];
-
-function IconChart() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"></path></svg>; }
-function IconLayers() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 18l-6 3V6l6-3M9 18l6 3M9 18V3M15 21l6-3V3l-6 3M15 21V6"></path></svg>; }
-function IconPin() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>; }
-function IconCheck() { return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12l5 5L20 7"></path></svg>; }
-function IconPlus({ size = 13 }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"></path></svg>; }
-function IconTrash({ size = 14 }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path></svg>; }
-function IconClose({ size = 13 }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 6l12 12M6 18L18 6"></path></svg>; }
-function IconInfo() { return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>; }
-
-function MexMap({ fills, onStateClick }) {
+function MapUploadRow({ id, preview, onPick, onClear }) {
+  const inputId = `upload-mapa-${id}`;
   return (
-    <div className={styles.mxMap}>
-      <svg viewBox={mexico.viewBox}>
-        {STATES.map((s) => (
-          <path
-            key={s.id}
-            className={styles.mxSt}
-            d={s.path}
-            fill={fills[s.id] ?? DEFAULT_FILL}
-            onClick={() => onStateClick(s.id)}
-          >
-            <title>{s.name}</title>
-          </path>
-        ))}
-      </svg>
+    <div className={styles.upload}>
+      <div className={styles.uploadThumb} style={preview ? { backgroundImage: `url("${preview}")` } : { background: 'linear-gradient(135deg,#6b8db8,#2c4a7a)' }}></div>
+      <div className={styles.uploadInfo}>
+        <div className={styles.uploadTitle}>{preview ? 'Imagen del mapa' : 'Sin imagen todavía'}</div>
+        <div className={styles.uploadSub}>JPG o PNG, hasta 5 MB</div>
+      </div>
+      <div className={styles.uploadActions}>
+        <input id={inputId} type="file" accept="image/*" hidden onChange={(e) => e.target.files[0] && onPick(e.target.files[0])} />
+        <button type="button" className={styles.uaBtn} title="Cambiar" onClick={() => document.getElementById(inputId).click()}><IconSwap /></button>
+        <button type="button" className={`${styles.uaBtn} ${styles.del}`} title="Quitar" onClick={onClear}><IconTrash size={15} /></button>
+      </div>
     </div>
   );
 }
@@ -79,13 +66,10 @@ export default function EmpresaRecursos() {
 
   const [chartRows, setChartRows] = useState(CHART_ROWS_INICIALES);
 
-  const [presenciaFills, setPresenciaFills] = useState({});
-  const [swatchSel, setSwatchSel] = useState(0);
-
-  const [zonaFills, setZonaFills] = useState({});
-  const [zoneColor, setZoneColor] = useState('#1FA0D1');
-  const [zoneName, setZoneName] = useState('');
-  const [zonas, setZonas] = useState(ZONAS_INICIALES);
+  const [mapaPresencia, setMapaPresencia] = useState(null);
+  const [mapaZonas, setMapaZonas] = useState(null);
+  const [guardandoPresencia, setGuardandoPresencia] = useState(false);
+  const [guardandoZonas, setGuardandoZonas] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -100,6 +84,17 @@ export default function EmpresaRecursos() {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    getPaginaPublicaConfig()
+      .then((response) => {
+        if (!response.success || !response.response?.config) return;
+        const c = response.response.config;
+        setMapaPresencia(c.mapaPresencia || null);
+        setMapaZonas(c.mapaZonas || null);
+      })
+      .catch((error) => console.error('Error al obtener configuración de página pública:', error));
+  }, []);
+
   const handleNavigate = (key) => { console.log('Navegar a sección de sidebar:', key); };
 
   const handleChartField = (id, field, value) => {
@@ -108,24 +103,31 @@ export default function EmpresaRecursos() {
   const handleAddChartRow = () => setChartRows((prev) => [...prev, { id: Date.now(), mes: '', total: '', otraAgencia: '' }]);
   const handleDelChartRow = (id) => setChartRows((prev) => (prev.length > 1 ? prev.filter((r) => r.id !== id) : prev));
 
-  const handlePresenciaClick = (stateId) => {
-    setPresenciaFills((prev) => ({ ...prev, [stateId]: PRESENCIA_SWATCHES[swatchSel].color }));
+  const handlePickImagen = async (file, setter) => {
+    if (file.size > MAX_IMG_BYTES) {
+      Swal.fire({ icon: 'error', title: 'Imagen muy pesada', text: 'El archivo no puede pesar más de 5 MB.' });
+      return;
+    }
+    const dataUrl = await fileToDataUrl(file);
+    setter(dataUrl);
   };
 
-  const handleZonaMapClick = (stateId) => {
-    if (!zoneName.trim()) return;
-    setZonaFills((prev) => ({ ...prev, [stateId]: zoneColor }));
-    const estado = STATES.find((s) => s.id === stateId);
-    setZonas((prev) => [...prev, { id: Date.now(), color: zoneColor, nombre: `${estado?.name || stateId} — ${zoneName.trim()}` }]);
+  const guardarMapas = async (setGuardando) => {
+    setGuardando(true);
+    try {
+      const response = await actualizarMapasRecursos({ mapaPresencia, mapaZonas });
+      if (!response.success) {
+        Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudieron guardar los mapas.' });
+        return;
+      }
+      Swal.fire({ icon: 'success', title: 'Mapas actualizados', showConfirmButton: false, timer: 2500, timerProgressBar: true });
+    } catch (error) {
+      console.error('Error al guardar los mapas:', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron guardar los mapas.' });
+    } finally {
+      setGuardando(false);
+    }
   };
-
-  const handleAddZonaManual = () => {
-    if (!zoneName.trim()) return;
-    setZonas((prev) => [...prev, { id: Date.now(), color: zoneColor, nombre: zoneName.trim() }]);
-    setZoneName('');
-  };
-
-  const handleDelZona = (id) => setZonas((prev) => prev.filter((z) => z.id !== id));
 
   return (
     <div className={styles.page}>
@@ -193,67 +195,48 @@ export default function EmpresaRecursos() {
             <div className={styles.secFoot}><button className={`${styles.btn} ${styles.btnPrimary}`}><IconCheck /> Guardar cambios</button></div>
           </div>
 
-          {/* EDITOR 2 — MAPA PRESENCIA */}
+          {/* EDITOR 2 — IMAGEN MAPA PRESENCIA */}
           <div className={styles.card}>
             <div className={styles.cardHead}>
               <div className={styles.cardIcon}><IconLayers /></div>
-              <div><div className={styles.cardTitle}>¿De dónde nos buscan?</div><div className={styles.cardSub}>Da clic en un estado y elige su nivel de presencia</div></div>
+              <div><div className={styles.cardTitle}>¿De dónde nos buscan?</div><div className={styles.cardSub}>Sube una imagen del mapa de presencia por estado</div></div>
             </div>
             <div className={styles.cardBody}>
-              <div className={styles.mapLayout}>
-                <MexMap fills={presenciaFills} onStateClick={handlePresenciaClick} />
-                <div className={styles.mapSide}>
-                  <div className={styles.paletteLbl}>Nivel de presencia</div>
-                  <div className={styles.swatches}>
-                    {PRESENCIA_SWATCHES.map((sw, i) => (
-                      <div key={sw.color} className={`${styles.swatch} ${swatchSel === i ? styles.sel : ''}`} onClick={() => setSwatchSel(i)}>
-                        <span className={styles.swDot} style={{ background: sw.color }}></span>
-                        <div><div className={styles.swName}>{sw.name}</div><div className={styles.swSub}>{sw.sub}</div></div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.hint}><IconInfo /> Clic en cualquier estado del mapa para colorearlo con el nivel elegido.</div>
-                </div>
-              </div>
+              <MapUploadRow
+                id="presencia"
+                preview={mapaPresencia}
+                onPick={(file) => handlePickImagen(file, setMapaPresencia)}
+                onClear={() => setMapaPresencia(null)}
+              />
+              <div className={styles.hint}><IconInfo /> Esta imagen reemplaza el mapa de la sección "Nuestros números" en la página pública.</div>
             </div>
-            <div className={styles.secFoot}><button className={`${styles.btn} ${styles.btnPrimary}`}><IconCheck /> Guardar cambios</button></div>
+            <div className={styles.secFoot}>
+              <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => guardarMapas(setGuardandoPresencia)} disabled={guardandoPresencia}>
+                <IconCheck /> {guardandoPresencia ? 'Guardando...' : 'Guardar cambios'}
+              </button>
+            </div>
           </div>
 
-          {/* EDITOR 3 — MAPA CAS/CONSULADO */}
+          {/* EDITOR 3 — IMAGEN MAPA CAS/CONSULADO */}
           <div className={styles.card}>
             <div className={styles.cardHead}>
               <div className={styles.cardIcon}><IconPin /></div>
-              <div><div className={styles.cardTitle}>Ubicaciones CAS y Consulado</div><div className={styles.cardSub}>Clic en un estado, elige un color libre y nómbralo</div></div>
+              <div><div className={styles.cardTitle}>Ubicaciones CAS y Consulado</div><div className={styles.cardSub}>Sube una imagen del mapa de zonas/ubicaciones</div></div>
             </div>
             <div className={styles.cardBody}>
-              <div className={styles.mapLayout}>
-                <MexMap fills={zonaFills} onStateClick={handleZonaMapClick} />
-                <div className={styles.mapSide}>
-                  <div className={styles.paletteLbl}>Color y nombre de zona</div>
-                  <div className={styles.pickerBox}>
-                    <div className={styles.pickerRow}>
-                      <input type="color" value={zoneColor} onChange={(e) => setZoneColor(e.target.value)} />
-                      <input type="text" placeholder="Ej. Hermosillo y Nogales" value={zoneName} onChange={(e) => setZoneName(e.target.value)} />
-                    </div>
-                    <button className={styles.pickerAdd} onClick={handleAddZonaManual}><IconPlus /> Agregar zona</button>
-                    <div className={styles.hint}><IconInfo /> Elige color y nombre, luego da clic en un estado del mapa para asignarlo.</div>
-                  </div>
-                  <div className={styles.legend}>
-                    <div className={styles.legendTitle}>Zonas asignadas</div>
-                    <div className={styles.zoneList}>
-                      {zonas.map((z) => (
-                        <div key={z.id} className={styles.zoneItem}>
-                          <span className={styles.zoneColor} style={{ background: z.color }}></span>
-                          <span className={styles.zoneName}>{z.nombre}</span>
-                          <button className={styles.zoneDel} onClick={() => handleDelZona(z.id)}><IconClose /></button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MapUploadRow
+                id="zonas"
+                preview={mapaZonas}
+                onPick={(file) => handlePickImagen(file, setMapaZonas)}
+                onClear={() => setMapaZonas(null)}
+              />
+              <div className={styles.hint}><IconInfo /> Esta imagen reemplaza el mapa de zonas de la sección "Nuestros números" en la página pública.</div>
             </div>
-            <div className={styles.secFoot}><button className={`${styles.btn} ${styles.btnPrimary}`}><IconCheck /> Guardar cambios</button></div>
+            <div className={styles.secFoot}>
+              <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => guardarMapas(setGuardandoZonas)} disabled={guardandoZonas}>
+                <IconCheck /> {guardandoZonas ? 'Guardando...' : 'Guardar cambios'}
+              </button>
+            </div>
           </div>
 
         </div>

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useReveal from "../../hooks/useReveal";
+import { getPaginaPublicaConfig } from "../../api/api.js";
 import styles from '../../styles/landing/StatsSection.module.css';
 
 const MX_STATES = [
@@ -54,6 +55,21 @@ export default function StatsSection() {
   const [zoneRef, zoneIn] = useReveal();
 
   const [tip, setTip] = useState(null);
+  const [mapaPresencia, setMapaPresencia] = useState(null);
+  const [mapaZonas, setMapaZonas] = useState(null);
+
+  useEffect(() => {
+    let activo = true;
+    getPaginaPublicaConfig()
+      .then((response) => {
+        if (!activo || !response.success || !response.response?.config) return;
+        const c = response.response.config;
+        setMapaPresencia(c.mapaPresencia || null);
+        setMapaZonas(c.mapaZonas || null);
+      })
+      .catch((error) => console.error('Error al obtener configuración de página pública:', error));
+    return () => { activo = false; };
+  }, []);
 
   return (
     <section className={styles.datavis} id="numeros">
@@ -152,43 +168,47 @@ export default function StatsSection() {
               </div>
               <span className={styles.dvBadge}>14 estados</span>
             </div>
-            <div className={styles.mxWrap}>
-              <div className={styles.mxMap}>
-                {tip && (
-                  <div className={`${styles.mxTooltip} ${styles.show}`} style={{ left: tip.x, top: tip.y }}>
-                    <b>{tip.name}</b> · {tip.val} clientes
-                  </div>
-                )}
-                <svg viewBox="0 0 300 220">
-                  {MX_STATES.map((s) => (
-                    <rect
-                      key={s.name}
-                      className={styles.mxState}
-                      x={s.x} y={s.y} width={s.w} height={s.h} rx="6" fill={s.fill}
-                      onMouseMove={(e) => {
-                        const rect = e.currentTarget.ownerSVGElement.parentElement.getBoundingClientRect();
-                        setTip({ name: s.name, val: s.val, x: e.clientX - rect.left, y: e.clientY - rect.top });
-                      }}
-                      onMouseLeave={() => setTip(null)}
-                    />
-                  ))}
-                </svg>
-              </div>
-              <div className={styles.mxSide}>
-                {RANKED.map((r) => (
-                  <div key={r.rank} className={styles.mxStatRow}>
-                    <span className={styles.mxRank}>{r.rank}</span>
-                    <div className={styles.mxBarWrap}>
-                      <div className={styles.mxBar} style={{ width: r.width, background: r.color }}>
-                        <span className={styles.mxBarName} style={r.nameColor ? { color: r.nameColor } : undefined}>{r.name}</span>
-                        {r.valColor && <span className={styles.mxBarVal} style={{ color: r.valColor }}>{r.val}</span>}
-                      </div>
-                      {!r.valColor && <span className={styles.mxBarVal} style={{ color: 'var(--muted)' }}>{r.val}</span>}
+            {mapaPresencia ? (
+              <img className={styles.mapaImg} src={mapaPresencia} alt="Mapa de presencia por estado" />
+            ) : (
+              <div className={styles.mxWrap}>
+                <div className={styles.mxMap}>
+                  {tip && (
+                    <div className={`${styles.mxTooltip} ${styles.show}`} style={{ left: tip.x, top: tip.y }}>
+                      <b>{tip.name}</b> · {tip.val} clientes
                     </div>
-                  </div>
-                ))}
+                  )}
+                  <svg viewBox="0 0 300 220">
+                    {MX_STATES.map((s) => (
+                      <rect
+                        key={s.name}
+                        className={styles.mxState}
+                        x={s.x} y={s.y} width={s.w} height={s.h} rx="6" fill={s.fill}
+                        onMouseMove={(e) => {
+                          const rect = e.currentTarget.ownerSVGElement.parentElement.getBoundingClientRect();
+                          setTip({ name: s.name, val: s.val, x: e.clientX - rect.left, y: e.clientY - rect.top });
+                        }}
+                        onMouseLeave={() => setTip(null)}
+                      />
+                    ))}
+                  </svg>
+                </div>
+                <div className={styles.mxSide}>
+                  {RANKED.map((r) => (
+                    <div key={r.rank} className={styles.mxStatRow}>
+                      <span className={styles.mxRank}>{r.rank}</span>
+                      <div className={styles.mxBarWrap}>
+                        <div className={styles.mxBar} style={{ width: r.width, background: r.color }}>
+                          <span className={styles.mxBarName} style={r.nameColor ? { color: r.nameColor } : undefined}>{r.name}</span>
+                          {r.valColor && <span className={styles.mxBarVal} style={{ color: r.valColor }}>{r.val}</span>}
+                        </div>
+                        {!r.valColor && <span className={styles.mxBarVal} style={{ color: 'var(--muted)' }}>{r.val}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Mapa de zonas */}
@@ -200,23 +220,27 @@ export default function StatsSection() {
               </div>
               <span className={styles.dvBadge}>Mapa</span>
             </div>
-            <div className={styles.mxWrap}>
-              <div className={styles.mxMap}>
-                <svg viewBox="0 0 300 220">
-                  {ZONE_STATES.map((s, i) => (
-                    <rect key={i} x={s.x} y={s.y} width={s.w} height={s.h} rx="6" fill={s.fill} />
+            {mapaZonas ? (
+              <img className={styles.mapaImg} src={mapaZonas} alt="Mapa de zonas y ubicaciones" />
+            ) : (
+              <div className={styles.mxWrap}>
+                <div className={styles.mxMap}>
+                  <svg viewBox="0 0 300 220">
+                    {ZONE_STATES.map((s, i) => (
+                      <rect key={i} x={s.x} y={s.y} width={s.w} height={s.h} rx="6" fill={s.fill} />
+                    ))}
+                  </svg>
+                </div>
+                <div className={styles.mxSide}>
+                  {ZONE_LEGEND.map((z) => (
+                    <div key={z.label} className={styles.zoneLegendRow}>
+                      <span className={styles.zoneLegendDot} style={{ background: z.color }}></span>
+                      {z.label}
+                    </div>
                   ))}
-                </svg>
+                </div>
               </div>
-              <div className={styles.mxSide}>
-                {ZONE_LEGEND.map((z) => (
-                  <div key={z.label} className={styles.zoneLegendRow}>
-                    <span className={styles.zoneLegendDot} style={{ background: z.color }}></span>
-                    {z.label}
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -59,41 +59,19 @@
 .lcLeg .ln { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
 .lcLeg .lnDashed { background: repeating-linear-gradient(90deg, var(--c3) 0 4px, transparent 4px 7px); height: 2px; }
 
-.mapLayout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; align-items: start; }
-.mxMap svg { width: 100%; height: auto; display: block; }
-.mxSt { stroke: var(--white); stroke-width: 1; cursor: pointer; transition: opacity 0.15s; }
-.mxSt:hover { opacity: 0.78; }
-.mapSide { display: flex; flex-direction: column; gap: 12px; }
-.paletteLbl { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
-.swatches { display: flex; flex-direction: column; gap: 8px; }
-.swatch { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border: 1.5px solid var(--line-2); border-radius: 11px; cursor: pointer; transition: all 0.2s; }
-.swatch:hover { border-color: var(--c3); }
-.swatch.sel { border-color: var(--c1); background: #F8FBFD; }
-.swDot { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; }
-.swName { font-size: 13px; font-weight: 600; }
-.swSub { font-size: 10.5px; color: var(--muted); }
-.legend { padding: 14px 16px; background: #F8FBFD; border: 1px solid var(--line); border-radius: 12px; }
-.legendTitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-
-.pickerBox { display: flex; flex-direction: column; gap: 12px; }
-.pickerRow { display: flex; align-items: center; gap: 10px; }
-.pickerRow input[type=color] { width: 46px; height: 40px; border: 1px solid var(--line-2); border-radius: 10px; padding: 2px; cursor: pointer; background: #fff; }
-.pickerRow input[type=text] { flex: 1; padding: 11px 13px; background: #F8FBFD; border: 1px solid var(--line-2); border-radius: 10px; font: inherit; font-size: 13px; }
-.pickerRow input[type=text]:focus { outline: 0; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(31,160,209,0.1); }
-.pickerAdd { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 14px; background: var(--light) !important; color: var(--hover) !important; border-radius: 10px; font-size: 12.5px; font-weight: 600; transition: all 0.2s; }
-.pickerAdd:hover { background: var(--primary) !important; color: #fff !important; }
-.zoneList { display: flex; flex-direction: column; gap: 8px; }
-.zoneItem { display: flex; align-items: center; gap: 10px; padding: 10px 13px; background: #F8FBFD; border: 1px solid var(--line); border-radius: 11px; }
-.zoneColor { width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; }
-.zoneName { font-size: 12.5px; font-weight: 600; flex: 1; }
-.zoneDel { color: var(--muted) !important; }
-.zoneDel:hover { color: var(--rose); }
 .hint { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .secFoot { padding: 14px 22px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; background: #FCFDFE; }
 
-@media (max-width: 900px) {
-  .mapLayout { grid-template-columns: 1fr; }
-}
+.upload { border: 1.5px dashed var(--line-2); border-radius: 14px; padding: 20px; display: flex; align-items: center; gap: 16px; transition: all 0.2s; background: #FCFCFD; margin-bottom: 14px; }
+.uploadThumb { width: 80px; height: 60px; border-radius: 10px; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid var(--line); position: relative; overflow: hidden; }
+.uploadInfo { flex: 1; min-width: 0; }
+.uploadTitle { font-size: 13px; font-weight: 600; }
+.uploadSub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.uploadActions { display: flex; gap: 6px; }
+.uaBtn { width: 32px; height: 32px; border-radius: 8px; background: #F4F6F8 !important; color: var(--muted) !important; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.uaBtn:hover { background: var(--light) !important; color: var(--c1); }
+.uaBtn.del:hover { background: var(--rose-soft) !important; color: var(--rose); }
+
 @media (max-width: 767.98px) {
   .topbar { padding: 14px 20px; }
   .content { padding: 20px; }
