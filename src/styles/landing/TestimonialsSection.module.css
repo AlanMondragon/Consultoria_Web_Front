@@ -230,6 +230,36 @@
 }
 
 @media (max-width: 575.98px) {
-  .videoGrid { grid-template-columns: 1fr; }
   .testimonialsStats { flex-wrap: wrap; gap: 20px; }
+}
+
+.mobileViewport {
+  overflow: hidden;
+}
+.mobileTrack {
+  display: flex;
+  gap: 14px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mobileCard {
+  flex: 0 0 100%;
+}
+.mobileDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.mdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(228, 236, 240, 0.25);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.mdot.active {
+  background: var(--accent);
+  width: 26px;
+  border-radius: 4px;
 }

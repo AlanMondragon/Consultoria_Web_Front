@@ -19,6 +19,7 @@ function IconArrowRight() {
 }
 
 const POR_PAGINA = 8;
+const MOBILE_BREAKPOINT = 575.98;
 
 export default function TestimonialsSection() {
   const [headerRef, headerIn] = useReveal();
@@ -53,6 +54,53 @@ export default function TestimonialsSection() {
 
   const totalPaginas = Math.max(1, Math.ceil(testimonios.length / POR_PAGINA));
 
+  // Carrusel de una card a la vez, autoplay, solo en móvil — mismo patrón
+  // que el carrusel de destinos del hero (HeroSection.jsx).
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT);
+  const mTrackRef = useRef(null);
+  const [idxM, setIdxM] = useState(0);
+  const [stepM, setStepM] = useState(0);
+  const [noTransitionM, setNoTransitionM] = useState(false);
+  const timerMRef = useRef(null);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const measure = () => {
+      const track = mTrackRef.current;
+      if (!track || !track.firstElementChild) return;
+      setStepM(track.firstElementChild.offsetWidth + 14);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [isMobile, testimonios.length]);
+
+  const startTimerM = () => {
+    clearInterval(timerMRef.current);
+    timerMRef.current = setInterval(() => {
+      setIdxM((i) => {
+        if (i >= testimonios.length - 1) {
+          setNoTransitionM(true);
+          requestAnimationFrame(() => requestAnimationFrame(() => setNoTransitionM(false)));
+          return 0;
+        }
+        return i + 1;
+      });
+    }, 3000);
+  };
+
+  useEffect(() => {
+    if (!isMobile || testimonios.length < 2) return;
+    startTimerM();
+    return () => clearInterval(timerMRef.current);
+  }, [isMobile, testimonios.length]);
+
   return (
     <section className={styles.testimonials} id="testimonios" style={testimonios.length === 0 ? { display: 'none' } : undefined}>
       <div className="jas-container">
@@ -77,37 +125,68 @@ export default function TestimonialsSection() {
           </div>
         </div>
 
-        <div ref={gridRef} className={`${styles.videoGrid} jas-reveal ${gridIn ? 'jas-in' : ''}`} key={transitionKey}>
-          {testimonios.slice(pagina * POR_PAGINA, pagina * POR_PAGINA + POR_PAGINA).map((t) => (
-            <div key={t.idTestimonio} className={styles.videoCard} onClick={() => setZoomImg(t.image)}>
-              <div className={styles.vtImg} style={{ backgroundImage: `url("${t.image}")` }}></div>
-              <div className={styles.videoPlay}><IconPlay /></div>
-              <div className={styles.vtInfo}>
-                <span className={styles.vtTag}>{t.tag}</span>
-              </div>
+        {isMobile ? (
+          <div
+            className={styles.mobileViewport}
+            onTouchStart={() => clearInterval(timerMRef.current)}
+            onTouchEnd={startTimerM}
+          >
+            <div
+              ref={mTrackRef}
+              className={styles.mobileTrack}
+              style={{ transform: `translateX(-${idxM * stepM}px)`, transition: noTransitionM ? 'none' : undefined }}
+            >
+              {testimonios.map((t) => (
+                <div key={t.idTestimonio} className={`${styles.videoCard} ${styles.mobileCard}`} onClick={() => setZoomImg(t.image)}>
+                  <div className={styles.vtImg} style={{ backgroundImage: `url("${t.image}")` }}></div>
+                  <div className={styles.videoPlay}><IconPlay /></div>
+                  <div className={styles.vtInfo}>
+                    <span className={styles.vtTag}>{t.tag}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {totalPaginas > 1 && (
-          <div className={styles.testNav}>
-            <button
-              className={styles.tnavBtn}
-              onClick={() => setPagina((p) => Math.max(0, p - 1))}
-              disabled={pagina === 0}
-              aria-label="Anteriores"
-            >
-              <IconArrowLeft />
-            </button>
-            <button
-              className={styles.tnavBtn}
-              onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
-              disabled={pagina === totalPaginas - 1}
-              aria-label="Siguientes"
-            >
-              <IconArrowRight />
-            </button>
+            <div className={styles.mobileDots}>
+              {testimonios.map((_, i) => (
+                <div key={i} className={`${styles.mdot} ${i === idxM ? styles.active : ''}`} onClick={() => setIdxM(i)} />
+              ))}
+            </div>
           </div>
+        ) : (
+          <>
+            <div ref={gridRef} className={`${styles.videoGrid} jas-reveal ${gridIn ? 'jas-in' : ''}`} key={transitionKey}>
+              {testimonios.slice(pagina * POR_PAGINA, pagina * POR_PAGINA + POR_PAGINA).map((t) => (
+                <div key={t.idTestimonio} className={styles.videoCard} onClick={() => setZoomImg(t.image)}>
+                  <div className={styles.vtImg} style={{ backgroundImage: `url("${t.image}")` }}></div>
+                  <div className={styles.videoPlay}><IconPlay /></div>
+                  <div className={styles.vtInfo}>
+                    <span className={styles.vtTag}>{t.tag}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {totalPaginas > 1 && (
+              <div className={styles.testNav}>
+                <button
+                  className={styles.tnavBtn}
+                  onClick={() => setPagina((p) => Math.max(0, p - 1))}
+                  disabled={pagina === 0}
+                  aria-label="Anteriores"
+                >
+                  <IconArrowLeft />
+                </button>
+                <button
+                  className={styles.tnavBtn}
+                  onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
+                  disabled={pagina === totalPaginas - 1}
+                  aria-label="Siguientes"
+                >
+                  <IconArrowRight />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
