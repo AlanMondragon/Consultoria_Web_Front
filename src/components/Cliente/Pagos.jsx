@@ -259,7 +259,7 @@ export default function Pagos() {
         service={pagando}
         userEmail={userEmail}
         userId={userId}
-        onSuccess={() => { setPagando(null); Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success'); cargarTramites(userId); }}
+        onSuccess={() => { setPagando(null); Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Tu pago se procesó correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true }); cargarTramites(userId); }}
         onError={(error) => Swal.fire('Error', error?.message || 'Falló el pago.', 'error')}
       />
     </div>

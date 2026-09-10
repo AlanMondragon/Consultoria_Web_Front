@@ -140,6 +140,9 @@ export default function TramiteMasInfo() {
       icon: 'success',
       title: 'Éxito',
       text: `Estado actualizado: ${valor}`,
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
     });
   }
 

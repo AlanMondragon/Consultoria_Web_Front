@@ -110,7 +110,7 @@ export default function EmpresaPerfil() {
     setGuardando(true);
     try {
       await actualizarContra(usuario, password);
-      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Contraseña actualizada con éxito' });
+      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Contraseña actualizada con éxito', showConfirmButton: false, timer: 2500, timerProgressBar: true });
       resetForm();
     } catch (error) {
       console.error('Error actualizando contraseña:', error);

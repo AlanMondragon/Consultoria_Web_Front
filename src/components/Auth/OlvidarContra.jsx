@@ -87,7 +87,7 @@ export default function OlvidarContra() {
       setOtpError(false);
       setPaso(2);
       iniciarTemporizador();
-      Swal.fire('¡Correo enviado!', 'Revisa tu bandeja para ver el código.', 'success');
+      Swal.fire({ icon: 'success', title: '¡Correo enviado!', text: 'Revisa tu bandeja para ver el código.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       console.error('Error en recuperación de contraseña:', error);
       Swal.fire('Error', 'El correo no existe en el sistema', 'error');
@@ -102,7 +102,7 @@ export default function OlvidarContra() {
       setOtpDigits(['', '', '', '', '', '']);
       setOtpError(false);
       iniciarTemporizador();
-      Swal.fire('¡Código reenviado!', 'Revisa tu bandeja de nuevo.', 'success');
+      Swal.fire({ icon: 'success', title: '¡Código reenviado!', text: 'Revisa tu bandeja de nuevo.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       console.error('Error al reenviar código:', error);
       Swal.fire('Error', 'No se pudo reenviar el código.', 'error');

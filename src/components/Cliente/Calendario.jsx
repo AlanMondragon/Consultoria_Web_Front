@@ -199,7 +199,7 @@ export default function Calendario() {
     try {
       const response = await crearCita({ tipo: tipoSel, fecha: toISO(diaSel), hora: horaSel, idUser: userId });
       if (!response.success) throw new Error(response.message);
-      Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Tu cita fue agendada.' });
+      Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Tu cita fue agendada.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
       setModalOpen(false);
       cargarCitas(userId);
     } catch (error) {

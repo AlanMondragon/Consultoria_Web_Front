@@ -167,6 +167,9 @@ export default function AdminTramites() {
         icon: 'success',
         title: 'Éxito',
         text: `Estado actualizado: ${STATUS_META[nuevoEstado]?.label || 'Desconocido'}`,
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
       fetchServices();
     } catch (error) {

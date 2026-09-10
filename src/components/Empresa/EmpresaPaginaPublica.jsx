@@ -236,7 +236,9 @@ export default function EmpresaPaginaPublica() {
         icon: 'success',
         title: 'Ya está publicado',
         text: 'Los testimonios se suben y eliminan al instante — no necesitas publicar cambios en esta pestaña.',
-        confirmButtonText: 'Entendido',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
       return;
     }
@@ -275,7 +277,9 @@ export default function EmpresaPaginaPublica() {
         icon: 'success',
         title: 'Cambios publicados',
         text: 'Ya se reflejan en la página pública.',
-        confirmButtonText: 'Entendido',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
     } catch (error) {
       console.error('Error al publicar configuración:', error);

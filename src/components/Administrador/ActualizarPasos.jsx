@@ -159,7 +159,7 @@ export default function ActualizarPasos() {
           await deleteStepById(stepToDelete.id);
 
           // Mostrar alerta y esperar que el usuario cierre
-          await Swal.fire('Eliminado', 'Paso eliminado correctamente.', 'success');
+          await Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Paso eliminado correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
 
           // Ahora actualizamos la UI local
           setSteps(prevSteps => {
@@ -187,7 +187,7 @@ export default function ActualizarPasos() {
         });
 
         // Mostrar alerta después de actualizar UI
-        await Swal.fire('Eliminado', 'Paso eliminado correctamente.', 'success');
+        await Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Paso eliminado correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
       }
     }
   };
@@ -238,6 +238,9 @@ export default function ActualizarPasos() {
           icon: 'success',
           title: 'Éxito',
           text: 'Todos los pasos fueron procesados exitosamente.',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true,
         }).then(() => {
           navigate('/ServiciosAdmin'); // Redireccionar después de actualizar
         });

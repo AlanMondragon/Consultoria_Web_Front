@@ -604,7 +604,9 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                     icon: 'success',
                     title: 'Pago y actualización exitosos',
                     text: 'El cobro extra ha sido procesado y tu cita ha sido agendada exitosamente.',
-                    confirmButtonText: 'Aceptar'
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
                 }).then(() => {
                     // Llamar callback si existe
                     if (typeof onClienteRegistrado === 'function') {
@@ -746,7 +748,9 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                 Swal.fire({
                     icon: 'success',
                     title: 'Actualización exitosa',
-                    confirmButtonText: 'Aceptar',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
                 });
 
                 if (typeof onClienteRegistrado === 'function') {
@@ -810,7 +814,9 @@ export default function ActualizarMiTramite({ show, onHide, onClienteRegistrado,
                         Swal.fire({
                             icon: 'success',
                             title: 'Cita cancelada exitosamente',
-                            confirmButtonText: 'Aceptar',
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
                         });
                     }
                     if (typeof onClienteRegistrado === 'function') {

@@ -479,7 +479,7 @@ export default function EmpresaCalendario() {
       if (!res?.success) throw new Error(res?.message || 'No se pudo guardar la cita externa');
       await fetchAsesorias();
       setExtAbierta(false);
-      Swal.fire({ icon: 'success', title: 'Cita externa guardada', text: 'Ya aparece en el calendario.' });
+      Swal.fire({ icon: 'success', title: 'Cita externa guardada', text: 'Ya aparece en el calendario.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'No se pudo guardar', text: error.message || 'Ocurrió un error al guardar la cita externa.' });
     } finally {
@@ -518,7 +518,7 @@ export default function EmpresaCalendario() {
       if (!res?.success) throw new Error(res?.message || 'No se pudo cancelar la cita');
       await fetchCitasReales();
       setEventoDetalle(null);
-      Swal.fire({ icon: 'success', title: 'Cita cancelada', text: 'La cita fue eliminada correctamente.' });
+      Swal.fire({ icon: 'success', title: 'Cita cancelada', text: 'La cita fue eliminada correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'No se pudo cancelar', text: error.message || 'Ocurrió un error al cancelar la cita.' });
     }
@@ -545,7 +545,7 @@ export default function EmpresaCalendario() {
       if (!res?.success) throw new Error(res?.message || 'No se pudo cancelar la cita');
       await fetchServices();
       setEventoDetalle(null);
-      Swal.fire({ icon: 'success', title: 'Cita cancelada', text: 'La cita fue eliminada correctamente.' });
+      Swal.fire({ icon: 'success', title: 'Cita cancelada', text: 'La cita fue eliminada correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'No se pudo cancelar', text: error.message || 'Ocurrió un error al cancelar la cita.' });
     }
@@ -564,7 +564,7 @@ export default function EmpresaCalendario() {
       if (!res?.success) throw new Error(res?.message || 'No se pudo cambiar la cita');
       await fetchServices();
       setCcAbierta(false);
-      Swal.fire({ icon: 'success', title: 'Cita reagendada', text: 'La nueva fecha y hora se guardaron correctamente.' });
+      Swal.fire({ icon: 'success', title: 'Cita reagendada', text: 'La nueva fecha y hora se guardaron correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'No se pudo cambiar la cita', text: error.message || 'Ocurrió un error al reagendar la cita.' });
     } finally {

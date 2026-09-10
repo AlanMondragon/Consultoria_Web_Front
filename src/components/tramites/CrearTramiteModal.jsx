@@ -197,7 +197,9 @@ export default function CrearTramiteModal({ show, onHide, scope = 'empresa', onC
       Swal.fire({
         icon: 'success',
         title: 'Trámite registrado y correo enviado',
-        confirmButtonText: 'Aceptar',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
 
       resetForm();

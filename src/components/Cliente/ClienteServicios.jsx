@@ -179,7 +179,7 @@ export default function ClienteServicios() {
   const handleCartPaymentSuccess = () => {
     setCartModalOpen(false);
     setCartItems([]);
-    Swal.fire('¡Listo!', 'Tus pagos se procesaron correctamente.', 'success');
+    Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Tus pagos se procesaron correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
   };
   const handleCartPaymentError = (error) => Swal.fire('Error', error.message || 'Falló el pago.', 'error');
 
@@ -188,7 +188,7 @@ export default function ClienteServicios() {
     if (serviceToPay?.name && /160/.test(serviceToPay.name)) {
       Swal.fire({ title: '¡Pago procesado!', text: `Un correo se ha enviado a ${userEmail}, con los detalles de la transacción.`, icon: 'info', confirmButtonText: 'Entendido' });
     } else {
-      Swal.fire('¡Listo!', 'Tu pago se procesó correctamente.', 'success');
+      Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Tu pago se procesó correctamente.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     }
   };
   const handlePaymentError = (error) => Swal.fire('Error', error.message || 'Falló el pago.', 'error');

@@ -328,6 +328,9 @@ export default function Signin({ onCancel }) {
         text: `Código enviado nuevamente. Intentos restantes: ${MAX_INTENTOS - intentos - 1}`,
         icon: 'success',
         customClass: { popup: 'swal-popup-custom' },
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
     } catch (error) {
       console.error('Error al reenviar código:', error);
@@ -420,6 +423,9 @@ export default function Signin({ onCancel }) {
         text: 'Revisa tu correo para el código de verificación.',
         icon: 'success',
         customClass: { popup: 'swal-popup-custom' },
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
     } catch (error) {
       console.error('Error en paso 1:', error);

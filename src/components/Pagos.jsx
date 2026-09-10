@@ -69,7 +69,10 @@ export default function SimpleCheckoutForm({
         Swal.fire({
           icon: 'success',
           title: 'Pago exitoso',
-          text: 'El cobro extra ha sido procesado exitosamente.'
+          text: 'El cobro extra ha sido procesado exitosamente.',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true
         });
         if (onSuccess) {
           onSuccess(result); 

@@ -178,7 +178,7 @@ export default function EmpresaHorarios() {
   const handleGuardarSim = async () => {
     try {
       await guardarHorario('SIMULACION', { dias: diasActivosDow(simDias), horas: horasActivasArray(simHoras) });
-      Swal.fire({ icon: 'success', title: 'Guardado', text: 'Horario de simulación actualizado.' });
+      Swal.fire({ icon: 'success', title: 'Guardado', text: 'Horario de simulación actualizado.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       console.error('Error al guardar horario de simulación:', error);
       Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar el horario.' });
@@ -188,7 +188,7 @@ export default function EmpresaHorarios() {
   const handleGuardarRemota = async () => {
     try {
       await guardarHorario('ATENCION_REMOTA', { dias: diasActivosDow(llamadaDias), horas: horasActivasArray(llamadaHoras) });
-      Swal.fire({ icon: 'success', title: 'Guardado', text: 'Horario de atención remota actualizado.' });
+      Swal.fire({ icon: 'success', title: 'Guardado', text: 'Horario de atención remota actualizado.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       console.error('Error al guardar horario de atención remota:', error);
       Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar el horario.' });

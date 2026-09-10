@@ -168,7 +168,9 @@ export default function ActualizarTramite({ show, onHide, onClienteRegistrado, c
             Swal.fire({
                 icon: 'success',
                 title: 'Datos guardados y correo enviado',
-                confirmButtonText: 'Aceptar',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
             });
 
             if (typeof onClienteRegistrado === 'function') {

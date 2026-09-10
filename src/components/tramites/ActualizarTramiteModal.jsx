@@ -161,7 +161,7 @@ export default function ActualizarTramiteModal({ show, onHide, onClienteRegistra
       setDeleting(true);
       try {
         await deleteTRansactProgress(cliente.idTransactProgress);
-        Swal.fire('Eliminado!', 'El trámite ha sido eliminado.', 'success');
+        Swal.fire({ icon: 'success', title: 'Eliminado!', text: 'El trámite ha sido eliminado.', showConfirmButton: false, timer: 2500, timerProgressBar: true });
         if (typeof onClienteRegistrado === 'function') onClienteRegistrado();
         onHide();
       } catch (error) {
@@ -188,7 +188,7 @@ export default function ActualizarTramiteModal({ show, onHide, onClienteRegistra
       await actualizarTC(cliente.idTransactProgress, payload);
       await envioCorreoActualizacion(cliente?.user?.email, cliente?.user?.name, cliente?.transact?.name);
 
-      Swal.fire({ icon: 'success', title: 'Datos guardados y correo enviado', confirmButtonText: 'Aceptar' });
+      Swal.fire({ icon: 'success', title: 'Datos guardados y correo enviado', showConfirmButton: false, timer: 2500, timerProgressBar: true });
 
       if (typeof onClienteRegistrado === 'function') onClienteRegistrado();
       onHide();

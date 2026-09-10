@@ -85,6 +85,9 @@ export default function AgendaSection() {
         icon: 'success',
         title: '¡Solicitud enviada!',
         text: 'Nos pondremos en contacto contigo pronto para confirmar tu cita.',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
       });
       setNombre('');
       setApellido('');

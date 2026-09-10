@@ -101,7 +101,7 @@ export default function MiPerfil() {
       await actualizar(userId, { name: form.name, email: form.email, phone: form.phone, status: datos.status });
       await cargarDatos(userId);
       setEditando(false);
-      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Perfil actualizado con éxito' });
+      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Perfil actualizado con éxito', showConfirmButton: false, timer: 2500, timerProgressBar: true });
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo actualizar tu perfil.' });
@@ -113,7 +113,7 @@ export default function MiPerfil() {
   const onSubmitPassword = async (data) => {
     try {
       await actualizarContra(userId, data.password);
-      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Contraseña actualizada con éxito' });
+      Swal.fire({ icon: 'success', title: 'Éxito', text: 'Contraseña actualizada con éxito', showConfirmButton: false, timer: 2500, timerProgressBar: true });
       reset();
     } catch (error) {
       console.error('Error actualizando contraseña:', error);
