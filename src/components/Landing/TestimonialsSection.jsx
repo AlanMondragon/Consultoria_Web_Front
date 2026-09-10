@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useReveal from "../../hooks/useReveal";
 import { getTestimonios } from "../../api/api.js";
 import styles from '../../styles/landing/TestimonialsSection.module.css';
@@ -26,6 +26,15 @@ export default function TestimonialsSection() {
   const [testimonios, setTestimonios] = useState([]);
   const [zoomImg, setZoomImg] = useState(null);
   const [pagina, setPagina] = useState(0);
+  const [transitionKey, setTransitionKey] = useState(0);
+  const esPrimeraCarga = useRef(true);
+
+  // Solo anima al cambiar de página con las flechas, no en la carga inicial
+  // (si animara siempre, se pisaría con el reveal-on-scroll de la sección).
+  useEffect(() => {
+    if (esPrimeraCarga.current) { esPrimeraCarga.current = false; return; }
+    setTransitionKey((k) => k + 1);
+  }, [pagina]);
 
   useEffect(() => {
     let activo = true;
@@ -68,7 +77,7 @@ export default function TestimonialsSection() {
           </div>
         </div>
 
-        <div ref={gridRef} className={`${styles.videoGrid} jas-reveal ${gridIn ? 'jas-in' : ''}`}>
+        <div ref={gridRef} className={`${styles.videoGrid} jas-reveal ${gridIn ? 'jas-in' : ''}`} key={transitionKey}>
           {testimonios.slice(pagina * POR_PAGINA, pagina * POR_PAGINA + POR_PAGINA).map((t) => (
             <div key={t.idTestimonio} className={styles.videoCard} onClick={() => setZoomImg(t.image)}>
               <div className={styles.vtImg} style={{ backgroundImage: `url("${t.image}")` }}></div>
